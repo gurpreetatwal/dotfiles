@@ -1,0 +1,23 @@
+[user]
+	email = gurpreetatwal@users.noreply.github.com
+	name = Gurpreet Atwal
+[core]
+	editor = vim
+[push]
+	default = current
+[branch]
+	autosetuprebase = always
+[help]
+	autocorrect = 5
+[alias]
+	# commit
+	c = commit
+	cm  = commit -m 
+	cma = commit -am 
+	ammend = commit --amend --no-edit
+	ammendm = commit --amend 
+
+	# stash related
+	ss = stash save
+	sl = stash list
+
