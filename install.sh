@@ -2,7 +2,7 @@
 
 # Setup
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-FILES=(.gitconfig .tmux.conf .bashrc)
+FILES=(.gitconfig .tmux.conf .bashrc .vimrc)
 
 # Install pathogen
 ## TODO only create dirs if they don't exist
