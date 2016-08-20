@@ -23,10 +23,11 @@ if [[ $SHELL != *"zsh"* ]]; then
   chsh -s "$(which zsh)"
 fi
 
-# Install pathogen
-## TODO only create dirs if they don't exist
-mkdir -p ~/.vim/autoload ~/.vim/bundle
-curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+# Install vim plug
+if [[ ! -e ~/.vim/autoload/plug.vim ]]; then
+  color $green "Installing vim plug"
+  curl -LSsfo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+fi
 
 # Symlink config files to home
 ## TODO ask override if symlink fails
@@ -37,4 +38,6 @@ for file in "${FILES[@]}"; do
 done
 
 # Install oh-my-zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+if [[ ! -e ~/.oh-my-zsh ]]; then
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+fi
