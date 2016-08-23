@@ -29,5 +29,12 @@ filetype indent on                " Enable filetype-specific indenting
 filetype plugin on                " Enable filetype-specific plugins
 
 " Airline Settings
-let g:airline_powerline_fonts=1
 let g:airline_theme="papercolor"
+let g:airline_powerline_fonts=1
+
+" Syntastic Settings
+let g:syntastic_check_on_wq=1
+let g:syntastic_check_on_open=1
+let g:syntastic_auto_loc_list=2
+let g:syntastic_javascript_checkers=['eslint']
+let g:syntastic_javascript_eslint_exe='$(npm bin)/eslint'
