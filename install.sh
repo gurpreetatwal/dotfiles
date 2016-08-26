@@ -11,10 +11,19 @@ color() {
   echo -e "\e[1;$1m$2\e[0m"
 }
 
+installif() {
+  dpkg -s $1 > /dev/null
+  if [[ $? != 0 ]]; then
+    color $green "Install $1"
+    sudo apt-get install -y $1
+  fi
+}
+
 # Install Programs
 ## apt
-color $green "Installing ZSH"
-sudo apt-get install zsh -y
+installif zsh
+BUILD_TOOLS=(build-essential cmake python-dev python3-dev)
+installif BUILD_TOOLS
 
 # System Setup
 ## ZSH Setup
@@ -29,12 +38,15 @@ if [[ ! -e ~/.vim/autoload/plug.vim ]]; then
   curl -LSsfo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 fi
 
+# Install and configure vim plugins
+vim +PlugUpdate +qa
+
 # Symlink config files to home
 ## TODO ask override if symlink fails
 ## TODO find a better way to do this than an array
 color $green "Linking config files to ~/"
 for file in "${FILES[@]}"; do
-	ln -s $DIR/$file $HOME
+  ln -s $DIR/$file $HOME
 done
 
 # Install oh-my-zsh
