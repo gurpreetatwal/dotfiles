@@ -12,20 +12,3 @@
 	resolveConflict = false
 [help]
 	autocorrect = 5
-[alias]
-	# Commit
-	c = commit
-	cm = commit -m
-	cma = commit -am
-	ammend = commit --amend --no-edit
-	ammendm = commit --amend 
-
-	# Stash
-	ss = stash save
-	sl = stash list
-
-	# Rebase
-	rb = rebase
-	rba = rebase --abort
-	rbc = rebase --continue
-	rbs = rebase --skip
