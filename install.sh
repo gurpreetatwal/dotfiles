@@ -23,7 +23,7 @@ installif() {
 ## apt
 installif zsh
 BUILD_TOOLS=(build-essential cmake python-dev python3-dev)
-installif BUILD_TOOLS
+installif $BUILD_TOOLS
 
 # System Setup
 ## ZSH Setup
