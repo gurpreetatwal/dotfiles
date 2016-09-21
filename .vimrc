@@ -18,6 +18,7 @@ set number                        " line numbers
 set encoding=utf-8
 set backspace=indent,eol,start    " backspace works as intended
 set autoread                      " reload files if changed by other program
+let mapleader="\<space>"
 
 " Mouse
 set mouse=a
@@ -28,6 +29,25 @@ syntax on
 filetype on                       " detect the type of file
 filetype indent on                " Enable filetype-specific indenting
 filetype plugin on                " Enable filetype-specific plugins
+
+" Custom keybindings
+"" General
+nnoremap <leader>w :w<CR>
+
+"" Copy & Paste into sytem buffer
+map <leader>y "+y
+map <leader>d "+d
+map <leader>p "+p
+map <leader>P "+P
+
+" YouCompleteMe/Tern
+"" TODO look into multi-file refactor after learning about vim's quickfix mode
+"" TODO look into cursor hold for getType
+nnoremap <leader>td :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>tt :YcmCompleter GetType<CR>
+nnoremap <leader>tr :YcmCompleter GoToReferences<CR>
+nnoremap <leader>tR :YcmCompleter RefactorRename
+nnoremap <leader>tdoc :YcmCompleter GetDoc<CR>
 
 " Airline Settings
 let g:airline_theme="papercolor"
