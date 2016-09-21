@@ -59,3 +59,14 @@ let g:syntastic_check_on_open=1
 let g:syntastic_auto_loc_list=2
 let g:syntastic_javascript_checkers=['eslint']
 let g:syntastic_javascript_eslint_exe='$(npm bin)/eslint'
+
+" Strip Whitespace on Save
+autocmd BufWritePre * :call StripTrailingWhitespaces()
+function! StripTrailingWhitespaces()
+    let _s=@/
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    let @/=_s
+    call cursor(l, c)
+endfunction
