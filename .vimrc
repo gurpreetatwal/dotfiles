@@ -6,6 +6,7 @@ set background=dark
 
 " Plugins
 call plug#begin()
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
 Plug 'vim-airline/vim-airline'
