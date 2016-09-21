@@ -19,7 +19,7 @@ set number                        " line numbers
 set encoding=utf-8
 set backspace=indent,eol,start    " backspace works as intended
 set autoread                      " reload files if changed by other program
-let mapleader="\<space>"
+let mapleader='\<space>'
 
 " Mouse
 set mouse=a
@@ -51,8 +51,16 @@ nnoremap <leader>tR :YcmCompleter RefactorRename
 nnoremap <leader>tdoc :YcmCompleter GetDoc<CR>
 
 " Airline Settings
-let g:airline_theme="papercolor"
+set laststatus=2                " show airline even if no split exists
+set showtabline=2               " show tabline even if no tabs open
+let g:airline_theme='papercolor'
 let g:airline_powerline_fonts=1
+let g:airline_section_y=airline#section#create(['%l/%L'])
+let g:airline_section_z=airline#section#create(['%v'])
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#default#section_truncate_width={
+  \ 'b': 79, 'x': 60, 'y': 45, 'z': 45, 'warning': 80, 'error': 80
+  \ }
 
 " Syntastic Settings
 let g:syntastic_check_on_wq=1
@@ -65,8 +73,8 @@ let g:syntastic_javascript_eslint_exe='$(npm bin)/eslint'
 autocmd BufWritePre * :call StripTrailingWhitespaces()
 function! StripTrailingWhitespaces()
     let _s=@/
-    let l = line(".")
-    let c = col(".")
+    let l = line('.')
+    let c = col('.')
     %s/\s\+$//e
     let @/=_s
     call cursor(l, c)
