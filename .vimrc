@@ -20,6 +20,7 @@ set backspace=indent,eol,start    " backspace works as intended
 set autoread                      " reload files if changed by other program
 set cursorline                    " show horizontal cursor line
 let mapleader='\<space>'
+map <space> <leader>
 
 " Mouse
 set mouse=a
