@@ -2,7 +2,6 @@ set autoindent
 set tabstop=2
 set shiftwidth=2
 set expandtab
-set background=dark
 
 " Plugins
 call plug#begin()
@@ -19,6 +18,7 @@ set number                        " line numbers
 set encoding=utf-8
 set backspace=indent,eol,start    " backspace works as intended
 set autoread                      " reload files if changed by other program
+set cursorline                    " show horizontal cursor line
 let mapleader='\<space>'
 
 " Mouse
@@ -30,6 +30,11 @@ syntax on
 filetype on                       " detect the type of file
 filetype indent on                " Enable filetype-specific indenting
 filetype plugin on                " Enable filetype-specific plugins
+
+" Colors
+set background=dark
+let base16colorspace=256
+source ~/.vimrc_background
 
 " Custom keybindings
 "" General
@@ -53,7 +58,7 @@ nnoremap <leader>tdoc :YcmCompleter GetDoc<CR>
 " Airline Settings
 set laststatus=2                " show airline even if no split exists
 set showtabline=2               " show tabline even if no tabs open
-let g:airline_theme='papercolor'
+let g:airline_theme='murmur'
 let g:airline_powerline_fonts=1
 let g:airline_section_y=airline#section#create(['%l/%L'])
 let g:airline_section_z=airline#section#create(['%v'])
