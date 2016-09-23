@@ -60,6 +60,10 @@ set laststatus=2                " show airline even if no split exists
 set showtabline=2               " show tabline even if no tabs open
 let g:airline_theme='murmur'
 let g:airline_powerline_fonts=1
+let g:airline_left_sep=''
+let g:airline_right_sep=''
+let g:airline_left_alt_sep=''
+let g:airline_right_alt_sep=''
 let g:airline_section_y=airline#section#create(['%l/%L'])
 let g:airline_section_z=airline#section#create(['%v'])
 let g:airline#extensions#tabline#enabled=1
@@ -69,10 +73,14 @@ let g:airline#extensions#default#section_truncate_width={
 
 " Syntastic Settings
 let g:syntastic_check_on_wq=1
-let g:syntastic_check_on_open=1
 let g:syntastic_auto_loc_list=2
 let g:syntastic_javascript_checkers=['eslint']
 let g:syntastic_javascript_eslint_exe='$(npm bin)/eslint'
+
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\.git$\|\.yardoc\|node_modules\|log\|tmp$',
+  \ 'file': '\.so$\|\.swp|\.dat$|\.DS_Store$'
+  \ }
 
 " Strip Whitespace on Save
 autocmd BufWritePre * :call StripTrailingWhitespaces()
