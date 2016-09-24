@@ -49,6 +49,11 @@ for file in "${FILES[@]}"; do
   ln -s $DIR/$file $HOME
 done
 
+if [[ ! -e ~/.oh-my-zsh/custom/spaceship.zsh-theme ]]; then
+  color $green "Installing ZSH theme"
+  curl -LSsfo ~/.oh-my-zsh/custom/spaceship.zsh-theme --create-dirs https://raw.githubusercontent.com/denysdovhan/spaceship-zsh-theme/master/spaceship.zsh
+fi
+
 # Install oh-my-zsh
 if [[ ! -e ~/.oh-my-zsh ]]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
