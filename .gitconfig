@@ -3,10 +3,13 @@
 	name = Gurpreet Atwal
 [core]
 	editor = vim
+	excludesfile = ~/.gitignore.global
 [push]
 	default = current
 [branch]
 	autosetuprebase = always
+[merge]
+	tool = vimdiff
 [advice]
 	pushNonFastForward = false
 	resolveConflict = false
