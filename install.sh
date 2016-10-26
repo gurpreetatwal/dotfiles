@@ -4,6 +4,7 @@
 ## Global Variables
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FILES=(.gitconfig .tmux.conf .vimrc .gitignore.global)
+TMUX_VERSION=2.3
 
 ## Helper for colored output. Usage: color $red "Error!"
 black=30 red=31 green=32 brown=33 blue=34 purple=35 cyan=36 gray=37
@@ -31,6 +32,19 @@ if [[ $SHELL != *"zsh"* ]]; then
   color $green "Setting ZSH to be the default shell"
   chsh -s "$(which zsh)"
 fi
+
+# install latest tmux
+if [[ $(tmux -V) != *"$TMUX_VERSION"* ]]; then
+  color $green "Upgrading tmux to $TMUX_VERSION"
+  curl -LSsf https://github.com/tmux/tmux/releases/download/$TMUX_VERSION/tmux-$TMUX_VERSION.tar.gz | tar -xz -C /tmp
+  deps=(libevent-dev ncurses-dev)
+  installif $deps
+  pushd /tmp/tmux-$TMUX_VERSION
+  ./configure && make > /dev/null
+  sudo make install
+  popd
+fi
+
 
 # Install vim plug
 if [[ ! -e ~/.vim/autoload/plug.vim ]]; then
