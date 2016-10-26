@@ -79,6 +79,9 @@ let g:syntastic_auto_loc_list=2
 let g:syntastic_javascript_checkers=['eslint']
 let g:syntastic_javascript_eslint_exe='$(npm bin)/eslint'
 
+" CtrlP Settings
+let g:ctrlp_show_hidden=1
+let g:ctrlp_clear_cache_on_exit=0
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\.git$\|\.yardoc\|node_modules\|log\|tmp$',
   \ 'file': '\.so$\|\.swp|\.dat$|\.DS_Store$'
