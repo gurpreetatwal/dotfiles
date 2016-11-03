@@ -8,6 +8,7 @@ call plug#begin()
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
+Plug 'pangloss/vim-javascript'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'chriskempson/base16-vim'
@@ -35,6 +36,7 @@ filetype plugin on                " Enable filetype-specific plugins
 
 " Colors
 set background=dark
+set hlsearch
 let base16colorspace=256
 source ~/.vimrc_background
 
@@ -86,6 +88,12 @@ let g:ctrlp_custom_ignore = {
   \ 'dir':  '\.git$\|\.yardoc\|node_modules\|log\|tmp$',
   \ 'file': '\.so$\|\.swp|\.dat$|\.DS_Store$'
   \ }
+
+" Vim Javascript Settings
+set conceallevel=1
+set concealcursor=c
+let g:javascript_plugin_jsdoc=1
+let g:javascript_conceal_function="λ"
 
 " Strip Whitespace on Save
 autocmd BufWritePre * :call StripTrailingWhitespaces()
