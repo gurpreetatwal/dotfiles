@@ -1,17 +1,17 @@
 [user]
-	email = gurpreetatwal@users.noreply.github.com
-	name = Gurpreet Atwal
+	email=git@gatwal.com
+	name=Gurpreet Atwal
 [core]
-	editor = vim
-	excludesfile = ~/.gitignore.global
+	editor=vim
+	excludesfile=~/.gitignore.global
 [push]
-	default = current
+	default=current
 [branch]
-	autosetuprebase = always
+	autosetuprebase=always
 [merge]
-	tool = vimdiff
+	tool=vimdiff
 [advice]
-	pushNonFastForward = false
-	resolveConflict = false
+	pushNonFastForward=false
+	resolveConflict=false
 [help]
-	autocorrect = 5
+	autocorrect=5
