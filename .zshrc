@@ -1,8 +1,10 @@
-source $ZSH/oh-my-zsh.sh
-
 # oh-my-zsh settings
+export ZSH=$HOME/.oh-my-zsh
+
 ZSH_THEME="spaceship"
 plugins=(git vi-mode npm docker)
+
+source $ZSH/oh-my-zsh.sh
 
 # Add npm bin to path if it exists
 NORMAL_PATH=$PATH
@@ -24,7 +26,6 @@ alias gcanpf!='gcan! && gp -f'
 alias gcanfp!='gcanpf!'
 
 ## Default Variables
-export ZSH=$HOME/.oh-my-zsh
 export NODE_ENV=development
 export PG_HOST=localhost
 
