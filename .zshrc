@@ -4,6 +4,18 @@ source $ZSH/oh-my-zsh.sh
 ZSH_THEME="spaceship"
 plugins=(git vi-mode npm docker)
 
+# Add npm bin to path if it exists
+NORMAL_PATH=$PATH
+function chpwd() {
+  bin_dir="$(npm bin)"
+  if [[ -d $bin_dir && $PATH != *"$bin_dir"* ]]; then
+    NORMAL_PATH=$PATH
+    PATH=$PATH:$bin_dir
+  elif [[ ! -d $bin_dir && $PATH = *"node_modules"* ]]; then
+    PATH=$NORMAL_PATH
+  fi
+}
+
 # Aliases
 alias serve='python -m SimpleHTTPServer'
 
