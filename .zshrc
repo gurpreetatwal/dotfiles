@@ -6,6 +6,10 @@ plugins=(git vi-mode npm docker)
 
 source $ZSH/oh-my-zsh.sh
 
+# Settings for base16-shell
+BASE16_SHELL=$HOME/.config/base16-shell/
+[ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
+
 # Add npm bin to path if it exists
 NORMAL_PATH=$PATH
 function chpwd() {
@@ -33,3 +37,4 @@ export PG_HOST=localhost
 if [ -f $HOME/.zshrc.local ]; then
   source $HOME/.zshrc.local
 fi
+
