@@ -1,0 +1,11 @@
+{
+  "ecmaVersion": 7,
+  "plugins": {
+    "node": {},
+    "doc_comment": {},
+    "es_modules": {},
+    "complete_strings": {
+      "maxLength": 15
+    }
+  }
+}
