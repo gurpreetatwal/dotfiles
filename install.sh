@@ -3,7 +3,7 @@
 # Script Setup
 ## Global Variables
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-FILES=(.gitconfig .gitignore.global .tern-project .tmux.conf .vimrc .zshrc)
+FILES=(gitconfig gitignore.global tern-project tmux.conf vimrc zshrc)
 TMUX_VERSION=2.3
 
 ## Helper for colored output. Usage: color $red "Error!"
@@ -60,7 +60,11 @@ vim +PlugUpdate +qa
 ## TODO find a better way to do this than an array
 color $green "Linking config files to ~/"
 for file in "${FILES[@]}"; do
-  ln -s $DIR/$file $HOME
+  LINK_NAME="$HOME/.$file"
+  if [[ ! -h "$LINK_NAME" || $(readlink "$LINK_NAME") != "$DIR/$file" ]]; then
+    [[ -e $LINK_NAME ]] && mv $LINK_NAME "$LINK_NAME.bak"
+    ln -s "$DIR/$file" "$LINK_NAME"
+  fi
 done
 
 if [[ ! -e ~/.oh-my-zsh/custom/themes/spaceship.zsh-theme ]]; then
