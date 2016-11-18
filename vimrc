@@ -80,7 +80,6 @@ let g:airline_left_alt_sep=''
 let g:airline_right_alt_sep=''
 let g:airline_section_y=airline#section#create(['%l/%L'])
 let g:airline_section_z=airline#section#create(['%v'])
-let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#default#section_truncate_width={
   \ 'b': 79, 'x': 60, 'y': 45, 'z': 45, 'warning': 80, 'error': 80
   \ }
@@ -89,13 +88,14 @@ let g:airline#extensions#default#section_truncate_width={
 let g:syntastic_check_on_wq=1
 let g:syntastic_auto_loc_list=2
 let g:syntastic_javascript_checkers=['eslint']
-let g:syntastic_javascript_eslint_exe='$(npm bin)/eslint'
+let g:syntastic_javascript_eslint_exe='eslint_d'
+let g:syntastic_javascript_eslint_args=['--cache']
 
 "" CtrlP Settings
 let g:ctrlp_show_hidden=1
 let g:ctrlp_clear_cache_on_exit=0
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\.git$\|\.yardoc\|node_modules\|log\|tmp$',
+  \ 'dir':  '\.git$\|\.yardoc\|node_modules\|log\|tmp\bower_components$',
   \ 'file': '\.so$\|\.swp|\.dat$|\.DS_Store$'
   \ }
 
