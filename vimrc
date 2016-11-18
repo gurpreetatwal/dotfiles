@@ -17,11 +17,15 @@ Plug 'Valloric/YouCompleteMe', {'do': './install.py --tern-completer'}
 call plug#end()
 
 " General Vim Settings
-set number                        " line numbers
 set encoding=utf-8
+set number                        " line numbers
+set incsearch                     " highlight search matches as you type
+set wildmenu                      " show autocomplete menu for vim commands
 set backspace=indent,eol,start    " backspace works as intended
 set autoread                      " reload files if changed by other program
 set cursorline                    " show horizontal cursor line
+set scrolloff=5                   " always show 5 lines above and below cursor
+set sidescrolloff=5               " always show 10 characters to left and right of line
 let mapleader='\<space>'
 map <space> <leader>
 
