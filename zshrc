@@ -25,8 +25,10 @@ function chpwd() {
 # Aliases
 alias serve='python -m SimpleHTTPServer'
 
-alias gcanrc!='gcan! && grbc'
-alias gcanpf!='gcan! && gp -f'
+alias gl='git pull --prune'
+alias gpf='git push -f'
+alias gcanrc!='git commit --amend --no-edit && git rebase --continue'
+alias gcanpf!='git commit --amend --no-edit && git push -f'
 alias gcanfp!='gcanpf!'
 
 ## Default Variables
