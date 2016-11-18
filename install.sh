@@ -26,6 +26,9 @@ installif zsh
 BUILD_TOOLS=(build-essential cmake python-dev python3-dev)
 installif $BUILD_TOOLS
 
+## npm
+sudo npm install npm bower bunyan nodemon eslint eslint_d
+
 # System Setup
 ## ZSH Setup
 if [[ $SHELL != *"zsh"* ]]; then
