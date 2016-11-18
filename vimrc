@@ -50,16 +50,17 @@ map <leader>d "+d
 map <leader>p "+p
 map <leader>P "+P
 
-" YouCompleteMe/Tern
-"" TODO look into multi-file refactor after learning about vim's quickfix mode
-"" TODO look into cursor hold for getType
+" Plugin Settings
+"" YouCompleteMe/Tern
+""" TODO look into multi-file refactor after learning about vim's quickfix mode
+""" TODO look into cursor hold for getType
 nnoremap <leader>td :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>tt :YcmCompleter GetType<CR>
 nnoremap <leader>tr :YcmCompleter GoToReferences<CR>
 nnoremap <leader>tR :YcmCompleter RefactorRename
 nnoremap <leader>tdoc :YcmCompleter GetDoc<CR>
 
-" Airline Settings
+"" Airline Settings
 set laststatus=2                " show airline even if no split exists
 set showtabline=2               " show tabline even if no tabs open
 let g:airline_theme='murmur'
@@ -75,13 +76,13 @@ let g:airline#extensions#default#section_truncate_width={
   \ 'b': 79, 'x': 60, 'y': 45, 'z': 45, 'warning': 80, 'error': 80
   \ }
 
-" Syntastic Settings
+"" Syntastic Settings
 let g:syntastic_check_on_wq=1
 let g:syntastic_auto_loc_list=2
 let g:syntastic_javascript_checkers=['eslint']
 let g:syntastic_javascript_eslint_exe='$(npm bin)/eslint'
 
-" CtrlP Settings
+"" CtrlP Settings
 let g:ctrlp_show_hidden=1
 let g:ctrlp_clear_cache_on_exit=0
 let g:ctrlp_custom_ignore = {
@@ -89,7 +90,7 @@ let g:ctrlp_custom_ignore = {
   \ 'file': '\.so$\|\.swp|\.dat$|\.DS_Store$'
   \ }
 
-" Vim Javascript Settings
+"" Vim Javascript Settings
 set conceallevel=1
 set concealcursor=c
 let g:javascript_plugin_jsdoc=1
