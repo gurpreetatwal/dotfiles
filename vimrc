@@ -5,6 +5,7 @@ set expandtab
 
 " Plugins
 call plug#begin()
+Plug 'sjl/gundo.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
@@ -42,6 +43,7 @@ source ~/.vimrc_background
 
 " Custom keybindings
 "" General
+nnoremap <C-g> :GundoToggle<CR>
 nnoremap <leader>w :w<CR>
 
 "" Copy & Paste into sytem buffer
@@ -51,6 +53,13 @@ map <leader>p "+p
 map <leader>P "+P
 
 " Plugin Settings
+"" gundo
+let g:gundo_width=30
+let g:gundo_preview_height=20
+let g:gundo_preview_bottom=1    " show the preview under the current window
+let g:gundo_close_on_revert=1   " close gundo after reverting
+let g:gundo_prefer_python3=1    " needed for python3 support
+
 "" YouCompleteMe/Tern
 """ TODO look into multi-file refactor after learning about vim's quickfix mode
 """ TODO look into cursor hold for getType
