@@ -12,19 +12,20 @@ color() {
   echo -e "\e[1;$1m$2\e[0m"
 }
 
+# use apt if its available
+which apt > /dev/null && apt=apt || apt=apt-get
 installif() {
-  dpkg -s $1 > /dev/null
-  if [[ $? != 0 ]]; then
-    color $green "Install $1"
-    sudo apt-get install -y $1
-  fi
+  for pkg in $@; do
+    dpkg -s $pkg | grep -q 'Status: install ok installed' && continue;
+    color $green "Install $pkg"
+    sudo $apt install -q $pkg
+  done
 }
 
 # Install Programs
 ## apt
 installif zsh
-BUILD_TOOLS=(build-essential cmake python-dev python3-dev)
-installif $BUILD_TOOLS
+installif build-essential cmake python-dev python3-dev
 
 ## npm
 sudo npm install npm bower bunyan nodemon eslint eslint_d
@@ -40,8 +41,7 @@ fi
 if [[ $(tmux -V) != *"$TMUX_VERSION"* ]]; then
   color $green "Upgrading tmux to $TMUX_VERSION"
   curl -LSsf https://github.com/tmux/tmux/releases/download/$TMUX_VERSION/tmux-$TMUX_VERSION.tar.gz | tar -xz -C /tmp
-  deps=(libevent-dev ncurses-dev)
-  installif $deps
+  installif libevent-dev ncurses-dev
   pushd /tmp/tmux-$TMUX_VERSION
   ./configure && make > /dev/null
   sudo make install
