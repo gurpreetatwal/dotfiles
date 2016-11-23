@@ -28,7 +28,7 @@ installif zsh
 installif build-essential cmake python-dev python3-dev
 
 ## npm
-sudo npm install npm bower bunyan nodemon eslint eslint_d
+sudo npm update --global npm bower bunyan nodemon eslint eslint_d
 
 # System Setup
 ## ZSH Setup
@@ -70,12 +70,12 @@ for file in "${FILES[@]}"; do
   fi
 done
 
-if [[ ! -e ~/.oh-my-zsh/custom/themes/spaceship.zsh-theme ]]; then
-  color $green "Installing ZSH theme"
-  curl -LSsfo ~/.oh-my-zsh/custom/themes/spaceship.zsh-theme --create-dirs https://raw.githubusercontent.com/denysdovhan/spaceship-zsh-theme/master/spaceship.zsh
-fi
-
 # Install oh-my-zsh
 if [[ ! -e ~/.oh-my-zsh ]]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+fi
+
+if [[ ! -e ~/.oh-my-zsh/custom/themes/spaceship.zsh-theme ]]; then
+  color $green "Installing ZSH theme"
+  curl -LSsfo ~/.oh-my-zsh/custom/themes/spaceship.zsh-theme --create-dirs https://raw.githubusercontent.com/denysdovhan/spaceship-zsh-theme/master/spaceship.zsh
 fi
