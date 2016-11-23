@@ -28,6 +28,7 @@ installif zsh
 installif build-essential cmake python-dev python3-dev
 
 ## npm
+color $green "updating global npm packages"
 sudo npm update --global npm bower bunyan nodemon eslint eslint_d
 
 # System Setup
@@ -36,27 +37,6 @@ if [[ $SHELL != *"zsh"* ]]; then
   color $green "Setting ZSH to be the default shell"
   chsh -s "$(which zsh)"
 fi
-
-# install latest tmux
-if [[ $(tmux -V) != *"$TMUX_VERSION"* ]]; then
-  color $green "Upgrading tmux to $TMUX_VERSION"
-  curl -LSsf https://github.com/tmux/tmux/releases/download/$TMUX_VERSION/tmux-$TMUX_VERSION.tar.gz | tar -xz -C /tmp
-  installif libevent-dev ncurses-dev
-  pushd /tmp/tmux-$TMUX_VERSION
-  ./configure && make > /dev/null
-  sudo make install
-  popd
-fi
-
-
-# Install vim plug
-if [[ ! -e ~/.vim/autoload/plug.vim ]]; then
-  color $green "Installing vim plug"
-  curl -LSsfo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-fi
-
-# Install and configure vim plugins
-vim +PlugUpdate +qa
 
 # Symlink config files to home
 ## TODO ask override if symlink fails
@@ -70,12 +50,41 @@ for file in "${FILES[@]}"; do
   fi
 done
 
+# install latest tmux
+if [[ $(tmux -V) != *"$TMUX_VERSION"* ]]; then
+  color $green "Upgrading tmux to $TMUX_VERSION"
+  curl -LSsf https://github.com/tmux/tmux/releases/download/$TMUX_VERSION/tmux-$TMUX_VERSION.tar.gz | tar -xz -C /tmp
+  installif libevent-dev ncurses-dev
+  pushd /tmp/tmux-$TMUX_VERSION
+  ./configure && make > /dev/null
+  sudo make install
+  popd
+fi
+
+# Install vim plug
+if [[ ! -e ~/.vim/autoload/plug.vim ]]; then
+  color $green "Installing vim plug"
+  curl -LSsfo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+fi
+
+# Install and configure vim plugins
+vim +PlugUpdate +qa
+
 # Install oh-my-zsh
-if [[ ! -e ~/.oh-my-zsh ]]; then
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+if [ ! -n "$ZSH" ]; then
+  ZSH=~/.oh-my-zsh
+fi
+
+if [[ ! -d "$ZSH" ]]; then
+  color $green "Installing ZSH"
+  git clone --depth=1 https://github.com/robbyrussell/oh-my-zsh.git $ZSH
 fi
 
 if [[ ! -e ~/.oh-my-zsh/custom/themes/spaceship.zsh-theme ]]; then
-  color $green "Installing ZSH theme"
+  color $green "Installing ZSH spaceship theme"
   curl -LSsfo ~/.oh-my-zsh/custom/themes/spaceship.zsh-theme --create-dirs https://raw.githubusercontent.com/denysdovhan/spaceship-zsh-theme/master/spaceship.zsh
+fi
+
+if [[ $SHELL != "zsh" ]]; then
+  zsh
 fi
