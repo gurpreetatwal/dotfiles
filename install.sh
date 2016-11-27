@@ -85,6 +85,6 @@ if [[ ! -e ~/.oh-my-zsh/custom/themes/spaceship.zsh-theme ]]; then
   curl -LSsfo ~/.oh-my-zsh/custom/themes/spaceship.zsh-theme --create-dirs https://raw.githubusercontent.com/denysdovhan/spaceship-zsh-theme/master/spaceship.zsh
 fi
 
-if [[ $SHELL != "zsh" ]]; then
+if [[ $SHELL != *"zsh"* ]]; then
   zsh
 fi
