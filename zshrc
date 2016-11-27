@@ -13,7 +13,7 @@ BASE16_SHELL=$HOME/.config/base16-shell/
 # Add npm bin to path if it exists
 NORMAL_PATH=$PATH
 function chpwd() {
-  bin_dir="$(npm bin)"
+  bin_dir="node_modules/.bin"
   if [[ -d $bin_dir && $PATH != *"$bin_dir"* ]]; then
     NORMAL_PATH=$PATH
     PATH=$PATH:$bin_dir
