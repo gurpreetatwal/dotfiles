@@ -57,6 +57,11 @@ if [[ ! -e ~/.config/base16-shell ]]; then
   ~/.config/base16-shell/scripts/base16-google-dark.sh
 fi
 
+# install tmux plugin manager
+if [[ ! -e ~/.tmux/plugins/tpm ]]; then
+  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
+
 # install latest tmux
 if [[ $(tmux -V) != *"$TMUX_VERSION"* ]]; then
   color $green "Upgrading tmux to $TMUX_VERSION"
