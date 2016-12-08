@@ -50,6 +50,13 @@ for file in "${FILES[@]}"; do
   fi
 done
 
+# install base16-shell
+if [[ ! -e ~/.config/base16-shell ]]; then
+  git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
+  find  ~/.config/base16-shell/scripts -type f -exec chmod 744 {} \;
+  ~/.config/base16-shell/scripts/base16-google-dark.sh
+fi
+
 # install latest tmux
 if [[ $(tmux -V) != *"$TMUX_VERSION"* ]]; then
   color $green "Upgrading tmux to $TMUX_VERSION"
