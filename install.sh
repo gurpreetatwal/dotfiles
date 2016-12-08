@@ -87,6 +87,11 @@ if [ ! -n "$ZSH" ]; then
   ZSH=~/.oh-my-zsh
 fi
 
+if [[ ! "$(which thefuck)" ]]; then
+  installif python3-dev python3-pip
+  sudo -H pip3 install --upgrade pip setuptools thefuck
+fi
+
 if [[ ! -d "$ZSH" ]]; then
   color $green "Installing ZSH"
   git clone --depth=1 https://github.com/robbyrussell/oh-my-zsh.git $ZSH

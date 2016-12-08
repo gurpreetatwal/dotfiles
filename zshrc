@@ -24,7 +24,6 @@ function chpwd() {
 
 # Aliases
 alias serve='python -m SimpleHTTPServer'
-
 alias gl='git pull --prune'
 alias gpf='git push -f'
 alias gcanrc!='git commit --amend --no-edit && git rebase --continue'
@@ -34,6 +33,8 @@ alias gcanfp!='gcanpf!'
 ## Default Variables
 export NODE_ENV=development
 export PG_HOST=localhost
+
+eval "$(thefuck --alias ugh)"
 
 # Allow for local configuration
 if [ -f $HOME/.zshrc.local ]; then
