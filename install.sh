@@ -18,13 +18,13 @@ installif() {
   for pkg in $@; do
     dpkg -s $pkg | grep -q 'Status: install ok installed' && continue;
     color $green "Install $pkg"
-    sudo $apt install -q $pkg
+    sudo $apt install -q -y $pkg
   done
 }
 
 # Install Programs
 ## apt
-installif zsh
+installif zsh silversearcher-ag
 installif build-essential cmake python-dev python3-dev
 
 ## npm
