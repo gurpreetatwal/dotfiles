@@ -29,7 +29,8 @@ installif build-essential cmake python-dev python3-dev
 
 ## npm
 color $green "updating global npm packages"
-sudo npm update --global npm bower bunyan nodemon eslint eslint_d
+sudo npm install --global bower bunyan nodemon eslint_d
+sudo npm update --global npm bower bunyan nodemon eslint_d
 
 # System Setup
 ## ZSH Setup
