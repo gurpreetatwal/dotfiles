@@ -77,12 +77,12 @@ nnoremap <leader>tdoc :YcmCompleter GetDoc<CR>
 "" Airline Settings
 set laststatus=2                " show airline even if no split exists
 set showtabline=2               " show tabline even if no tabs open
-let g:airline_theme='murmur'
+let g:airline_theme='lucius'
 let g:airline_powerline_fonts=1
-let g:airline_left_sep=''
-let g:airline_right_sep=''
-let g:airline_left_alt_sep=''
-let g:airline_right_alt_sep=''
+" let g:airline_left_sep=''
+" let g:airline_right_sep=''
+" let g:airline_left_alt_sep=''
+" let g:airline_right_alt_sep=''
 let g:airline_section_y=airline#section#create(['%l/%L'])
 let g:airline_section_z=airline#section#create(['%v'])
 let g:airline#extensions#default#section_truncate_width={
