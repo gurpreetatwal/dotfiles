@@ -7,6 +7,7 @@ set expandtab
 call plug#begin()
 Plug 'chriskempson/base16-vim'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'edkolev/tmuxline.vim'
 Plug 'pangloss/vim-javascript'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
@@ -109,6 +110,9 @@ set conceallevel=1
 set concealcursor=c
 let g:javascript_plugin_jsdoc=1
 let g:javascript_conceal_function="λ"
+
+"" Tmuxline settings
+let g:tmuxline_preset='full'
 
 " Strip Whitespace on Save
 autocmd BufWritePre * :call StripTrailingWhitespaces()
