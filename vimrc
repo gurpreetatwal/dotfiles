@@ -5,16 +5,16 @@ set expandtab
 
 " Plugins
 call plug#begin()
-Plug 'sjl/gundo.vim'
+Plug 'chriskempson/base16-vim'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'pangloss/vim-javascript'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
-Plug 'pangloss/vim-javascript'
+Plug 'sjl/gundo.vim'
+Plug 'tpope/vim-obsession'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'chriskempson/base16-vim'
 Plug 'Valloric/YouCompleteMe', {'do': './install.py --tern-completer'}
-Plug 'tpope/vim-obsession'
 call plug#end()
 
 " General Vim Settings
