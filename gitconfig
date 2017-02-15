@@ -15,3 +15,5 @@
 	resolveConflict=false
 [help]
 	autocorrect=5
+[rerere]
+	enabled = true
