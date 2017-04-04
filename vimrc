@@ -8,11 +8,13 @@ call plug#begin()
 Plug 'chriskempson/base16-vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'edkolev/tmuxline.vim'
+Plug 'gurpreetatwal/vim-avro'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
 Plug 'sheerun/vim-polyglot'
 Plug 'sjl/gundo.vim'
 Plug 'tpope/vim-obsession'
+Plug 'tpope/vim-commentary'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'Valloric/YouCompleteMe', {'do': './install.py --tern-completer'}
