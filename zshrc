@@ -23,7 +23,7 @@ function chpwd() {
 }
 
 # Aliases
-alias serve='python -m SimpleHTTPServer'
+alias serve='browser-sync start -s'
 alias gl='git pull --prune'
 alias gpf='git push -f'
 alias gcanrc!='git commit --amend --no-edit && git rebase --continue'
