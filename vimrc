@@ -103,7 +103,7 @@ let g:syntastic_javascript_eslint_args=['--cache']
 let g:ctrlp_show_hidden=1
 let g:ctrlp_clear_cache_on_exit=0
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\.git$\|\.yardoc\|node_modules\|log\|tmp\bower_components$',
+  \ 'dir':  '\.git$\|node_modules\|tmp\|bower_components\|pdfjs',
   \ 'file': '\.so$\|\.swp|\.dat$|\.DS_Store$'
   \ }
 
