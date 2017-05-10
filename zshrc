@@ -36,8 +36,15 @@ export PG_HOST=localhost
 
 eval "$(thefuck --alias ugh)"
 
+# Windows Subsytem for Linux
+if [[ "$(uname -r)" = *"Microsoft" ]]; then
+  export DOCKER_HOST=tcp://:2375
+  if [ "$(umask)" = "000" ]; then
+    umask 022
+  fi
+fi
+
 # Allow for local configuration
 if [ -f $HOME/.zshrc.local ]; then
   source $HOME/.zshrc.local
 fi
-
