@@ -33,6 +33,7 @@ alias gcanfp!='gcanpf!'
 ## Default Variables
 export NODE_ENV=development
 export PG_HOST=localhost
+export SPACESHIP_DOCKER_SHOW=false
 
 eval "$(thefuck --alias ugh)"
 
