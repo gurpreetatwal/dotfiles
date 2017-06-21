@@ -22,6 +22,15 @@ installif() {
   done
 }
 
+# link source ~/.dest
+link() {
+  SOURCE=$1; DEST=$2
+  if [[ ! -h "$DEST" || $(readlink "$DEST") != "$DIR/$SOURCE" ]]; then
+    [[ -e $DEST ]] && mv $DEST "$DEST.bak"
+    ln -s "$DIR/$SOURCE" "$DEST"
+  fi
+}
+
 # Install Programs
 ## apt
 installif zsh silversearcher-ag
@@ -44,12 +53,12 @@ fi
 ## TODO find a better way to do this than an array
 color $green "Linking config files to ~/"
 for file in "${FILES[@]}"; do
-  LINK_NAME="$HOME/.$file"
-  if [[ ! -h "$LINK_NAME" || $(readlink "$LINK_NAME") != "$DIR/$file" ]]; then
-    [[ -e $LINK_NAME ]] && mv $LINK_NAME "$LINK_NAME.bak"
-    ln -s "$DIR/$file" "$LINK_NAME"
-  fi
+  link $file $HOME/.$file
 done
+
+# Neovim
+mkdir -p ~/.config/nvim
+link "vimrc" ~/.config/nvim/init.vim
 
 # install base16-shell
 if [[ ! -e ~/.config/base16-shell ]]; then
