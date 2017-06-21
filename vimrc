@@ -36,7 +36,9 @@ map <space> <leader>
 
 " Mouse
 set mouse=a
-set ttymouse=xterm2               " needed for tmux
+if !has('nvim')
+  set ttymouse=xterm2             " needed for tmux
+endif
 
 " Syntax
 syntax on
