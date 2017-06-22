@@ -32,6 +32,7 @@ alias gpf='git push -f'
 alias gcanrc!='git commit --amend --no-edit && git rebase --continue'
 alias gcanpf!='git commit --amend --no-edit && git push -f'
 alias gcanfp!='gcanpf!'
+alias ag='ag --path-to-ignore ~/.agignore'
 
 ## Default Variables
 export NODE_ENV=development

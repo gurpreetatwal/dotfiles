@@ -3,7 +3,7 @@
 # Script Setup
 ## Global Variables
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-FILES=(gitconfig gitignore.global tern-project tmux.conf vimrc zshrc)
+FILES=(agignore gitconfig gitignore.global tern-project tmux.conf vimrc zshrc)
 TMUX_VERSION=2.3
 
 ## Helper for colored output. Usage: color $red "Error!"
