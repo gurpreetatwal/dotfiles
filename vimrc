@@ -10,7 +10,6 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'gurpreetatwal/vim-avro'
 Plug 'scrooloose/nerdtree'
-Plug 'scrooloose/syntastic'
 Plug 'sheerun/vim-polyglot'
 Plug 'sjl/gundo.vim'
 Plug 'tpope/vim-commentary'
@@ -18,6 +17,7 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'w0rp/ale'
 call plug#end()
 
 " General Vim Settings
@@ -90,16 +90,24 @@ let g:airline_powerline_fonts=1
 " let g:airline_right_alt_sep=''
 let g:airline_section_y=airline#section#create(['%l/%L'])
 let g:airline_section_z=airline#section#create(['%v'])
+let g:airline#extensions#ale#enabled=1
 let g:airline#extensions#default#section_truncate_width={
   \ 'b': 79, 'x': 60, 'y': 45, 'z': 45, 'warning': 80, 'error': 80
   \ }
 
-"" Syntastic Settings
-let g:syntastic_check_on_wq=1
-let g:syntastic_auto_loc_list=2
-let g:syntastic_javascript_checkers=['eslint']
-let g:syntastic_javascript_eslint_exe='eslint_d'
-let g:syntastic_javascript_eslint_args=['--cache']
+"" ALE Settings
+
+""" Lint Settings
+let g:ale_sign_column_always=1
+let g:ale_javascript_eslint_use_global=1
+let g:ale_javascript_eslint_options='--cache'
+let g:ale_javascript_eslint_executable='eslint_d'
+
+""" Fix Settings
+let g:ale_fix_on_save=1
+let g:ale_fixers = {
+\   'javascript': ['eslint', 'remove_trailing_lines'],
+\ }
 
 "" CtrlP Settings
 let g:ctrlp_show_hidden=1
