@@ -18,7 +18,6 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'Valloric/YouCompleteMe', {'do': './install.py --tern-completer'}
 call plug#end()
 
 " General Vim Settings
