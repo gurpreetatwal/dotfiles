@@ -60,6 +60,12 @@ done
 mkdir -p ~/.config/nvim
 link "vimrc" ~/.config/nvim/init.vim
 
+if [[ ! -e ~/.local/share/nvim/site/autoload/plug.vim ]]; then
+  curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+fi
+
+nvim +PlugUpdate +qa
+
 # install base16-shell
 if [[ ! -e ~/.config/base16-shell ]]; then
   git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
