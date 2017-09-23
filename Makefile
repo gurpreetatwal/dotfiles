@@ -18,3 +18,6 @@ npm-install:
 npm-update:
 	sudo npm install --global npm
 	sudo npm update --global $(packages)
+
+jetbrains:
+	./jetbrains.sh
