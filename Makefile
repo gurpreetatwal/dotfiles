@@ -21,3 +21,12 @@ npm-update:
 
 jetbrains:
 	./jetbrains.sh
+
+opt-dir: flags/opt-dir
+flags/opt-dir:
+	sudo groupadd optgroup
+	sudo usermod -aG optgroup gurpreet
+	sudo usermod -aG optgroup root
+	sudo chown -R root:optgroup /opt
+	sudo chmod -R g+rw /opt
+	touch flags/opt-dir
