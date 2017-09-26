@@ -1,6 +1,12 @@
 
 npm-%: packages = bower browser-sync bunyan gulp eslint_d nodemon
 
+.PHONY:
+	install
+	npm
+	npm-install
+	npm-update
+
 install:
 	./install.sh
 
