@@ -12,24 +12,7 @@ color() {
   echo -e "\e[1;$1m$2\e[0m"
 }
 
-# use apt if its available
-which apt > /dev/null && apt=apt || apt=apt-get
-installif() {
-  for pkg in $@; do
-    dpkg -s $pkg | grep -q 'Status: install ok installed' && continue;
-    color $green "Install $pkg"
-    sudo $apt install -q -y $pkg
-  done
-}
-
-# link source ~/.dest
-link() {
-  SOURCE=$1; DEST=$2
-  if [[ ! -h "$DEST" || $(readlink "$DEST") != "$DIR/$SOURCE" ]]; then
-    [[ -e $DEST ]] && mv $DEST "$DEST.bak"
-    ln -s "$DIR/$SOURCE" "$DEST"
-  fi
-}
+source $DIR/install/helpers.sh
 
 # Install Programs
 ## apt
