@@ -3,6 +3,12 @@ set tabstop=2
 set shiftwidth=2
 set expandtab
 
+" Helper function for conditionally loading plugins
+function! Cond(cond, ...)
+  let opts = get(a:000, 0, {})
+  return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
+endfunction
+
 " Plugins
 call plug#begin()
 Plug 'chriskempson/base16-vim'
@@ -17,7 +23,13 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'w0rp/ale'
+
+"" Vim plugins
+" Plug 'example', Cond(!has('nvim'))
+
+"" Neovim plugins
+Plug 'Shougo/deoplete.nvim', Cond(has('nvim'), { 'do': ':UpdateRemotePlugins' })
+Plug 'w0rp/ale', Cond(has('nvim'))
 call plug#end()
 
 " General Vim Settings
@@ -78,6 +90,11 @@ nnoremap <leader>tt :YcmCompleter GetType<CR>
 nnoremap <leader>tr :YcmCompleter GoToReferences<CR>
 nnoremap <leader>tR :YcmCompleter RefactorRename
 nnoremap <leader>tdoc :YcmCompleter GetDoc<CR>
+
+"" Deoplete
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_smart_case = 1
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 
 "" Airline Settings
 set laststatus=2                " show airline even if no split exists
