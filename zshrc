@@ -25,6 +25,13 @@ function chpwd() {
   fi
 }
 
+#  Jumps to temp directory or if given a name, creates that directory and jumps to it
+function temp {
+  whereto="$HOME/temp"
+  if [[ $# == 1 ]]; then mkdir "$whereto"; fi
+  cd "$whereto"
+}
+
 # Aliases
 alias serve='browser-sync start -s'
 alias gl='git pull --prune'
