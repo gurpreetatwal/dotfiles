@@ -95,10 +95,8 @@ if [[ ! -d "$ZSH" ]]; then
   git clone --depth=1 https://github.com/robbyrussell/oh-my-zsh.git $ZSH
 fi
 
-if [[ ! -e ~/.oh-my-zsh/custom/themes/spaceship.zsh-theme ]]; then
-  color $green "Installing ZSH spaceship theme"
-  curl -LSsfo ~/.oh-my-zsh/custom/themes/spaceship.zsh-theme --create-dirs https://raw.githubusercontent.com/denysdovhan/spaceship-zsh-theme/master/spaceship.zsh
-fi
+color $green "Installing ZSH spaceship theme"
+make zsh-theme
 
 if [[ $SHELL != *"zsh"* ]]; then
   zsh
