@@ -1,4 +1,5 @@
 
+tmux: version = 2.6
 npm-%: packages = bower browser-sync bunyan gulp eslint_d nodemon
 
 .PHONY:
@@ -20,6 +21,11 @@ zsh-theme-update: update.flags/spaceship.zsh-theme flags/spaceship.zsh-theme
 
 pgcli: apt.python-pip apt.python-dev apt.libpq-dev apt.libevent-dev
 	sudo pip install --upgrade pgcli
+
+tmux: apt.libevent-dev apt.libncurses-dev
+	curl --location --silent --show-error https://github.com/tmux/tmux/releases/download/$(version)/tmux-$(version).tar.gz | tar -xz -C /tmp
+	cd /tmp/tmux-$(version) && ./configure && make
+	cd /tmp/tmux-$(version) && sudo make install
 
 npm: npm-install npm-update
 

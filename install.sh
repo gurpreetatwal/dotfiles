@@ -63,12 +63,7 @@ fi
 # install latest tmux
 if [[ $(tmux -V) != *"$TMUX_VERSION"* ]]; then
   color $green "Upgrading tmux to $TMUX_VERSION"
-  curl -LSsf https://github.com/tmux/tmux/releases/download/$TMUX_VERSION/tmux-$TMUX_VERSION.tar.gz | tar -xz -C /tmp
-  installif libevent-dev ncurses-dev
-  pushd /tmp/tmux-$TMUX_VERSION
-  ./configure && make > /dev/null
-  sudo make install
-  popd
+  make tmux version=$TMUX_VERSION
 fi
 
 # Install vim plug
