@@ -55,6 +55,11 @@ endif
 if (has("termguicolors"))
  set termguicolors                " enable 24 bit colors
 endif
+if !has('nvim')                   " needed to make 24 bit color work with vim
+  set t_8b=[48;2;%lu;%lu;%lum
+  set t_8f=[38;2;%lu;%lu;%lum
+endif
+
 set hlsearch                      " highlight search matches
 colorscheme one
 set background=dark               " must go after the colorscheme
