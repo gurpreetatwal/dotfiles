@@ -26,6 +26,7 @@ tmux: apt.libevent-dev apt.libncurses-dev
 	curl --location --silent --show-error https://github.com/tmux/tmux/releases/download/$(version)/tmux-$(version).tar.gz | tar -xz -C /tmp
 	cd /tmp/tmux-$(version) && ./configure && make
 	cd /tmp/tmux-$(version) && sudo make install
+	tic -o ~/.terminfo install/tmux-256color.terminfo
 
 npm: npm-install npm-update
 
