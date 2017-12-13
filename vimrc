@@ -11,10 +11,10 @@ endfunction
 
 " Plugins
 call plug#begin()
-Plug 'chriskempson/base16-vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'gurpreetatwal/vim-avro'
+Plug 'rakr/vim-one'
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'sjl/gundo.vim'
@@ -51,17 +51,24 @@ if !has('nvim')
   set ttymouse=xterm2             " needed for tmux
 endif
 
+" Colors
+if (has("termguicolors"))
+ set termguicolors                " enable 24 bit colors
+endif
+set hlsearch                      " highlight search matches
+colorscheme one
+set background=dark               " must go after the colorscheme
+let g:one_allow_italics = 1       " italics
+
+"" Make background transparent
+" highlight Normal ctermbg=NONE guibg=NONE
+" highlight NonText ctermbg=NONE guibg=NONE
+
 " Syntax
 syntax on
 filetype on                       " detect the type of file
 filetype indent on                " Enable filetype-specific indenting
 filetype plugin on                " Enable filetype-specific plugins
-
-" Colors
-set background=dark
-set hlsearch
-let base16colorspace=256
-source ~/.vimrc_background
 
 " Custom keybindings
 "" General
@@ -99,7 +106,7 @@ inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 "" Airline Settings
 set laststatus=2                " show airline even if no split exists
 set showtabline=2               " show tabline even if no tabs open
-let g:airline_theme='lucius'
+let g:airline_theme='one'
 let g:airline_powerline_fonts=1
 " let g:airline_left_sep=''
 " let g:airline_right_sep=''
