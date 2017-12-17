@@ -79,6 +79,7 @@ filetype plugin on                " Enable filetype-specific plugins
 "" General
 nnoremap <C-g> :GundoToggle<CR>
 nnoremap <leader>w :w<CR>
+nnoremap <leader>z :tabnew %<CR>
 
 "" Copy & Paste into sytem buffer
 map <leader>y "+y
