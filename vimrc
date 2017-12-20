@@ -29,6 +29,7 @@ Plug 'vim-airline/vim-airline-themes'
 
 "" Neovim plugins
 Plug 'Shougo/deoplete.nvim', Cond(has('nvim'), { 'do': ':UpdateRemotePlugins' })
+Plug 'carlitux/deoplete-ternjs', Cond(has('nvim'))
 Plug 'w0rp/ale', Cond(has('nvim'))
 call plug#end()
 
@@ -105,8 +106,12 @@ nnoremap <leader>tR :YcmCompleter RefactorRename
 nnoremap <leader>tdoc :YcmCompleter GetDoc<CR>
 
 "" Deoplete
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#enable_smart_case = 1
+let g:deoplete#enable_at_startup=1
+let g:deoplete#enable_smart_case=1
+let g:deoplete#sources#ternjs#types=1
+let g:deoplete#sources#ternjs#docs=1
+let g:deoplete#sources#ternjs#include_keywords=1
+
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 
 "" Airline Settings
