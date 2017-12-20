@@ -200,6 +200,7 @@ let g:airline#extensions#ale#enabled=1
 let g:airline#extensions#default#section_truncate_width={
   \ 'b': 79, 'x': 60, 'y': 45, 'z': 45, 'warning': 80, 'error': 80
   \ }
+let g:airline#extensions#tmuxline#enabled=0
 
 "" Ultisnips Settings
 let g:UltiSnipsExpandTrigger="<tab>"
@@ -302,7 +303,7 @@ let g:javascript_conceal_function="λ"
 let g:vim_svelte_plugin_use_typescript=1
 
 "" Tmuxline settings
-let g:tmuxline_preset='full'
+" let g:tmuxline_preset='full'
 
 
 " Make Shift-K work correctly for nvim  + git (I don't really know how this
