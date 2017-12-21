@@ -16,7 +16,10 @@ PATH=$PATH:~/bin
 #  Jumps to temp directory or if given a name, creates that directory and jumps to it
 function temp {
   whereto="$HOME/temp"
-  if [[ $# == 1 ]]; then mkdir "$whereto"; fi
+  if [[ $# == 1 ]]; then
+    whereto="$whereto/$1"
+    mkdir "$whereto"
+  fi
   cd "$whereto"
 }
 
