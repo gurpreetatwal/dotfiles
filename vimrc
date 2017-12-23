@@ -51,6 +51,12 @@ if !has('nvim')
   set ttymouse=xterm2             " needed for tmux
 endif
 
+" Syntax
+syntax on
+filetype on                       " detect the type of file
+filetype indent on                " Enable filetype-specific indenting
+filetype plugin on                " Enable filetype-specific plugins
+
 " Colors
 if (has("termguicolors"))
  set termguicolors                " enable 24 bit colors
@@ -61,19 +67,13 @@ if !has('nvim')                   " needed to make 24 bit color work with vim
 endif
 
 set hlsearch                      " highlight search matches
+set background=dark               " must go before the colorscheme
 colorscheme one
-set background=dark               " must go after the colorscheme
 let g:one_allow_italics = 1       " italics
 
 "" Make background transparent
 " highlight Normal ctermbg=NONE guibg=NONE
 " highlight NonText ctermbg=NONE guibg=NONE
-
-" Syntax
-syntax on
-filetype on                       " detect the type of file
-filetype indent on                " Enable filetype-specific indenting
-filetype plugin on                " Enable filetype-specific plugins
 
 " Custom keybindings
 "" General
