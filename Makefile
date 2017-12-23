@@ -22,11 +22,12 @@ zsh-theme-update: update.flags/spaceship.zsh-theme flags/spaceship.zsh-theme
 pgcli: apt.python-pip apt.python-dev apt.libpq-dev apt.libevent-dev
 	sudo pip install --upgrade pgcli
 
-tmux: apt.libevent-dev apt.libncurses-dev
+tmux: apt.libevent-dev apt.libncurses-dev apt.xclip
 	curl --location --silent --show-error https://github.com/tmux/tmux/releases/download/$(version)/tmux-$(version).tar.gz | tar -xz -C /tmp
 	cd /tmp/tmux-$(version) && ./configure && make
 	cd /tmp/tmux-$(version) && sudo make install
 	tic -o ~/.terminfo install/tmux-256color.terminfo
+	bash ./install/run-helper link tmux.conf $(HOME)/.tmux.conf
 
 npm: npm-install npm-update
 
