@@ -15,11 +15,14 @@ install:
 zsh:
 	echo "installing zsh"
 
+pip2: flags/pip2
+pip3: flags/pip3
+
 zsh-theme: flags/spaceship.zsh-theme
 
 zsh-theme-update: update.flags/spaceship.zsh-theme flags/spaceship.zsh-theme
 
-pgcli: apt.python-pip apt.python-dev apt.libpq-dev apt.libevent-dev
+pgcli: pip2 apt.libpq-dev apt.libevent-dev
 	sudo pip install --upgrade pgcli
 
 tmux: apt.libevent-dev apt.libncurses-dev apt.xclip
@@ -46,6 +49,18 @@ apt.%:
 
 update.flags/%:
 	@rm flags/$* || true
+
+flags/pip2: apt.python-dev apt.python-pip
+	sudo -H pip2 install --upgrade pip
+	pip2 install --user wheel
+	pip2 install --user setuptools
+	touch flags/pip2
+
+flags/pip3: apt.python3-dev apt.python3-pip
+	sudo -H pip3 install --upgrade pip
+	pip3 install --user wheel
+	pip3 install --user setuptools
+	touch flags/pip3
 
 opt-dir: flags/opt-dir
 flags/opt-dir:
