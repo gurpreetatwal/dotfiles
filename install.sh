@@ -39,14 +39,7 @@ for file in "${FILES[@]}"; do
 done
 
 # Neovim
-mkdir -p ~/.config/nvim
-link "vimrc" ~/.config/nvim/init.vim
-
-if [[ ! -e ~/.local/share/nvim/site/autoload/plug.vim ]]; then
-  curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-fi
-
-nvim +PlugUpdate +qa
+make neovim
 
 # install base16-shell
 if [[ ! -e ~/.config/base16-shell ]]; then

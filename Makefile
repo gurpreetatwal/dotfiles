@@ -18,6 +18,9 @@ zsh:
 pip2: flags/pip2
 pip3: flags/pip3
 
+nvim: flags/neovim
+neovim: flags/neovim
+
 zsh-theme: flags/spaceship.zsh-theme
 
 zsh-theme-update: update.flags/spaceship.zsh-theme flags/spaceship.zsh-theme
@@ -31,6 +34,18 @@ tmux: apt.libevent-dev apt.libncurses-dev apt.xclip
 	cd /tmp/tmux-$(version) && sudo make install
 	tic -o ~/.terminfo install/tmux-256color.terminfo
 	bash ./install/run-helper link tmux.conf $(HOME)/.tmux.conf
+
+flags/neovim: pip2 pip3
+	sudo add-apt-repository ppa:neovim-ppa/stable
+	sudo apt-get update
+	sudo apt-get install neovim
+	pip2 install --user --upgrade neovim
+	pip3 install --user --upgrade neovim
+	mkdir -p ~/.config/nvim
+	bash ./install/run-helper link vimrc $(HOME)/.config/nvim/init.vim
+	curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	nvim +PlugUpdate +qa
+	touch flags/neovim
 
 npm: npm-install npm-update
 
