@@ -1,0 +1,7 @@
+# Sound Lower
+"xdotool key XF86AudioLowerVolume"
+  b:7
+
+# Sound Louder
+"xdotool key XF86AudioRaiseVolume"
+  b:6
