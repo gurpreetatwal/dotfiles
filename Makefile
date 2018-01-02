@@ -18,6 +18,7 @@ install:
 
 zsh: apt.zsh
 	sudo usermod --shell "$$(which zsh)" "$$(whoami)"
+	bash ./install/run-helper link "shell/profile" "$(HOME)/.zprofile"
 
 pip2: flags/pip2
 pip3: flags/pip3
