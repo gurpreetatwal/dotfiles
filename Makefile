@@ -59,12 +59,12 @@ flags/neovim: pip2 pip3
 
 npm: npm-install npm-update
 
-npm-install:
-	sudo npm install --global $(packages)
+npm-install: node
+	npm install --global $(packages)
 
-npm-update:
-	sudo npm install --global npm
-	sudo npm update --global $(packages)
+npm-update: node
+	npm install --global npm
+	npm update --global $(packages)
 
 jetbrains:
 	./jetbrains.sh
