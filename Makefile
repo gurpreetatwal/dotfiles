@@ -1,5 +1,9 @@
 
-tmux: version = 2.6
+# default XDG_DATA_HOME to ~/.local/share if its not set
+# @see https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#basics
+XDG_DATA_HOME ?= $(HOME)/.local/share
+
+tmux: version ?= 2.6
 npm-%: packages = bower browser-sync bunyan gulp eslint_d nodemon
 
 .PHONY:
@@ -20,6 +24,8 @@ pip3: flags/pip3
 
 nvim: flags/neovim
 neovim: flags/neovim
+
+node: flags/node
 
 zsh-theme: flags/spaceship.zsh-theme
 
@@ -80,6 +86,10 @@ flags/pip3: apt.python3-dev apt.python3-pip
 	pip3 install --user wheel
 	pip3 install --user setuptools
 	touch flags/pip3
+
+flags/node:
+	curl --location https://git.io/n-install | N_PREFIX=$(XDG_DATA_HOME)/nodejs bash -s -- -n
+	ln -s $(XDG_DATA_HOME)/nodejs/bin/node flags/node
 
 opt-dir: flags/opt-dir
 flags/opt-dir:
