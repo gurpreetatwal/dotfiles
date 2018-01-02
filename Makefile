@@ -16,6 +16,12 @@ npm-%: packages = bower browser-sync bunyan gulp eslint_d nodemon
 install:
 	./install.sh
 
+basic: apt.tree apt.silversearcher-ag apt.git
+	bash ./install/run-helper link "agignore" "$(HOME)/.agignore"
+	bash ./install/run-helper link "gitconfig" "$(HOME)/.gitconfig"
+	bash ./install/run-helper link "gitignore.global" "$(HOME)/.gitignore.global"
+	bash ./install/run-helper link "shell/profile" "$(HOME)/.bash_profile"
+
 zsh: apt.zsh
 	sudo usermod --shell "$$(which zsh)" "$$(whoami)"
 	bash ./install/run-helper link "shell/profile" "$(HOME)/.zprofile"
