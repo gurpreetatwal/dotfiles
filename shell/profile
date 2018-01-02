@@ -1,0 +1,30 @@
+# vi: ft=sh
+
+# General Environment Setup
+
+# Set XDG_DATA_HOME to the default value
+# https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#basics
+export XDG_DATA_HOME="$HOME/.local/share"
+
+## Path
+PATH="$HOME/.local/bin:$PATH"         # used by pip
+PATH="$HOME/bin:$PATH"                # general programs
+
+# Application Environment Variables
+
+## psql
+export PGHOST="localhost"
+
+## NodeJS
+if [[ -d "$XDG_DATA_HOME/nodejs" ]]; then
+  export NODE_ENV="development"
+  export N_PREFIX="$XDG_DATA_HOME/nodejs"
+  PATH+=":$N_PREFIX/bin"
+fi
+
+# Source the correct RC file
+if [[ -n "$ZSH_VERSION" && -f "$HOME/.zshrc" ]]; then
+  source "$HOME/.zshrc"
+elif [[ -n "$BASH_VERSION" && -f "$HOME/.bashrc" ]]; then
+  source "$HOME/.bashrc"
+fi
