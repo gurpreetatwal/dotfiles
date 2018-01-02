@@ -16,8 +16,8 @@ npm-%: packages = bower browser-sync bunyan gulp eslint_d nodemon
 install:
 	./install.sh
 
-zsh:
-	echo "installing zsh"
+zsh: apt.zsh
+	sudo usermod --shell "$$(which zsh)" "$$(whoami)"
 
 pip2: flags/pip2
 pip3: flags/pip3
