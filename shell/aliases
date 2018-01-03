@@ -15,5 +15,8 @@ alias serve="browser-sync start -s"
 alias venv="python3 -m venv"
 
 # Git
+alias gst="git status"
+alias gd="git diff"
+alias gc="git commit -v"
 alias gl='git pull --prune'
 alias gpf='git push -f'
