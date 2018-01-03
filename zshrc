@@ -10,24 +10,10 @@ source $ZSH/oh-my-zsh.sh
 BASE16_SHELL=$HOME/.config/base16-shell/
 [ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
 
-#  Jumps to temp directory or if given a name, creates that directory and jumps to it
-function temp {
-  whereto="$HOME/temp"
-  if [[ $# == 1 ]]; then
-    whereto="$whereto/$1"
-    mkdir "$whereto"
-  fi
-  cd "$whereto"
-}
-
 # Aliases
-alias serve='browser-sync start -s'
-alias gl='git pull --prune'
-alias gpf='git push -f'
 alias gcanrc!='git commit --amend --no-edit && git rebase --continue'
 alias gcanpf!='git commit --amend --no-edit && git push -f'
 alias gcanfp!='gcanpf!'
-alias ag='ag --path-to-agignore ~/.agignore'
 
 ## Default Variables
 export SPACESHIP_DOCKER_SHOW=false

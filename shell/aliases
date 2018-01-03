@@ -1,0 +1,12 @@
+# vi: ft=sh
+
+# General
+alias ag="ag --path-to-agignore $HOME/.agignore"
+alias serve="browser-sync start -s"
+
+# Python
+alias venv="python3 -m venv"
+
+# Git
+alias gl='git pull --prune'
+alias gpf='git push -f'
