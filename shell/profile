@@ -8,6 +8,7 @@ export XDG_DATA_HOME="$HOME/.local/share"
 
 ## Path
 PATH="$HOME/.local/bin:$PATH"         # used by pip
+PATH="$HOME/scripts:$PATH"            # my personal scripts
 PATH="$HOME/bin:$PATH"                # general programs
 
 # Application Environment Variables
