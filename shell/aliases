@@ -15,8 +15,38 @@ alias serve="browser-sync start -s"
 alias venv="python3 -m venv"
 
 # Git
-alias gst="git status"
 alias gd="git diff"
-alias gc="git commit -v"
 alias gl="git pull --prune"
+alias gp="git push"
 alias gpf="git push -f"
+
+### Staging
+alias gst="git status"
+alias ga="git add -p"
+
+### Committing
+alias gc="git commit -v"
+alias gca="git commit -v --all"
+alias gca!="git commit -v --all --amend"
+alias gcp="git commit -v --patch"
+alias gcp!="git commit -v --patch --amend"
+
+### Branching
+alias gb="git branch"
+alias gba="git branch -a"
+alias gco="git checkout"
+alias gcm="git checkout master"
+
+### Rebasing
+alias grb="git rebase"
+alias grbm="git rebase master"
+alias grbom="git rebase origin/master"
+alias grbi="git rebase --interactive"
+alias grbim="git rebase --interactive master"
+alias grbc="git rebase --continue"
+alias grba="git rebase --abort"
+
+### Cherry Picking
+alias gcp="git cherry-pick"
+alias gcpc="git cherry-pick --continue"
+alias gcpa="git cherry-pick --abort"
