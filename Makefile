@@ -27,6 +27,7 @@ basic: apt.tree apt.silversearcher-ag apt.git
 
 zsh: apt.zsh
 	sudo usermod --shell "$$(which zsh)" "$$(whoami)"
+	bash ./install/run-helper link "shell/zshrc" "$(HOME)/.zshrc"
 	bash ./install/run-helper link "shell/profile" "$(HOME)/.zprofile"
 
 pip2: flags/pip2
