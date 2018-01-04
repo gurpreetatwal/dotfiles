@@ -23,10 +23,6 @@ if [[ -d "$XDG_DATA_HOME/nodejs" ]]; then
   PATH+=":$N_PREFIX/bin"
 fi
 
-# Source the other sections of profile
-source dotfiles/shell/functions
-source dotfiles/shell/aliases
-
 # Source the correct RC file
 if [[ -n "$ZSH_VERSION" && -f "$HOME/.zshrc" ]]; then
   source "$HOME/.zshrc"
