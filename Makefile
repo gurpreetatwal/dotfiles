@@ -42,6 +42,11 @@ zsh-theme: flags/spaceship.zsh-theme
 
 zsh-theme-update: update.flags/spaceship.zsh-theme flags/spaceship.zsh-theme
 
+# Fix for firefox when using dark themes
+# Adapted from https://wiki.archlinux.org/index.php/Firefox#Unreadable_input_fields_with_dark_GTK.2B_themes
+firefox-fix:
+	sudo sed -i 's/Exec=firefox/Exec=env GTK_THEME=Adwaita:light firefox/' /usr/share/applications/firefox.desktop
+
 pgcli: pip2 apt.libpq-dev apt.libevent-dev
 	sudo pip install --upgrade pgcli
 
