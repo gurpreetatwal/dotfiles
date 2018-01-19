@@ -48,7 +48,8 @@ firefox-fix:
 	sudo sed -i 's/Exec=firefox/Exec=env GTK_THEME=Adwaita:light firefox/' /usr/share/applications/firefox.desktop
 
 pgcli: pip2 apt.libpq-dev apt.libevent-dev
-	sudo pip install --upgrade pgcli
+	pip install --user --upgrade pgcli
+	bash ./install/run-helper link pgcli $(HOME)/.config/pgcli/config
 
 bindkeys: apt.xbindkeys apt.xdotool
 	bash ./install/run-helper link xbindkeysrc $(HOME)/.xbindkeysrc
