@@ -4,7 +4,7 @@
 XDG_DATA_HOME ?= $(HOME)/.local/share
 
 tmux: version ?= 2.6
-npm-%: packages = bower browser-sync bunyan gulp eslint_d nodemon
+npm-%: packages = bower browser-sync bunyan gulp-cli eslint_d nodemon
 
 .PHONY:
 	install
