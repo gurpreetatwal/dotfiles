@@ -19,7 +19,7 @@ install:
 basic: apt.tree apt.silversearcher-ag apt.git
 	mkdir -p $(HOME)/bin
 	mkdir -p $(HOME)/temp
-	git clone https://github.com/gurpreetatwal/scripts.git  $(HOME)/scripts
+	test -d $(HOME)/scripts/.git || git clone https://github.com/gurpreetatwal/scripts.git  $(HOME)/scripts
 	bash ./install/run-helper link "agignore" "$(HOME)/.agignore"
 	bash ./install/run-helper link "gitconfig" "$(HOME)/.gitconfig"
 	bash ./install/run-helper link "gitignore.global" "$(HOME)/.gitignore.global"
