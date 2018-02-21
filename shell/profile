@@ -13,6 +13,9 @@ PATH="$HOME/bin:$PATH"                # general programs
 
 # Application Environment Variables
 
+## java
+export JAVA_HOME="$(update-alternatives --list java | sed 's_/bin/java__')"
+
 ## psql
 export PGHOST="localhost"
 

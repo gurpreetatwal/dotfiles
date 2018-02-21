@@ -36,7 +36,9 @@ pip3: flags/pip3
 nvim: flags/neovim
 neovim: flags/neovim
 
+# Programming Languages
 node: flags/node
+java: flags/java
 
 zsh-theme: flags/spaceship.zsh-theme
 
@@ -108,6 +110,13 @@ flags/node:
 	curl --location https://git.io/n-install | N_PREFIX=$(XDG_DATA_HOME)/nodejs bash -s -- -n
 	ln -s $(XDG_DATA_HOME)/nodejs/bin/node flags/node
 
+flags/java:
+	sudo apt-get remove --purge 'openjdk8*'
+	sudo add-apt-repository --yes ppa:webupd8team/java
+	sudo apt-get update
+	echo "oracle-java9-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections
+	sudo apt-get install oracle-java9-installer oracle-java9-set-default
+	ln -s "$$(update-alternatives --list java)" flags/java
 opt-dir: flags/opt-dir
 flags/opt-dir:
 	sudo groupadd optgroup
