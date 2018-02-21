@@ -123,12 +123,12 @@ flags/java:
 	sudo apt-get install oracle-java9-installer oracle-java9-set-default
 	ln -s "$$(update-alternatives --list java)" flags/java
 
-flags/maven: java opt-dir
+flags/maven: flags/java flags/opt-dir
 	# TODO verify signature of download
 	wget -O /tmp/maven.tar.gz http://www-us.apache.org/dist/maven/maven-3/$(version)/binaries/apache-maven-$(version)-bin.tar.gz
 	tar -xzf /tmp/maven.tar.gz --directory /opt
 	mv /opt/apache-maven-$(version) /opt/maven
-	ln -s /opt/maven flags/maven
+	ln -s /opt/maven flags
 
 flags/alacritty: rust apt.cmake apt.libfreetype6-dev apt.libfontconfig1-dev apt.xclip
 	git clone https://github.com/jwilm/alacritty /tmp/alacritty
@@ -148,7 +148,7 @@ flags/opt-dir:
 	sudo usermod -aG optgroup root
 	sudo chown -R root:optgroup /opt
 	sudo chmod -R g+rw /opt
-	touch flags/opt-dir
+	ln -s /opt flags/opt-dir
 
 flags/spaceship.zsh-theme:
 	curl -LSsfo ~/.oh-my-zsh/custom/themes/spaceship.zsh-theme --create-dirs https://raw.githubusercontent.com/denysdovhan/spaceship-zsh-theme/master/spaceship.zsh
