@@ -4,6 +4,7 @@
 XDG_DATA_HOME ?= $(HOME)/.local/share
 
 tmux: version ?= 2.6
+maven: version ?= 3.5.2
 npm-%: packages = bower browser-sync bunyan gulp-cli eslint_d nodemon
 
 .PHONY:
@@ -39,6 +40,7 @@ neovim: flags/neovim
 # Programming Languages
 node: flags/node
 java: flags/java
+maven: flags/maven
 
 zsh-theme: flags/spaceship.zsh-theme
 
@@ -117,6 +119,14 @@ flags/java:
 	echo "oracle-java9-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections
 	sudo apt-get install oracle-java9-installer oracle-java9-set-default
 	ln -s "$$(update-alternatives --list java)" flags/java
+
+flags/maven: java opt-dir
+	# TODO verify signature of download
+	wget -O /tmp/maven.tar.gz http://www-us.apache.org/dist/maven/maven-3/$(version)/binaries/apache-maven-$(version)-bin.tar.gz
+	tar -xzf /tmp/maven.tar.gz --directory /opt
+	mv /opt/apache-maven-$(version) /opt/maven
+	ln -s /opt/maven flags/maven
+
 opt-dir: flags/opt-dir
 flags/opt-dir:
 	sudo groupadd optgroup
