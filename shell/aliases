@@ -19,12 +19,22 @@ alias egrep="egrep --color=auto"
 alias venv="python3 -m venv"
 
 # Git
+alias g="git"
 alias gd="git diff"
+
+#### Fetch/Pull/Push
 alias gl="git pull --prune"
+alias gf="git fetch"
 alias gp="git push"
 alias gpt="git push --tags"
 alias gpf="git push --force"
 alias gptf="git push --tags --force"
+
+### Remote
+alias gr="git remote"
+alias grv="git remote --verbose"
+alias grrm="git remote remove"
+alias grmv="git remote rename"
 
 ### Log
 alias glg="git log --stat --graph"
@@ -37,7 +47,13 @@ alias gbl="git blame"
 
 ### Staging
 alias gs="git status"
-alias ga="git add -p"
+alias ga="git add"
+alias gap="git add --patch"
+alias gaa="git add --all"
+
+#### Reseting
+alias gre="git reset"
+alias greh="git reset HEAD"
 
 ### Stash
 alias gst="git stash"
@@ -66,6 +82,9 @@ alias gco="git checkout"
 alias gcob="git checkout -b"
 alias gcop="git checkout -p"
 alias gcom="git checkout master"
+
+### Merge
+alias gm="git merge"
 
 ### Rebasing
 alias grb="git rebase"
