@@ -67,6 +67,8 @@ tmux: apt.libevent-dev apt.libncurses-dev apt.xclip
 	tic -o ~/.terminfo install/tmux-256color.terminfo
 	bash ./install/run-helper link tmux.conf $(HOME)/.tmux.conf
 
+alacritty: flags/alacritty
+
 flags/neovim: pip2 pip3
 	sudo add-apt-repository ppa:neovim-ppa/stable
 	sudo apt-get update
@@ -127,6 +129,17 @@ flags/maven: java opt-dir
 	tar -xzf /tmp/maven.tar.gz --directory /opt
 	mv /opt/apache-maven-$(version) /opt/maven
 	ln -s /opt/maven flags/maven
+
+flags/alacritty: rust apt.cmake apt.libfreetype6-dev apt.libfontconfig1-dev apt.xclip
+	git clone https://github.com/jwilm/alacritty /tmp/alacritty
+	rustup override set stable
+	rustup update stable
+	cd /tmp/alacritty && cargo build --release
+	sudo mv /tmp/alacritty/target/release /usr/local/bin
+	sudo mv /tmp/alacritty/Alacritty.desktop /usr/share/applications
+	mkdir -p $(XDG_CONFIG_HOME)/alacritty
+	bash ./install/run-helper link alacritty.yml $(XDG_CONFIG_HOME)/alacritty
+	ln -s /usr/local/bin/alacritty flags/alacritty
 
 opt-dir: flags/opt-dir
 flags/opt-dir:
