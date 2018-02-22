@@ -1,7 +1,8 @@
 
-# default XDG_DATA_HOME to ~/.local/share if its not set
+# default XDG_DATA_HOME to ~/.local/share and XDG_CONFIG_HOME to ~/.config if not set
 # @see https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#basics
 XDG_DATA_HOME ?= $(HOME)/.local/share
+XDG_CONFIG_HOME ?= $(HOME)/.config
 
 tmux: version ?= 2.6
 maven: version ?= 3.5.2
@@ -53,7 +54,7 @@ firefox-fix:
 
 pgcli: pip2 apt.libpq-dev apt.libevent-dev
 	pip install --user --upgrade pgcli
-	bash ./install/run-helper link pgcli $(HOME)/.config/pgcli/config
+	bash ./install/run-helper link pgcli $(XDG_CONFIG_HOME)/pgcli/config
 
 bindkeys: apt.xbindkeys apt.xdotool
 	bash ./install/run-helper link xbindkeysrc $(HOME)/.xbindkeysrc
