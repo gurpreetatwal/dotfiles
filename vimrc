@@ -23,6 +23,7 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'lepture/vim-jinja'
 
 "" Vim plugins
 " Plug 'example', Cond(!has('nvim'))
