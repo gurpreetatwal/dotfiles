@@ -58,6 +58,8 @@ alias greh="git reset HEAD"
 ### Stash
 alias gst="git stash"
 alias gstp="git stash pop"
+alias gsts="git stash show"
+alias gstl="git stash list"
 
 ### Committing
 alias gc="git commit -v"
@@ -74,13 +76,14 @@ alias gtl="git tag -l"
 
 ### Branching
 alias gb="git branch"
-alias gba="git branch -a"
-alias gbd="git branch -d"
+alias gba="git branch --all"
+alias gbd="git branch --delete"
+alias gbD="git branch --delete --force"
 
 ### Checkout
 alias gco="git checkout"
 alias gcob="git checkout -b"
-alias gcop="git checkout -p"
+alias gcop="git checkout --patch"
 alias gcom="git checkout master"
 
 ### Merge
