@@ -135,10 +135,10 @@ flags/alacritty: rust apt.cmake apt.libfreetype6-dev apt.libfontconfig1-dev apt.
 	rustup override set stable
 	rustup update stable
 	cd /tmp/alacritty && cargo build --release
-	sudo mv /tmp/alacritty/target/release /usr/local/bin
+	sudo mv /tmp/alacritty/target/release/alacritty /usr/local/bin
 	sudo mv /tmp/alacritty/Alacritty.desktop /usr/share/applications
 	mkdir -p $(XDG_CONFIG_HOME)/alacritty
-	bash ./install/run-helper link alacritty.yml $(XDG_CONFIG_HOME)/alacritty
+	bash ./install/run-helper link alacritty.yml $(XDG_CONFIG_HOME)/alacritty/alacritty.yml
 	ln -s /usr/local/bin/alacritty flags/alacritty
 
 opt-dir: flags/opt-dir
