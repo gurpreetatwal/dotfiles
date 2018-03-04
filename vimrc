@@ -40,6 +40,7 @@ set encoding=utf-8
 set number                        " line numbers
 set incsearch                     " highlight search matches as you type
 set wildmenu                      " show autocomplete menu for vim commands
+set wildignore=*.o,*.obj,*.so
 set backspace=indent,eol,start    " backspace works as intended
 set autoread                      " reload files if changed by other program
 set cursorline                    " show horizontal cursor line
@@ -91,6 +92,9 @@ map <leader>p "+p
 map <leader>P "+P
 
 " Plugin Settings
+"" NerdTree
+let g:NERDTreeRespectWildIgnore=1   " respect wildignore option
+
 "" gundo
 let g:gundo_width=30
 let g:gundo_preview_height=20
@@ -149,7 +153,7 @@ let g:ale_fixers = {
 "" CtrlP Settings
 let g:ctrlp_show_hidden=1
 let g:ctrlp_clear_cache_on_exit=0
-let g:ctrlp_custom_ignore = {
+let g:ctrlp_custom_ignore={
   \ 'dir':  '\.git$\|node_modules\|tmp\|bower_components\|pdfjs\|out$',
   \ 'file': '\.so$\|\.swp|\.dat$|\.DS_Store$'
   \ }
