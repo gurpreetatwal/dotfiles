@@ -2,7 +2,7 @@
 
 # General Environment Setup
 
-# Set XDG vars to the default values
+## Set XDG vars to the default values
 # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#basics
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -12,6 +12,9 @@ PATH="$HOME/.local/bin:$PATH"         # used by pip
 PATH="$HOME/scripts:$PATH"            # my personal scripts
 PATH="$HOME/bin:$PATH"                # general programs
 test -d /opt/maven && PATH="/opt/maven/bin:$PATH"
+
+## Editor
+[ "$(command -v nvim)" ] && export EDITOR="nvim" || export EDITOR="vim"
 
 # Application Environment Variables
 

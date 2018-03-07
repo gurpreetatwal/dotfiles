@@ -15,7 +15,7 @@ if [ "$(command -v fzf)" -a  "$(command -v fasd)" ]; then
   v() {
     [ $# -gt 0 ] && fasd -f -e ${EDITOR} "$*" && return
     local file
-    file="$(fasd -Rfl "$1" | fzf -0 --no-sort --multi)" && nvim "${file}" || return 1
+    file="$(fasd -Rfl "$1" | fzf -0 --no-sort --multi)" && ${EDITOR} "${file}" || return 1
   }
 
 fi
