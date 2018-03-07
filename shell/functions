@@ -1,10 +1,19 @@
 # vi: ft=zsh
 
+# fasd
+if [ "$(command -v fasd)" ]; then
+  # taken from: https://github.com/clvv/fasd/blob/master/fasd#L89
+  fasd_cd() {
+    local _fasd_ret="$(fasd -e 'printf %s' "$@")"
+    [ -z "$_fasd_ret" ] && return
+    [ -d "$_fasd_ret" ] && cd "$_fasd_ret" || printf %s\n "$_fasd_ret"
+  }
+fi
+
 # fasd + fzf = <3
 if [ "$(command -v fzf)" -a  "$(command -v fasd)" ]; then
 
   # fasd & fzf change directory - jump using `fasd` if given argument, filter output of `fasd` using `fzf` else
-  unalias z
   z() {
     [ $# -gt 0 ] && fasd_cd -d "$*" && return
     local dir

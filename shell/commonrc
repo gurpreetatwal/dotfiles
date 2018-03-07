@@ -7,9 +7,8 @@ if [ $(command -v fasd) ]; then
 
   # Update cache if needed
   if [ "$(command -v fasd)" -nt "$fasd_cache" -o ! -s "$fasd_cache" ]; then
-    fasd --init auto >| "$fasd_cache"
+    fasd --init zsh-hook zsh-ccomp zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install >| "$fasd_cache"
   fi
-
   source "$fasd_cache"
   unset fasd_cache
 
