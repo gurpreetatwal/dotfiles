@@ -1,5 +1,8 @@
 # vi: ft=sh
 
+# fzf
+[ -f $HOME/.fzf.zsh ] && source ~/.fzf.zsh
+
 # fasd
 if [ $(command -v fasd) ]; then
 
