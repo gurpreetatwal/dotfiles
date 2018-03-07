@@ -32,6 +32,8 @@ zsh: apt.zsh
 	bash ./install/run-helper link "shell/zshrc" "$(HOME)/.zshrc"
 	bash ./install/run-helper link "shell/profile" "$(HOME)/.zprofile"
 
+fasd: flags/fasd
+
 pip2: flags/pip2
 pip3: flags/pip3
 
@@ -98,6 +100,12 @@ apt.%:
 
 update.flags/%:
 	@rm flags/$* || true
+
+flags/fasd:
+	$(eval tmp = $(shell mktemp --dry-run))
+	git clone https://github.com/clvv/fasd $(tmp)
+	cd $(tmp) && sudo make install
+	ln -s /usr/local/bin/fasd flags
 
 flags/pip2: apt.python-dev apt.python-pip
 	sudo -H pip2 install --upgrade pip
