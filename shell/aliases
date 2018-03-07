@@ -15,6 +15,12 @@ alias grep="grep --color=auto"
 alias fgrep="fgrep --color=auto"
 alias egrep="egrep --color=auto"
 
+# Progams
+
+## fasd
+alias v='fasd -f -t -e nvim'   # complete files, run nvim
+alias o='fasd -a -e xdg-open'  # complete anything, run xdg-open
+
 # Python
 alias venv="python3 -m venv"
 

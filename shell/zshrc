@@ -4,7 +4,7 @@ source ~/dotfiles/shell/commonrc
 export ZSH=$HOME/.oh-my-zsh
 
 ZSH_THEME="spaceship"
-plugins=(docker git npm vi-mode z)
+plugins=(docker git npm vi-mode)
 
 source $ZSH/oh-my-zsh.sh
 
