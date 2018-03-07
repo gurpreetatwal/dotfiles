@@ -6,6 +6,7 @@ alias ag="ag --path-to-agignore $HOME/.agignore"
 alias serve="browser-sync start -s"
 alias ll="ls -l"
 alias la="ls -al"
+alias cl="fc -e -| xclip -i -sel clip"  # copies output of last command
 
 ## Colors
 alias ls="ls --color=auto"
