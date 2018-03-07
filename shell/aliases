@@ -23,7 +23,10 @@ alias egrep="egrep --color=auto"
 #
 
 ## fasd
-alias v='fasd -f -t -e nvim'   # complete files, run nvim
+# use functions in shells/functions if fzf is also installed
+if [ ! "$(command -v fzf)" ]; then
+  alias v='fasd -f -t -e nvim'   # complete files, run nvim
+fi;
 alias o='fasd -a -e xdg-open'  # complete anything, run xdg-open
 
 ## Python
