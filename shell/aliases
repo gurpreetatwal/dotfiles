@@ -1,6 +1,8 @@
 # vi: ft=sh
 
+#
 # General
+#
 
 alias ag="ag --path-to-agignore $HOME/.agignore"
 alias serve="browser-sync start -s"
@@ -16,20 +18,24 @@ alias grep="grep --color=auto"
 alias fgrep="fgrep --color=auto"
 alias egrep="egrep --color=auto"
 
+#
 # Progams
+#
 
 ## fasd
 alias v='fasd -f -t -e nvim'   # complete files, run nvim
 alias o='fasd -a -e xdg-open'  # complete anything, run xdg-open
 
-# Python
+## Python
 alias venv="python3 -m venv"
 
-# Git
+##
+## Git
+##
 alias g="git"
 alias gd="git diff"
 
-#### Fetch/Pull/Push
+### Fetch/Pull/Push
 alias gl="git pull --prune"
 alias gf="git fetch"
 alias gp="git push"
