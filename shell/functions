@@ -1,5 +1,9 @@
 # vi: ft=zsh
 
+view() {
+  pygmentize -f 16m -O style=paraiso-dark $1
+}
+
 # fasd
 if [ "$(command -v fasd)" ]; then
   # taken from: https://github.com/clvv/fasd/blob/master/fasd#L89
