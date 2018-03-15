@@ -1,5 +1,10 @@
 # vi: ft=sh
 
+# Use global aliases if possible
+alias_g() {
+  alias -g "$@" || alias "$@"
+}
+
 #
 # General
 #
@@ -11,12 +16,12 @@ alias la="ls -al"
 alias cl="fc -e -| xclip -i -sel clip"  # copies output of last command
 
 ## Colors
-alias ls="ls --color=auto"
-alias dir="dir --color=auto"
-alias vdir="vdir --color=auto"
-alias grep="grep --color=auto"
-alias fgrep="fgrep --color=auto"
-alias egrep="egrep --color=auto"
+alias_g ls="ls --color=auto"
+alias_g dir="dir --color=auto"
+alias_g vdir="vdir --color=auto"
+alias_g grep="grep --color=auto"
+alias_g fgrep="fgrep --color=auto"
+alias_g egrep="egrep --color=auto"
 
 #
 # Progams
