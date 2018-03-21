@@ -87,7 +87,7 @@ alias greh="git reset HEAD"
 ### Stash
 alias gst="git stash"
 alias gstp="git stash pop"
-alias gsts="git stash show"
+alias gsts="git stash show --patch"
 alias gstl="git stash list"
 
 ### Committing
@@ -117,15 +117,19 @@ alias gcom="git checkout master"
 
 ### Merge
 alias gm="git merge"
+alias gma="git merge --abort"
 
 ### Rebasing
 alias grb="git rebase"
+alias grbi="git rebase --interactive"
+alias grba="git rebase --abort"
+alias grbs="git rebase --skip"
+alias grbc="git rebase --continue"
+alias grbe="git rebase --edit-todo"
 alias grbm="git rebase master"
 alias grbom="git rebase origin/master"
-alias grbi="git rebase --interactive"
 alias grbim="git rebase --interactive master"
-alias grbc="git rebase --continue"
-alias grba="git rebase --abort"
+alias grbiom="git rebase --interactive origin/master"
 
 ### Cherry Picking
 alias gcp="git cherry-pick"
