@@ -95,6 +95,7 @@ map <leader>P "+P
 
 " Plugin Settings
 "" NerdTree
+let g:NERDTreeNatualSort=1          " sort 1, 2, 10, 20, 100 vs 1, 10, 100, 2, 20
 let g:NERDTreeRespectWildIgnore=1   " respect wildignore option
 
 "" gundo
