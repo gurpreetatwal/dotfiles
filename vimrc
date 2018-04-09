@@ -94,6 +94,9 @@ map <leader>p "+p
 map <leader>P "+P
 
 " Plugin Settings
+"" Commentary
+autocmd FileType cpp setlocal commentstring=//%s
+
 "" NerdTree
 let g:NERDTreeNatualSort=1          " sort 1, 2, 10, 20, 100 vs 1, 10, 100, 2, 20
 let g:NERDTreeRespectWildIgnore=1   " respect wildignore option
