@@ -51,6 +51,18 @@ alias venv="python3 -m venv"
 alias g="git"
 alias gd="git diff"
 
+### Cloning
+alias gcl="git clone"
+gclgh() {
+  git clone git@github.com:$1
+}
+gcls() {
+  git clone git@github.com:smartcar/$1
+}
+gclgurp() {
+  git clone git@github.com:gurpreetatwal/$1
+}
+
 ### Fetch/Pull/Push
 alias gl="git pull --prune"
 alias gf="git fetch"
@@ -89,6 +101,7 @@ alias gst="git stash"
 alias gstp="git stash pop"
 alias gsts="git stash show --patch"
 alias gstl="git stash list"
+alias gstd="git stash drop"
 
 ### Committing
 alias gc="git commit -v"
