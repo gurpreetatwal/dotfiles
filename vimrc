@@ -15,19 +15,19 @@ Plug 'airblade/vim-gitgutter'         " add support for viewing and editing git 
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'gurpreetatwal/vim-avro'
+Plug 'lepture/vim-jinja'              " syntax for jinja/nunjucks (*.njk) files
 Plug 'othree/eregex.vim'
 Plug 'rakr/vim-one'
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'sjl/gundo.vim'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-unimpaired'            " key binds for common commands like :bnext, :lnext, etc.
 Plug 'tpope/vim-obsession'
-Plug 'tpope/vim-surround'              " add/remove/change surrounding things like: quotes, html tags, brackets, etc
 Plug 'tpope/vim-repeat'                " map '.' so that it can repeat command meant for plugins like surround
+Plug 'tpope/vim-surround'              " add/remove/change surrounding things like: quotes, html tags, brackets, etc
+Plug 'tpope/vim-unimpaired'            " key binds for common commands like :bnext, :lnext, etc.
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'lepture/vim-jinja'
 
 "" Vim plugins
 " Plug 'example', Cond(!has('nvim'))
