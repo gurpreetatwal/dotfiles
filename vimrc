@@ -11,6 +11,7 @@ endfunction
 
 " Plugins
 call plug#begin()
+Plug 'airblade/vim-gitgutter'         " add support for viewing and editing git hunks
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'gurpreetatwal/vim-avro'
