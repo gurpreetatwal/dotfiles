@@ -42,6 +42,7 @@ neovim: flags/neovim
 
 # Programming Languages
 node: flags/node
+rust: flags/rust
 java: flags/java
 maven: flags/maven
 
@@ -122,6 +123,14 @@ flags/pip3: apt.python3-dev apt.python3-pip
 flags/node:
 	curl --location https://git.io/n-install | N_PREFIX=$(XDG_DATA_HOME)/nodejs bash -s -- -n
 	ln -s $(XDG_DATA_HOME)/nodejs/bin/node flags/node
+
+flags/rust:
+	$(eval tmp = $(shell mktemp --dry-run --tmpdir="/tmp" rustup-init-XXX))
+	wget -O $(tmp) https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init
+	chmod a+x $(tmp)
+	exec $(tmp) --verbose --no-modify-path -y
+	-rm $(tmp)
+	-ln -s $(HOME)/.cargo/bin/rustc flags/rust
 
 flags/java:
 	sudo apt-get remove --purge 'openjdk8*'
