@@ -6,6 +6,7 @@ XDG_CONFIG_HOME ?= $(HOME)/.config
 
 tmux: version ?= 2.6
 maven: version ?= 3.5.2
+stterm: version ?= 0.8.1
 npm-%: packages = bower browser-sync bunyan gulp-cli eslint_d nodemon
 
 .PHONY:
@@ -71,6 +72,7 @@ tmux: apt.libevent-dev apt.libncurses-dev apt.xclip
 	bash ./install/run-helper link tmux.conf $(HOME)/.tmux.conf
 
 alacritty: flags/alacritty
+stterm: flags/stterm
 
 flags/neovim: pip2 pip3
 	sudo add-apt-repository ppa:neovim-ppa/stable
@@ -157,6 +159,17 @@ flags/alacritty: rust apt.cmake apt.libfreetype6-dev apt.libfontconfig1-dev apt.
 	mkdir -p $(XDG_CONFIG_HOME)/alacritty
 	bash ./install/run-helper link alacritty.yml $(XDG_CONFIG_HOME)/alacritty/alacritty.yml
 	ln -s /usr/local/bin/alacritty flags/alacritty
+
+flags/stterm: apt.libx11-dev apt.libxft-dev
+	wget --directory-prefix="/tmp" --timestamping https://dl.suckless.org/st/st-$(version).tar.gz
+	wget --directory-prefix="/tmp" --timestamping https://dl.suckless.org/st/sha256sums.txt
+	cd /tmp && sha256sum --ignore-missing --check sha256sums.txt
+	tar -xzf /tmp/st-$(version).tar.gz -C /tmp
+	-rm /tmp/st-$(version).tar.gz
+	-rm /tmp/sha256sums.txt
+	sudo make -C /tmp/st-$(version) clean install
+	-rm -rf /tmp/st-$(version)
+	-ln -s /usr/local/bin/st flags/stterm
 
 opt-dir: flags/opt-dir
 flags/opt-dir:
