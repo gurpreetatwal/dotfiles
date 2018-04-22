@@ -67,15 +67,18 @@ gclgurp() {
 alias gl="git pull --prune"
 alias gf="git fetch"
 alias gp="git push"
-alias gpt="git push --tags"
 alias gpf="git push --force"
+alias gpd="git push --delete"
+alias gpt="git push --tags"
 alias gptf="git push --tags --force"
 
 ### Remote
 alias gr="git remote"
 alias grv="git remote --verbose"
+alias gra="git remote add"
 alias grrm="git remote remove"
 alias grmv="git remote rename"
+alias grsu="git remote set-url"
 
 ### Log
 alias glg="git log --stat --graph"
@@ -121,6 +124,7 @@ alias gb="git branch"
 alias gba="git branch --all"
 alias gbd="git branch --delete"
 alias gbD="git branch --delete --force"
+alias gbm="git branch --move"
 
 ### Checkout
 alias gco="git checkout"
