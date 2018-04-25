@@ -15,6 +15,8 @@ Plug 'airblade/vim-gitgutter'         " add support for viewing and editing git 
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'gurpreetatwal/vim-avro'
+Plug 'junegunn/goyo.vim'              " creates padding around the window for focused writing
+Plug 'junegunn/limelight.vim'         " highlights the current paragraph and dims all others
 Plug 'lepture/vim-jinja'              " syntax for jinja/nunjucks (*.njk) files
 Plug 'othree/eregex.vim'
 Plug 'rakr/vim-one'
@@ -85,6 +87,7 @@ let g:one_allow_italics = 1       " italics
 " Custom keybindings
 "" General
 nnoremap <C-g> :GundoToggle<CR>
+noremap <A-z> :Goyo<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>z :tabnew %<CR>
 
@@ -97,6 +100,30 @@ map <leader>P "+P
 " Plugin Settings
 "" Commentary
 autocmd FileType cpp setlocal commentstring=//%s
+
+"" Goyo
+function! s:goyo_enter()
+  silent !tmux set status off
+  silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+  set scrolloff=999
+  let b:prevSpell=&spell
+  set spell
+  Limelight
+endfunction
+
+function! s:goyo_leave()
+  silent !tmux set status on
+  silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+  set scrolloff=5
+  Limelight!
+  if b:prevSpell
+    set spell
+  endif
+endfunction
+
+autocmd! User GoyoEnter nested call <SID>goyo_enter()
+autocmd! User GoyoLeave nested call <SID>goyo_leave()
+let g:goyo_width=100
 
 "" NerdTree
 let g:NERDTreeNatualSort=1          " sort 1, 2, 10, 20, 100 vs 1, 10, 100, 2, 20
