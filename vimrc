@@ -181,7 +181,7 @@ let g:ale_javascript_eslint_executable='eslint_d'
 """ Fix Settings
 let g:ale_fix_on_save=1
 let g:ale_fixers = {
-\   'javascript': ['eslint', 'remove_trailing_lines'],
+\   'javascript': ['eslint', 'prettier', 'remove_trailing_lines'],
 \ }
 
 "" CtrlP Settings

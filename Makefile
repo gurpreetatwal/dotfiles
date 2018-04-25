@@ -7,7 +7,7 @@ XDG_CONFIG_HOME ?= $(HOME)/.config
 tmux: version ?= 2.6
 maven: version ?= 3.5.2
 stterm: version ?= 0.8.1
-npm-%: packages = bower browser-sync bunyan gulp-cli eslint_d nodemon
+npm-%: packages = bower browser-sync bunyan gulp-cli eslint_d nodemon prettier
 
 .PHONY:
 	install
