@@ -15,6 +15,11 @@ alias ll="ls -l"
 alias la="ls -al"
 alias cl="fc -e -| xclip -i -sel clip"  # copies output of last command
 
+## Interactive Mode
+alias cp="cp -i"
+alias mv="mv -i"
+alias rm="rm -i"
+
 ## Colors
 alias_g ls="ls --color=auto"
 alias_g dir="dir --color=auto"
