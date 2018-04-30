@@ -1,8 +1,3 @@
-set autoindent
-set tabstop=2
-set shiftwidth=2
-set expandtab
-
 " Helper function for conditionally loading plugins
 function! Cond(cond, ...)
   let opts = get(a:000, 0, {})
@@ -65,6 +60,13 @@ syntax on
 filetype on                       " detect the type of file
 filetype indent on                " Enable filetype-specific indenting
 filetype plugin on                " Enable filetype-specific plugins
+
+" Indentation
+set tabstop=8                           " set <Tab> to have a width of 8
+set shiftwidth=2                        " how many spaces each shift (<, >, =) will use for indent
+set expandtab                           " make <Tab> in insert mode insert spaces
+set smarttab                            " insert 'shiftwidth' at beginning of line, 'tabstop' elsewhere
+set autoindent                          " copy indent from current line when starting a new line
 
 " Colors
 if (has("termguicolors"))
