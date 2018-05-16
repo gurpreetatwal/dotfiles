@@ -175,10 +175,12 @@ let g:airline#extensions#default#section_truncate_width={
 "" ALE Settings
 
 """ Lint Settings
+let g:ale_linters={'zsh': 'all'}
 let g:ale_sign_column_always=1
 let g:ale_javascript_eslint_use_global=1
 let g:ale_javascript_eslint_options='--cache'
 let g:ale_javascript_eslint_executable='eslint_d'
+autocmd FileType zsh let g:ale_sh_shellcheck_options = '-s bash'                " zsh is not a supported shell
 
 """ Fix Settings
 let g:ale_fix_on_save=1
