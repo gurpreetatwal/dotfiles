@@ -8,10 +8,10 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CONFIG_HOME="$HOME/.config"
 
 ## Path
-PATH="$HOME/.local/bin:$PATH"         # used by pip
-PATH="$HOME/scripts:$PATH"            # my personal scripts
-PATH="$HOME/bin:$PATH"                # general programs
-PATH+="$HOME/.cargo/bin"              # rust
+PATH="$HOME/.local/bin:$PATH"           # used by pip
+PATH="$HOME/scripts:$PATH"              # my personal scripts
+PATH="$HOME/bin:$PATH"                  # general programs
+PATH+=":$HOME/.cargo/bin"               # rust
 test -d /opt/maven && PATH="/opt/maven/bin:$PATH"
 
 ## Editor
