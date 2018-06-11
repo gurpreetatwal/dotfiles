@@ -120,6 +120,7 @@ flags/pip2: apt.python-dev apt.python-pip
 
 flags/pip3: apt.python3-dev apt.python3-pip
 	sudo -H pip3 install --upgrade pip
+	pip3 install --user testresources
 	pip3 install --user wheel
 	pip3 install --user setuptools
 	touch flags/pip3
