@@ -38,6 +38,7 @@ fasd: flags/fasd
 pip2: flags/pip2
 pip3: flags/pip3
 
+i3: flags/i3
 nvim: flags/neovim
 neovim: flags/neovim
 
@@ -121,6 +122,11 @@ flags/pip3: apt.python3-dev apt.python3-pip
 	pip3 install --user wheel
 	pip3 install --user setuptools
 	touch flags/pip3
+
+flags/i3: apt.i3 apt.i3lock
+	mkdir --parents "$(XDG_CONFIG_HOME)/i3"
+	bash ./install/run-helper link "i3.conf" "$(XDG_CONFIG_HOME)/i3/config"
+	-ln -s "$(XDG_CONFIG_HOME)/i3/config" "flags/i3"
 
 flags/node:
 	curl --location https://git.io/n-install | N_PREFIX=$(XDG_DATA_HOME)/nodejs bash -s -- -n
