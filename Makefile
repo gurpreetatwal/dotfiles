@@ -7,6 +7,7 @@ XDG_CONFIG_HOME ?= $(HOME)/.config
 tmux: version ?= 2.6
 maven: version ?= 3.5.2
 stterm: version ?= 0.8.1
+zsh: prompt-location ?= $(XDG_DATA_HOME)/spaceship-prompt
 npm-%: packages = bower browser-sync bunyan gulp-cli eslint_d nodemon prettier
 
 .PHONY:
@@ -30,8 +31,12 @@ basic: apt.tree apt.silversearcher-ag apt.git
 
 zsh: apt.zsh
 	sudo usermod --shell "$$(which zsh)" "$$(whoami)"
+	mkdir --parents "$(HOME)/.zfunctions"
 	bash ./install/run-helper link "shell/zshrc" "$(HOME)/.zshrc"
 	bash ./install/run-helper link "shell/profile" "$(HOME)/.zprofile"
+	test -d "$(prompt-location)" || git clone https://github.com/denysdovhan/spaceship-prompt.git "$(prompt-location)"
+	git -C "$(prompt-location)" pull
+	-ln -s "$(prompt-location)/spaceship.zsh" "$(HOME)/.zfunctions/prompt_spaceship_setup"
 
 fasd: flags/fasd
 
@@ -47,10 +52,6 @@ node: flags/node
 rust: flags/rust
 java: flags/java
 maven: flags/maven
-
-zsh-theme: flags/spaceship.zsh-theme
-
-zsh-theme-update: update.flags/spaceship.zsh-theme flags/spaceship.zsh-theme
 
 # Fix for firefox when using dark themes
 # Adapted from https://wiki.archlinux.org/index.php/Firefox#Unreadable_input_fields_with_dark_GTK.2B_themes
@@ -185,7 +186,3 @@ flags/opt-dir:
 	sudo chown -R root:optgroup /opt
 	sudo chmod -R g+rw /opt
 	ln -s /opt flags/opt-dir
-
-flags/spaceship.zsh-theme:
-	curl -LSsfo ~/.oh-my-zsh/custom/themes/spaceship.zsh-theme --create-dirs https://raw.githubusercontent.com/denysdovhan/spaceship-zsh-theme/master/spaceship.zsh
-	ln -s ~/.oh-my-zsh/custom/themes/spaceship.zsh-theme flags
