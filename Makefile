@@ -146,8 +146,8 @@ flags/java:
 	sudo apt-get remove --purge 'openjdk8*'
 	sudo add-apt-repository --yes ppa:webupd8team/java
 	sudo apt-get update
-	echo "oracle-java9-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections
-	sudo apt-get install oracle-java9-installer oracle-java9-set-default
+	echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections
+	sudo apt-get install oracle-java8-installer oracle-java8-set-default
 	ln -s "$$(update-alternatives --list java)" flags/java
 
 flags/maven: flags/java flags/opt-dir
