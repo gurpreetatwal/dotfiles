@@ -20,7 +20,7 @@ npm-%: packages = bower browser-sync bunyan gulp-cli eslint_d nodemon prettier
 install:
 	./install.sh
 
-basic: apt.tree apt.silversearcher-ag apt.git
+basic: apt.tree apt.silversearcher-ag apt.xclip apt.jq
 	mkdir -p $(HOME)/bin
 	mkdir -p $(HOME)/temp
 	test -d $(HOME)/scripts/.git || git clone https://github.com/gurpreetatwal/scripts.git  $(HOME)/scripts
