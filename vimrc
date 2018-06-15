@@ -92,6 +92,8 @@ nnoremap <C-g> :GundoToggle<CR>
 noremap <A-z> :Goyo<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>z :tabnew %<CR>
+nnoremap <leader>u :read !uuidgen<CR> kJ
+nnoremap <leader>c ^lf(li<CR><ESC>$hf)i<CR><ESC>
 
 "" Copy & Paste into sytem buffer
 map <leader>y "+y
