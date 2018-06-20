@@ -9,7 +9,7 @@ alias_g() {
 # General
 #
 
-alias ag="ag --path-to-agignore $HOME/.agignore"
+alias ag="ag --path-to-ignore $HOME/.agignore"
 alias serve="browser-sync start -s"
 alias ll="ls -l"
 alias la="ls -al"
