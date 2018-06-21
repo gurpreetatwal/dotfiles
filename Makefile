@@ -125,7 +125,7 @@ flags/pip3: apt.python3-dev apt.python3-pip
 	pip3 install --user setuptools
 	touch flags/pip3
 
-flags/i3: apt.i3 apt.i3lock
+flags/i3: apt.i3 apt.i3lock apt.xautolock
 	mkdir --parents "$(XDG_CONFIG_HOME)/i3"
 	@bash ./install/run-helper link "i3.conf" "$(XDG_CONFIG_HOME)/i3/config"
 	-ln -s "$(XDG_CONFIG_HOME)/i3/config" "flags/i3"
