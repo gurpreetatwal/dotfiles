@@ -24,16 +24,16 @@ basic: apt.tree apt.silversearcher-ag apt.xclip apt.jq
 	mkdir -p $(HOME)/bin
 	mkdir -p $(HOME)/temp
 	test -d $(HOME)/scripts/.git || git clone https://github.com/gurpreetatwal/scripts.git  $(HOME)/scripts
-	bash ./install/run-helper link "agignore" "$(HOME)/.agignore"
-	bash ./install/run-helper link "gitconfig" "$(HOME)/.gitconfig"
-	bash ./install/run-helper link "gitignore.global" "$(HOME)/.gitignore.global"
-	bash ./install/run-helper link "shell/profile" "$(HOME)/.profile"
+	@bash ./install/run-helper link "agignore" "$(HOME)/.agignore"
+	@bash ./install/run-helper link "gitconfig" "$(HOME)/.gitconfig"
+	@bash ./install/run-helper link "gitignore.global" "$(HOME)/.gitignore.global"
+	@bash ./install/run-helper link "shell/profile" "$(HOME)/.profile"
 
 zsh: apt.zsh
 	sudo usermod --shell "$$(which zsh)" "$$(whoami)"
 	mkdir --parents "$(HOME)/.zfunctions"
-	bash ./install/run-helper link "shell/zshrc" "$(HOME)/.zshrc"
-	bash ./install/run-helper link "shell/profile" "$(HOME)/.zprofile"
+	@bash ./install/run-helper link "shell/zshrc" "$(HOME)/.zshrc"
+	@bash ./install/run-helper link "shell/profile" "$(HOME)/.zprofile"
 	test -d "$(prompt-location)" || git clone https://github.com/denysdovhan/spaceship-prompt.git "$(prompt-location)"
 	git -C "$(prompt-location)" pull
 	-ln -s "$(prompt-location)/spaceship.zsh" "$(HOME)/.zfunctions/prompt_spaceship_setup"
@@ -60,10 +60,10 @@ firefox-fix:
 
 pgcli: pip2 apt.libpq-dev apt.libevent-dev
 	pip install --user --upgrade pgcli
-	bash ./install/run-helper link pgcli $(XDG_CONFIG_HOME)/pgcli/config
+	@bash ./install/run-helper link pgcli $(XDG_CONFIG_HOME)/pgcli/config
 
 bindkeys: apt.xbindkeys apt.xdotool
-	bash ./install/run-helper link xbindkeysrc $(HOME)/.xbindkeysrc
+	@bash ./install/run-helper link xbindkeysrc $(HOME)/.xbindkeysrc
 	xbindkeys
 
 tmux: apt.libevent-dev apt.libncurses-dev apt.xclip
@@ -71,7 +71,7 @@ tmux: apt.libevent-dev apt.libncurses-dev apt.xclip
 	cd /tmp/tmux-$(version) && ./configure && make
 	cd /tmp/tmux-$(version) && sudo make install
 	tic -o ~/.terminfo install/tmux-256color.terminfo
-	bash ./install/run-helper link tmux.conf $(HOME)/.tmux.conf
+	@bash ./install/run-helper link tmux.conf $(HOME)/.tmux.conf
 
 alacritty: flags/alacritty
 stterm: flags/stterm
@@ -83,7 +83,7 @@ flags/neovim: pip2 pip3
 	pip2 install --user --upgrade neovim
 	pip3 install --user --upgrade neovim
 	mkdir -p ~/.config/nvim
-	bash ./install/run-helper link vimrc $(HOME)/.config/nvim/init.vim
+	@bash ./install/run-helper link vimrc $(HOME)/.config/nvim/init.vim
 	curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	nvim +PlugUpdate +qa
 	touch flags/neovim
@@ -101,7 +101,7 @@ jetbrains:
 	./jetbrains.sh
 
 apt.%:
-	bash ./install/run-helper installif $*
+	@bash ./install/run-helper installif $*
 
 update.flags/%:
 	@rm flags/$* || true
@@ -127,7 +127,7 @@ flags/pip3: apt.python3-dev apt.python3-pip
 
 flags/i3: apt.i3 apt.i3lock
 	mkdir --parents "$(XDG_CONFIG_HOME)/i3"
-	bash ./install/run-helper link "i3.conf" "$(XDG_CONFIG_HOME)/i3/config"
+	@bash ./install/run-helper link "i3.conf" "$(XDG_CONFIG_HOME)/i3/config"
 	-ln -s "$(XDG_CONFIG_HOME)/i3/config" "flags/i3"
 
 flags/node:
@@ -165,7 +165,7 @@ flags/alacritty: rust apt.cmake apt.libfreetype6-dev apt.libfontconfig1-dev apt.
 	sudo mv /tmp/alacritty/target/release/alacritty /usr/local/bin
 	sudo mv /tmp/alacritty/Alacritty.desktop /usr/share/applications
 	mkdir -p $(XDG_CONFIG_HOME)/alacritty
-	bash ./install/run-helper link alacritty.yml $(XDG_CONFIG_HOME)/alacritty/alacritty.yml
+	@bash ./install/run-helper link alacritty.yml $(XDG_CONFIG_HOME)/alacritty/alacritty.yml
 	ln -s /usr/local/bin/alacritty flags/alacritty
 
 flags/stterm: apt.libx11-dev apt.libxft-dev
