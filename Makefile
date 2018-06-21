@@ -7,6 +7,7 @@ XDG_CONFIG_HOME ?= $(HOME)/.config
 tmux: version ?= 2.6
 maven: version ?= 3.5.2
 stterm: version ?= 0.8.1
+docker: compose-version ?= 1.21.2
 zsh: prompt-location ?= $(XDG_DATA_HOME)/spaceship-prompt
 npm-%: packages = bower browser-sync bunyan gulp-cli eslint_d nodemon prettier
 
@@ -52,6 +53,10 @@ node: flags/node
 rust: flags/rust
 java: flags/java
 maven: flags/maven
+
+docker: flags/docker docker-compose
+docker-compose: flags/docker-compose
+docker-compose-update: update.flags/docker-compose flags/docker-compose
 
 # Fix for firefox when using dark themes
 # Adapted from https://wiki.archlinux.org/index.php/Firefox#Unreadable_input_fields_with_dark_GTK.2B_themes
@@ -178,6 +183,20 @@ flags/stterm: apt.libx11-dev apt.libxft-dev
 	sudo make -C /tmp/st-$(version) clean install
 	-rm -rf /tmp/st-$(version)
 	-ln -s /usr/local/bin/st flags/stterm
+
+flags/docker:
+	sudo apt-key add install/docker.gpg
+	sudo add-apt-repository --update "deb [arch=amd64] https://download.docker.com/linux/ubuntu $$(lsb_release -cs) stable"
+	@bash ./install/run-helper installif docker-ce
+	@# force returns success if group exists already
+	sudo groupadd --force docker
+	sudo usermod --append --groups docker $(USER)
+	-ln -s "$$(which docker)" flags/docker
+
+flags/docker-compose:
+	curl --location --silent --show-error https://github.com/docker/compose/releases/download/$(compose-version)/docker-compose-Linux-x86_64 -o $(HOME)/bin/docker-compose
+	chmod +x $(HOME)/bin/docker-compose
+	-ln -s $(HOME)/bin/docker-compose flags
 
 opt-dir: flags/opt-dir
 flags/opt-dir:
