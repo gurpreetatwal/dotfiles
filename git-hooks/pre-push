@@ -1,0 +1,15 @@
+#!/bin/bash
+
+current_branch=$(git symbolic-ref HEAD | awk -F '/' '{print $3}')
+
+
+if [ "master" = "$current_branch" ]; then
+  printf "\e[1;31m[WARNING]\e[0m\n"
+  printf "\e[1;31m[WARNING]\e[0m "
+  read -p "You're about to push master, are you sure you want to do this? [YES/no] " -r < /dev/tty
+  if [ "$REPLY" = 'YES' ]; then
+    exit 0
+  fi
+fi
+
+exit 1

@@ -4,6 +4,7 @@
 [core]
 	editor=vim
 	excludesfile=~/.gitignore.global
+	hooksPath=~/dotfiles/git-hooks
 [push]
 	default=current
 [branch]
