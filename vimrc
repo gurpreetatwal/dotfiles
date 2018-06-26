@@ -38,6 +38,7 @@ call plug#end()
 " General Vim Settings
 set encoding=utf-8
 set number                        " line numbers
+set relativenumber                " show relative line numbers
 set incsearch                     " highlight search matches as you type
 set wildmenu                      " show autocomplete menu for vim commands
 set wildignore=*.o,*.obj,*.so
