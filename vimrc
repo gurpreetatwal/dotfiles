@@ -31,7 +31,7 @@ Plug 'vim-airline/vim-airline-themes'
 
 "" Neovim plugins
 Plug 'Shougo/deoplete.nvim', Cond(has('nvim'), { 'do': ':UpdateRemotePlugins' })
-Plug 'carlitux/deoplete-ternjs', Cond(has('nvim'))
+Plug 'carlitux/deoplete-ternjs', Cond(has('nvim'), {'do': 'npm install -g tern'})
 Plug 'w0rp/ale', Cond(has('nvim'))
 call plug#end()
 
@@ -157,6 +157,7 @@ let g:deoplete#enable_smart_case=1
 let g:deoplete#sources#ternjs#types=1
 let g:deoplete#sources#ternjs#docs=1
 let g:deoplete#sources#ternjs#include_keywords=1
+call deoplete#custom#var('file', 'enable_buffer_path', 1)
 
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 
