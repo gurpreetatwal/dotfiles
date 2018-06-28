@@ -7,7 +7,7 @@ XDG_CONFIG_HOME ?= $(HOME)/.config
 tmux: version ?= 2.6
 maven: version ?= 3.5.2
 stterm: version ?= 0.8.1
-docker: compose-version ?= 1.21.2
+flags/docker-compose: compose-version ?= 1.21.2
 zsh: prompt-location ?= $(XDG_DATA_HOME)/spaceship-prompt
 npm-%: packages = bower browser-sync bunyan gulp-cli eslint_d nodemon prettier
 
