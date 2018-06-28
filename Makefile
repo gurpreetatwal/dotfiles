@@ -131,7 +131,9 @@ flags/pip3: apt.python3-dev apt.python3-pip
 
 flags/i3: apt.i3 apt.i3lock apt.xautolock
 	mkdir --parents "$(XDG_CONFIG_HOME)/i3"
+	mkdir --parents "$(XDG_CONFIG_HOME)/i3status"
 	@bash ./install/run-helper link "i3.conf" "$(XDG_CONFIG_HOME)/i3/config"
+	@bash ./install/run-helper link "i3status.conf" "$(XDG_CONFIG_HOME)/i3status/config"
 	-ln -s "$(XDG_CONFIG_HOME)/i3/config" "flags/i3"
 
 flags/node:
