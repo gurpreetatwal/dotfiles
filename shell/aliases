@@ -9,8 +9,9 @@ alias_g() {
 # General
 #
 
-alias ag="ag --path-to-ignore $HOME/.agignore"
+alias ag='ag --path-to-ignore $HOME/.agignore'
 alias serve="browser-sync start -s"
+alias https="http --default-scheme=https"
 alias ll="ls -l"
 alias la="ls -al"
 alias cl="fc -e -| xclip -i -sel clip"  # copies output of last command
@@ -44,7 +45,7 @@ alias o="fasd -a -e xdg-open"  # complete anything, run xdg-open
 # use functions in shells/functions if fzf is also installed
 if [ ! "$(command -v fzf)" ]; then
   alias z='fasd_cd -d'     # cd, same functionality as j in autojump
-  alias v="fasd -f -t -e $EDITOR"   # complete files, run editor
+  alias v='fasd -f -t -e $EDITOR'   # complete files, run editor
 fi
 
 ## Python
@@ -59,13 +60,13 @@ alias gd="git diff"
 ### Cloning
 alias gcl="git clone"
 gclgh() {
-  git clone git@github.com:$1
+  git clone "git@github.com:$1"
 }
 gcls() {
-  git clone git@github.com:smartcar/$1
+  git clone "git@github.com:smartcar/$1"
 }
 gclgurp() {
-  git clone git@github.com:gurpreetatwal/$1
+  git clone "git@github.com:gurpreetatwal/$1"
 }
 
 ### Fetch/Pull/Push
