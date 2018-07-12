@@ -152,14 +152,16 @@ nnoremap <leader>tR :YcmCompleter RefactorRename
 nnoremap <leader>tdoc :YcmCompleter GetDoc<CR>
 
 "" Deoplete
-let g:deoplete#enable_at_startup=1
-let g:deoplete#enable_smart_case=1
-let g:deoplete#sources#ternjs#types=1
-let g:deoplete#sources#ternjs#docs=1
-let g:deoplete#sources#ternjs#include_keywords=1
-call deoplete#custom#var('file', 'enable_buffer_path', 1)
+if has('nvim')
+  let g:deoplete#enable_at_startup=1
+  let g:deoplete#enable_smart_case=1
+  let g:deoplete#sources#ternjs#types=1
+  let g:deoplete#sources#ternjs#docs=1
+  let g:deoplete#sources#ternjs#include_keywords=1
+  call deoplete#custom#var('file', 'enable_buffer_path', 1)
 
-inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+  inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+endif
 
 "" Airline Settings
 set laststatus=2                " show airline even if no split exists
