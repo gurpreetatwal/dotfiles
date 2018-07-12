@@ -1,6 +1,6 @@
 source ~/dotfiles/shell/commonrc
 
-fpath=("$HOME/.zfunctions" $fpath)
+fpath=("$HOME/.zfunctions" "$XDG_DATA_HOME/zsh-completions/src" $fpath)
 
 # Set up the prompt
 

@@ -10,6 +10,7 @@ gradle: version ?= 4.8.1
 stterm: version ?= 0.8.1
 flags/docker-compose: compose-version ?= 1.21.2
 zsh: prompt-location ?= $(XDG_DATA_HOME)/spaceship-prompt
+zsh: completions-location ?= $(XDG_DATA_HOME)/zsh-completions
 npm-%: packages = bower browser-sync bunyan gulp-cli eslint_d nodemon prettier
 
 .PHONY:
@@ -32,13 +33,17 @@ basic: apt.tree apt.silversearcher-ag apt.xclip apt.jq
 	@bash ./install/run-helper link "shell/profile" "$(HOME)/.profile"
 
 zsh: apt.zsh
-	sudo usermod --shell "$$(which zsh)" "$$(whoami)"
+	grep "$$(whoami):$$(which zsh)$$" /etc/passwd || sudo usermod --shell "$$(which zsh)" "$$(whoami)"
 	mkdir --parents "$(HOME)/.zfunctions"
 	@bash ./install/run-helper link "shell/zshrc" "$(HOME)/.zshrc"
 	@bash ./install/run-helper link "shell/profile" "$(HOME)/.zprofile"
 	test -d "$(prompt-location)" || git clone https://github.com/denysdovhan/spaceship-prompt.git "$(prompt-location)"
+	test -d "$(completions-location)" || git clone git://github.com/zsh-users/zsh-completions.git "$(completions-location)"
 	git -C "$(prompt-location)" pull
+	git -C "$(completions-location)" pull
 	-ln -s "$(prompt-location)/spaceship.zsh" "$(HOME)/.zfunctions/prompt_spaceship_setup"
+	rm "$(HOME)/.zcompdump"
+	zsh -c "source $(HOME)/.zshrc && compinit"
 
 fasd: flags/fasd
 
