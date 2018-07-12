@@ -13,6 +13,7 @@ PATH+=":$HOME/scripts"                                          # custom scripts
 PATH+=":$HOME/.local/bin"                                       # pip
 test -d "$HOME/.cargo"   && PATH+=":$HOME/.cargo/bin"           # rust
 test -d /opt/maven       && PATH+=":/opt/maven/bin"             # maven
+test -d /opt/gradle      && PATH+=":/opt/gradle/bin"            # gradle
 
 ## Editor
 [ "$(command -v nvim)" ] && export EDITOR="nvim" || export EDITOR="vim"

@@ -6,6 +6,7 @@ XDG_CONFIG_HOME ?= $(HOME)/.config
 
 tmux: version ?= 2.6
 maven: version ?= 3.5.2
+gradle: version ?= 4.8.1
 stterm: version ?= 0.8.1
 flags/docker-compose: compose-version ?= 1.21.2
 zsh: prompt-location ?= $(XDG_DATA_HOME)/spaceship-prompt
@@ -53,6 +54,7 @@ node: flags/node
 rust: flags/rust
 java: flags/java
 maven: flags/maven
+gradle: flags/gradle
 
 docker: flags/docker docker-compose
 docker-compose: flags/docker-compose
@@ -161,6 +163,14 @@ flags/maven: flags/java flags/opt-dir
 	tar -xzf /tmp/maven.tar.gz --directory /opt
 	mv /opt/apache-maven-$(version) /opt/maven
 	ln -s /opt/maven flags
+
+flags/gradle: flags/java flags/opt-dir
+	$(eval tmp = $(shell mktemp --dry-run --tmpdir="/tmp" gradle-XXX.zip))
+	wget -O "$(tmp)" "https://services.gradle.org/distributions/gradle-$(version)-bin.zip"
+	unzip -d "/opt" "$(tmp)"
+	mv "/opt/gradle-$(version)" "/opt/gradle"
+	-rm "$(tmp)"
+	-ln -s /opt/gradle flags
 
 flags/alacritty: rust apt.cmake apt.libfreetype6-dev apt.libfontconfig1-dev apt.xclip
 	git clone https://github.com/jwilm/alacritty /tmp/alacritty
