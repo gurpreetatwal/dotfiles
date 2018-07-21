@@ -192,7 +192,7 @@ autocmd FileType zsh let g:ale_sh_shellcheck_options = '-s bash'                
 """ Fix Settings
 let g:ale_fix_on_save=1
 let g:ale_fixers = {
-\   'javascript': ['eslint', 'prettier', 'remove_trailing_lines'],
+\   'javascript': ['prettier', 'eslint', 'remove_trailing_lines'],
 \ }
 
 "" CtrlP Settings
