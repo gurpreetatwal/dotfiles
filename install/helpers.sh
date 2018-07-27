@@ -28,7 +28,7 @@ installif() {
 link() {
 
   if [[ $# != 2 ]]; then
-    printf "Usage: link <source> <dest>\n"
+    color $red "Usage: link <source> <dest>\n"
     exit 1
   fi
 
@@ -43,5 +43,26 @@ link() {
     ln -s "$DIR/$SOURCE" "$DEST"
   else
     color $green " linked to $DEST\n"
+  fi
+}
+
+git-clone() {
+  if [[ $# != 2 ]]; then
+    color $red "Usage: git-clone <repo> <dest>\n"
+    exit 1
+  fi
+
+  REMOTE="$1"
+  DEST="$2"
+  repo="$(basename "$REMOTE" ".git")"
+
+  color $cyan "[git]:  %-20s" "$repo"
+
+  if [[ -d "$DEST" ]]; then
+    color $green " pulling in $DEST\n"
+    git -C "$DEST" pull
+  else
+    color $green " cloning to $DEST\n"
+    git clone "$REMOTE" "$DEST"
   fi
 }
