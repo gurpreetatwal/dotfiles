@@ -6,10 +6,12 @@ endfunction
 
 " Plugins
 call plug#begin()
+Plug 'SirVer/ultisnips'                 " snippet engine
 Plug 'airblade/vim-gitgutter'         " add support for viewing and editing git hunks
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'gurpreetatwal/vim-avro'
+Plug 'honza/vim-snippets'               " pre-written snippets
 Plug 'junegunn/goyo.vim'              " creates padding around the window for focused writing
 Plug 'junegunn/limelight.vim'         " highlights the current paragraph and dims all others
 Plug 'lepture/vim-jinja'              " syntax for jinja/nunjucks (*.njk) files
@@ -160,8 +162,6 @@ if has('nvim')
   let g:deoplete#sources#ternjs#docs=1
   let g:deoplete#sources#ternjs#include_keywords=1
   call deoplete#custom#var('file', 'enable_buffer_path', 1)
-
-  inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 endif
 
 "" Airline Settings
@@ -179,6 +179,12 @@ let g:airline#extensions#ale#enabled=1
 let g:airline#extensions#default#section_truncate_width={
   \ 'b': 79, 'x': 60, 'y': 45, 'z': 45, 'warning': 80, 'error': 80
   \ }
+
+"" Ultisnips Settings
+let g:UltiSnipsExpandTrigger="<TAB>"
+let g:UltiSnipsListSnippets="<C-l>"
+let g:UltiSnipsJumpForwardTrigger="<C-j>"
+let g:UltiSnipsJumpBackwardTrigger="<C-k>"
 
 "" ALE Settings
 
