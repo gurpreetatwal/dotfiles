@@ -27,6 +27,7 @@ Plug 'tpope/vim-surround'              " add/remove/change surrounding things li
 Plug 'tpope/vim-unimpaired'            " key binds for common commands like :bnext, :lnext, etc.
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'npm install -g javascript-typescript-langserver@latest && bash install.sh' }
 
 "" Vim plugins
 " Plug 'example', Cond(!has('nvim'))
@@ -185,6 +186,17 @@ let g:UltiSnipsExpandTrigger="<TAB>"
 let g:UltiSnipsListSnippets="<C-l>"
 let g:UltiSnipsJumpForwardTrigger="<C-j>"
 let g:UltiSnipsJumpBackwardTrigger="<C-k>"
+
+"" LanguageClient Settings
+set hidden
+let g:LanguageClient_autoStart = 1
+
+" Minimal LSP configuration for JavaScript
+let g:LanguageClient_serverCommands = {
+      \ 'javascript.jsx': ['javascript-typescript-stdio'],
+      \ }
+autocmd FileType javascript.jsx setlocal omnifunc=LanguageClient#complete
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
 
 "" ALE Settings
 
