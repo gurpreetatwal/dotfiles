@@ -31,7 +31,7 @@ Plug 'vim-airline/vim-airline-themes'
 
 "" Neovim plugins
 Plug 'Shougo/deoplete.nvim', Cond(has('nvim'), { 'do': ':UpdateRemotePlugins' })
-Plug 'carlitux/deoplete-ternjs', Cond(has('nvim'), {'do': 'npm install -g tern'})
+Plug 'carlitux/deoplete-ternjs', Cond(has('nvim'), {'do': 'npm install -g tern@latest', 'for': ['javascript']})
 Plug 'w0rp/ale', Cond(has('nvim'))
 call plug#end()
 
