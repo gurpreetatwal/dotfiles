@@ -96,6 +96,7 @@ nnoremap <leader>x :x<CR>
 nnoremap <leader>z :tabnew %<CR>
 nnoremap <leader>u :read !uuidgen<CR> kJ
 nnoremap <leader>c ^lf(li<CR><ESC>$hf)i<CR><ESC>
+imap jk <Esc>
 
 "" Copy & Paste into sytem buffer
 map <leader>y "+y
