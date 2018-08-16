@@ -83,8 +83,8 @@ endif
 
 set hlsearch                      " highlight search matches
 set background=dark               " must go before the colorscheme
-colorscheme one
 let g:one_allow_italics = 1       " italics
+colorscheme one
 
 "" Make background transparent
 " highlight Normal ctermbg=NONE guibg=NONE
