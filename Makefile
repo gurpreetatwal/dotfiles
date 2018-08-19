@@ -65,10 +65,11 @@ docker: flags/docker docker-compose
 docker-compose: flags/docker-compose
 docker-compose-update: update.flags/docker-compose flags/docker-compose
 
-# Fix for firefox when using dark themes
-# Adapted from https://wiki.archlinux.org/index.php/Firefox#Unreadable_input_fields_with_dark_GTK.2B_themes
+# Fixes for firefox when using dark themes and for scrolling using a touchscreen
+# Theme fix from https://wiki.archlinux.org/index.php/Firefox#Unreadable_input_fields_with_dark_GTK.2B_themes
+# Scrolling fix from https://wiki.gentoo.org/wiki/Firefox#Xinput2_scrolling
 firefox-fix:
-	sudo sed -i 's/Exec=firefox/Exec=env GTK_THEME=Adwaita:light firefox/' /usr/share/applications/firefox.desktop
+	sudo sed -i 's/Exec=.*firefox/Exec=env MOZ_USE_XINPUT2=1 GTK_THEME=Adwaita:light firefox/' /usr/share/applications/firefox.desktop
 
 pgcli: pip2 apt.libpq-dev apt.libevent-dev
 	pip install --user --upgrade pgcli
