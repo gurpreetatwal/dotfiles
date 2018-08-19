@@ -65,6 +65,9 @@ docker: flags/docker docker-compose
 docker-compose: flags/docker-compose
 docker-compose-update: update.flags/docker-compose flags/docker-compose
 
+# Tools
+postman: flags/postman
+
 # Fixes for firefox when using dark themes and for scrolling using a touchscreen
 # Theme fix from https://wiki.archlinux.org/index.php/Firefox#Unreadable_input_fields_with_dark_GTK.2B_themes
 # Scrolling fix from https://wiki.gentoo.org/wiki/Firefox#Xinput2_scrolling
@@ -214,6 +217,13 @@ flags/docker-compose:
 	curl --location --silent --show-error https://github.com/docker/compose/releases/download/$(compose-version)/docker-compose-Linux-x86_64 -o $(HOME)/bin/docker-compose
 	chmod +x $(HOME)/bin/docker-compose
 	-ln -s $(HOME)/bin/docker-compose flags
+
+flags/postman: opt-dir
+	wget --output-document "/tmp/postman.tar.gz" https://dl.pstmn.io/download/latest/linux64
+	tar --directory "/opt" --extract --gzip --file  "/tmp/postman.tar.gz"
+	sudo ln -sf "/opt/Postman/app/Postman" "/usr/local/bin/postman"
+	rm -f "/tmp/postman.tar.gz"
+	ln -sf "/usr/local/bin/postman" "flags"
 
 opt-dir: flags/opt-dir
 flags/opt-dir:
