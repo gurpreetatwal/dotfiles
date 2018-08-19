@@ -106,6 +106,7 @@ map <leader>y "+y
 map <leader>d "+d
 map <leader>p "+p
 map <leader>P "+P
+map <leader>x "+x
 
 " Plugin Settings
 "" Commentary
