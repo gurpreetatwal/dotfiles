@@ -125,7 +125,7 @@ flags/fasd:
 	$(eval tmp = $(shell mktemp --dry-run))
 	git clone https://github.com/clvv/fasd $(tmp)
 	cd $(tmp) && sudo make install
-	ln -s /usr/local/bin/fasd flags
+	ln -sf /usr/local/bin/fasd flags
 
 flags/pip2: apt.python-dev apt.python-pip
 	sudo -H pip2 install --upgrade pip
@@ -145,11 +145,11 @@ flags/i3: apt.i3 apt.i3lock apt.xautolock
 	mkdir --parents "$(XDG_CONFIG_HOME)/i3status"
 	@bash ./install/run-helper link "i3.conf" "$(XDG_CONFIG_HOME)/i3/config"
 	@bash ./install/run-helper link "i3status.conf" "$(XDG_CONFIG_HOME)/i3status/config"
-	-ln -s "$(XDG_CONFIG_HOME)/i3/config" "flags/i3"
+	ln -sf "$(XDG_CONFIG_HOME)/i3/config" "flags/i3"
 
 flags/node:
 	curl --location https://git.io/n-install | N_PREFIX=$(XDG_DATA_HOME)/nodejs bash -s -- -n
-	ln -s $(XDG_DATA_HOME)/nodejs/bin/node flags/node
+	ln -sf $(XDG_DATA_HOME)/nodejs/bin/node flags/node
 
 flags/rust:
 	$(eval tmp = $(shell mktemp --dry-run --tmpdir="/tmp" rustup-init-XXX))
@@ -157,21 +157,21 @@ flags/rust:
 	chmod a+x $(tmp)
 	exec $(tmp) --verbose --no-modify-path -y
 	-rm $(tmp)
-	-ln -s $(HOME)/.cargo/bin/rustc flags/rust
+	ln -sf $(HOME)/.cargo/bin/rustc flags/rust
 
 flags/java:
 	sudo apt-get remove --purge 'openjdk8*'
 	sudo add-apt-repository --yes --update ppa:webupd8team/java
 	echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections
 	@bash ./install/run-helper installif oracle-java8-installer oracle-java8-set-default
-	-ln -s "$$(update-alternatives --list java)" flags/java
+	ln -sf "$$(update-alternatives --list java)" flags/java
 
 flags/maven: flags/java flags/opt-dir
 	# TODO verify signature of download
 	wget -O /tmp/maven.tar.gz http://www-us.apache.org/dist/maven/maven-3/$(version)/binaries/apache-maven-$(version)-bin.tar.gz
 	tar -xzf /tmp/maven.tar.gz --directory /opt
 	mv /opt/apache-maven-$(version) /opt/maven
-	ln -s /opt/maven flags
+	ln -sf /opt/maven flags
 
 flags/gradle: flags/java flags/opt-dir
 	$(eval tmp = $(shell mktemp --dry-run --tmpdir="/tmp" gradle-XXX.zip))
@@ -179,7 +179,7 @@ flags/gradle: flags/java flags/opt-dir
 	unzip -d "/opt" "$(tmp)"
 	mv "/opt/gradle-$(version)" "/opt/gradle"
 	-rm "$(tmp)"
-	-ln -s /opt/gradle flags
+	ln -sf /opt/gradle flags
 
 flags/alacritty: rust apt.cmake apt.libfreetype6-dev apt.libfontconfig1-dev apt.xclip
 	@bash ./install/run-helper git-clone "https://github.com/jwilm/alacritty" "/tmp/alacritty"
@@ -191,7 +191,7 @@ flags/alacritty: rust apt.cmake apt.libfreetype6-dev apt.libfontconfig1-dev apt.
 	mkdir -p "$(XDG_CONFIG_HOME)/alacritty"
 	@bash ./install/run-helper link "alacritty.yml" "$(XDG_CONFIG_HOME)/alacritty/alacritty.yml"
 	-rm -rf "/tmp/alacritty"
-	-ln -s "/usr/local/bin/alacritty" "flags"
+	ln -sf "/usr/local/bin/alacritty" "flags"
 
 flags/stterm: apt.libx11-dev apt.libxft-dev
 	wget --directory-prefix="/tmp" --timestamping https://dl.suckless.org/st/st-$(version).tar.gz
@@ -202,7 +202,7 @@ flags/stterm: apt.libx11-dev apt.libxft-dev
 	-rm /tmp/sha256sums.txt
 	sudo make -C /tmp/st-$(version) clean install
 	-rm -rf /tmp/st-$(version)
-	-ln -s /usr/local/bin/st flags/stterm
+	ln -sf /usr/local/bin/st flags/stterm
 
 flags/docker:
 	sudo apt-key add install/docker.gpg
@@ -211,12 +211,12 @@ flags/docker:
 	@# force returns success if group exists already
 	sudo groupadd --force docker
 	sudo usermod --append --groups docker $(USER)
-	-ln -s "$$(which docker)" flags/docker
+	ln -sf "$$(which docker)" flags/docker
 
 flags/docker-compose:
 	curl --location --silent --show-error https://github.com/docker/compose/releases/download/$(compose-version)/docker-compose-Linux-x86_64 -o $(HOME)/bin/docker-compose
 	chmod +x $(HOME)/bin/docker-compose
-	-ln -s $(HOME)/bin/docker-compose flags
+	ln -sf $(HOME)/bin/docker-compose flags
 
 flags/postman: opt-dir
 	wget --output-document "/tmp/postman.tar.gz" https://dl.pstmn.io/download/latest/linux64
@@ -232,4 +232,4 @@ flags/opt-dir:
 	sudo usermod -aG optgroup root
 	sudo chown -R root:optgroup /opt
 	sudo chmod -R g+rw /opt
-	ln -s /opt flags/opt-dir
+	ln -sf /opt flags/opt-dir
