@@ -41,7 +41,7 @@ zsh: apt.zsh
 	test -d "$(completions-location)" || git clone git://github.com/zsh-users/zsh-completions.git "$(completions-location)"
 	git -C "$(prompt-location)" pull
 	git -C "$(completions-location)" pull
-	-ln -s "$(prompt-location)/spaceship.zsh" "$(HOME)/.zfunctions/prompt_spaceship_setup"
+	ln -sf "$(prompt-location)/spaceship.zsh" "$(HOME)/.zfunctions/prompt_spaceship_setup"
 	rm "$(HOME)/.zcompdump"
 	zsh -c "source $(HOME)/.zshrc && compinit"
 
