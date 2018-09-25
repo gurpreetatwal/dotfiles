@@ -68,6 +68,9 @@ docker-compose-update: update.flags/docker-compose flags/docker-compose
 # Tools
 postman: flags/postman
 
+# System Configuration
+gestures: flags/gestures
+
 # Fixes for firefox when using dark themes and for scrolling using a touchscreen
 # Theme fix from https://wiki.archlinux.org/index.php/Firefox#Unreadable_input_fields_with_dark_GTK.2B_themes
 # Scrolling fix from https://wiki.gentoo.org/wiki/Firefox#Xinput2_scrolling
@@ -224,6 +227,14 @@ flags/postman: opt-dir
 	sudo ln -sf "/opt/Postman/app/Postman" "/usr/local/bin/postman"
 	rm -f "/tmp/postman.tar.gz"
 	ln -sf "/usr/local/bin/postman" "flags"
+
+flags/gestures:
+	@# Only known to work with libinput on Ubuntu 18.04
+	git clone https://github.com/bulletmark/libinput-gestures.git "/tmp/libinput-gestures"
+	sudo usermod --append --groups input "$(USER)"
+	sudo make -C "/tmp/libinput-gestures" install
+	@bash ./install/run-helper link "libinput-gestures.conf" "$(XDG_CONFIG_HOME)/libinput-gestures.conf"
+	ln -sf "/usr/bin/libinput-gestures-setup" "flags/gestures"
 
 opt-dir: flags/opt-dir
 flags/opt-dir:
