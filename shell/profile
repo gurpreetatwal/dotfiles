@@ -33,9 +33,14 @@ if [[ -d "$XDG_DATA_HOME/nodejs" ]]; then
   PATH+=":$N_PREFIX/bin"
 fi
 
-# start applications
+# Start applications
 if command -v libinput-gestures-setup > /dev/null; then libinput-gestures-setup start > /dev/null; fi
 if test -f "$HOME/.xbindkeysrc"; then xbindkeys; fi
+
+# Source a local profile if one is there
+if test -f "$HOME/.profile.local"; then
+  . "$HOME/.profile.local"
+fi
 
 # Source the correct RC file
 if [[ -n "$ZSH_VERSION" && -f "$HOME/.zshrc" ]]; then
