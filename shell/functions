@@ -5,7 +5,8 @@ view() {
 }
 
 json() {
-  jq . "$1" | tee "$1"
+  # need to use subshell otherwise file is empty
+  echo "$(jq . "$1")" | tee "$1"
 }
 
 # fasd
