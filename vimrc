@@ -7,6 +7,7 @@ endfunction
 " Plugins
 call plug#begin()
 Plug 'SirVer/ultisnips'                 " snippet engine
+Plug 'Valloric/MatchTagAlways', { 'for' : ['html', 'xhtml', 'xml', 'jinja'] }           " highlights surrounding html tag
 Plug 'airblade/vim-gitgutter'         " add support for viewing and editing git hunks
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'edkolev/tmuxline.vim'
