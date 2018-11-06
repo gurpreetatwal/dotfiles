@@ -9,6 +9,13 @@ json() {
   echo "$(jq . "$1")" | tee "$1"
 }
 
+screenshot() {
+  local 'file';
+  file="/tmp/screenshot-$(date '+%Y-%m-%d_%H-%M-%S').png"
+  import "$file"
+  xclip -selection clipboard -target image/png -i < "${file}"
+}
+
 # fasd
 if [ "$(command -v fasd)" ]; then
   # taken from: https://github.com/clvv/fasd/blob/master/fasd#L89
