@@ -14,6 +14,7 @@ alias serve="browser-sync start -s"
 alias https="http --default-scheme=https"
 alias ll="ls -l"
 alias la="ls -al"
+alias tree="tree -I '*node_modules*'"
 alias cl="fc -e -| xclip -i -sel clip"  # copies output of last command
 
 ## Interactive Mode
