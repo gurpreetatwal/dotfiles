@@ -98,8 +98,8 @@ stterm: flags/stterm
 flags/neovim: pip2 pip3
 	sudo add-apt-repository --update --yes ppa:neovim-ppa/stable
 	@bash ./install/run-helper installif neovim
-	pip2 install --user --upgrade neovim
-	pip3 install --user --upgrade neovim
+	python2 -m pip install --user --upgrade pynvim
+	python3 -m pip install --user --upgrade pynvim
 	mkdir -p ~/.config/nvim
 	@bash ./install/run-helper link vimrc $(HOME)/.config/nvim/init.vim
 	curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -131,16 +131,15 @@ flags/fasd:
 	ln -sf /usr/local/bin/fasd flags
 
 flags/pip2: apt.python-dev apt.python-pip
-	sudo -H pip2 install --upgrade pip
-	pip2 install --user wheel
-	pip2 install --user setuptools
+	python2 -m pip install --user --upgrade pip
+	python2 -m pip install --user --upgrade wheel
+	python2 -m pip install --user --upgrade setuptools
 	touch flags/pip2
 
 flags/pip3: apt.python3-dev apt.python3-pip
-	sudo -H pip3 install --upgrade pip
-	pip3 install --user testresources
-	pip3 install --user wheel
-	pip3 install --user setuptools
+	python3 -m pip install --user --upgrade pip
+	python3 -m pip install --user --upgrade wheel
+	python3 -m pip install --user --upgrade setuptools
 	touch flags/pip3
 
 flags/i3: apt.i3 apt.i3lock apt.xautolock

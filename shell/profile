@@ -9,8 +9,8 @@ export XDG_CONFIG_HOME="$HOME/.config"
 
 ## Path
 PATH="$HOME/bin:$PATH"                                          # personal bin directory
-PATH+=":$HOME/scripts"                                          # custom scripts directory
-PATH+=":$HOME/.local/bin"                                       # pip
+PATH="$HOME/scripts:$PATH"                                      # custom scripts directory
+PATH="$HOME/.local/bin:$PATH"                                   # pip
 test -d "$HOME/.cargo"   && PATH+=":$HOME/.cargo/bin"           # rust
 test -d /opt/maven       && PATH+=":/opt/maven/bin"             # maven
 test -d /opt/gradle      && PATH+=":/opt/gradle/bin"            # gradle
