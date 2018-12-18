@@ -193,6 +193,7 @@ let g:UltiSnipsJumpBackwardTrigger="<C-k>"
 "" LanguageClient Settings
 set hidden
 let g:LanguageClient_autoStart = 1
+let g:LanguageClient_diagnosticsList = "Location"      " use Location list instead of window list as errors are scoped to one file
 
 " Minimal LSP configuration for JavaScript
 let g:LanguageClient_serverCommands = {
