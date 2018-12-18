@@ -183,17 +183,28 @@ flags/gradle: flags/java flags/opt-dir
 	-rm "$(tmp)"
 	ln -sf /opt/gradle flags
 
-flags/alacritty: rust apt.cmake apt.libfreetype6-dev apt.libfontconfig1-dev apt.xclip
+flags/alacritty: repository = https://github.com/jwilm/alacritty
+flags/alacritty:
+	@# get latest tagged version
+	$(eval version = $(shell git ls-remote --tags --refs $(repository) | awk -F"[\t/]" 'END{print $$NF}'))
+	$(eval file = Alacritty-$(version)_amd64.deb)
+	wget --directory-prefix="/tmp" --timestamping "$(repository)/releases/download/$(version)/$(file)"
+	sudo apt install "/tmp/$(file)"
+	mkdir -p "$(XDG_CONFIG_HOME)/alacritty"
+	@bash ./install/run-helper link "alacritty.yml" "$(XDG_CONFIG_HOME)/alacritty/alacritty.yml"
+	ln -sf "/usr/bin/alacritty" "flags"
+
+flags/alacritty-src: rust apt.cmake apt.libfreetype6-dev apt.libfontconfig1-dev apt.xclip
 	@bash ./install/run-helper git-clone "https://github.com/jwilm/alacritty" "/tmp/alacritty"
 	rustup override set stable
 	rustup update stable
 	cd "/tmp/alacritty" && cargo build --release
 	sudo mv "/tmp/alacritty/target/release/alacritty" "/usr/local/bin"
 	sudo mv "/tmp/alacritty/alacritty.desktop" "/usr/share/applications"
+	-rm -rf "/tmp/alacritty"
 	mkdir -p "$(XDG_CONFIG_HOME)/alacritty"
 	@bash ./install/run-helper link "alacritty.yml" "$(XDG_CONFIG_HOME)/alacritty/alacritty.yml"
-	-rm -rf "/tmp/alacritty"
-	ln -sf "/usr/local/bin/alacritty" "flags"
+	ln -sf "/usr/local/bin/alacritty" "flags/alacritty-src"
 
 flags/stterm: apt.libx11-dev apt.libxft-dev
 	wget --directory-prefix="/tmp" --timestamping https://dl.suckless.org/st/st-$(version).tar.gz
