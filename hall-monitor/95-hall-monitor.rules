@@ -1,0 +1,1 @@
+KERNEL=="card0", SUBSYSTEM=="drm", TAG+="systemd"

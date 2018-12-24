@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+LOG_DIR="$XDG_DATA_HOME/hall-monitor"
+CONFIG_DIR="$XDG_CONFIG_HOME/hall-monitor"
+
+mkdir -p "$LOG_DIR"
+
+log() {
+  echo -e "[$(date)]: $*" >> "$LOG_DIR/log"
+}
+
+# Find out the device path to our graphics card:
+cardPath=/sys/$(udevadm info -q path -n /dev/dri/card0)
+
+# Detect if the monitor is connected and, if so, the monitor's ID:
+connected="$(xrandr | grep --perl-regexp --only-matching '^\w+-.*(?=\sconnected\s\()')"
+
+for port in $connected; do
+
+  # Get a unqiue id for the actual device connceted
+  sha=$(sha1sum "$cardPath/card0-$port/edid" | cut -f1 -d " ")
+
+  # print the id for debugging
+  log "connected" "port=$port" "sha=$sha"
+
+  monitor="$(jq ".\"$sha\"" "$CONFIG_DIR/monitors.json")"
+
+  if test "$monitor" != "null"; then
+    log "connected to" "$(jq --raw-output ".name" <(echo "$monitor"))"
+     # shellcheck disable=SC2046
+     # we want word splitting to occur here
+    xrandr --output "$port" $(jq --raw-output ".setup" <(echo "$monitor"))
+  else
+    lxrandr
+  fi
+done
+
+# Turn off all disconnected ports that are still assigned a resolution
+# Format of output "DP-1 connected 3840x2160+3840+0...."
+disconnected="$(xrandr | grep --perl-regexp --only-matching '^\w+-.*(?=\sdisconnected\s\d)')"
+for port in $disconnected; do
+  log "disconnected" "port=$port"
+  xrandr --output "$port" --off
+done

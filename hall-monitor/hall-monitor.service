@@ -1,0 +1,14 @@
+[Unit]
+Description=Autoconfiguration of monitors independent of a desktop environment
+# When the graphics card device file reloads, this service should too
+ReloadPropagatedFrom=dev-dri-card0.device
+
+[Install]
+RequiredBy=dev-dri-card0.device
+WantedBy=default.target
+
+[Service]
+# reload events are not fired for services that terminate
+RemainAfterExit=true
+ExecStart=/usr/local/bin/hall-monitor
+ExecReload=/usr/local/bin/hall-monitor
