@@ -71,6 +71,7 @@ postman: flags/postman
 # System Configuration
 gestures: flags/gestures
 hall-monitor: flags/hall-monitor
+libinput: flags/libinput
 
 # Fixes for firefox when using dark themes and for scrolling using a touchscreen
 # Theme fix from https://wiki.archlinux.org/index.php/Firefox#Unreadable_input_fields_with_dark_GTK.2B_themes
@@ -255,6 +256,11 @@ flags/hall-monitor: apt.jq apt.lxrandr apt.x11-xserver-utils
 	systemctl --user enable hall-monitor.service
 	systemctl --user start hall-monitor.service
 	ln -sf "/usr/local/bin/hall-monitor" "flags"
+
+flags/libinput:
+	sudo mkdir --parents "/etc/X11/xorg.conf.d"
+	@sudo bash ./install/run-helper link "40-libinput.conf" "/etc/X11/xorg.conf.d/40-libinput.conf"
+	ln -sf "/etc/X11/xorg.conf.d/40-libinput.conf" "flags"
 
 opt-dir: flags/opt-dir
 flags/opt-dir:
