@@ -79,7 +79,9 @@ ping -c 5 -q google.com
 echo "You may unplug the ethernet cable now"
 
 sudo apt purge tmux apport byobu screen
+sudo apt install --no-install-recommends manpages-dev           # GNU/Linux manpages
 sudo apt install --no-install-recommends xserver-xorg           # X11 server
+sudo apt install --no-install-recommends xorg-docs-core         # Docs for X
 sudo apt install --no-install-recommends xinit                  # xinit + startx
 sudo apt install --no-install-recommends x11-xserver-utils      # tools like xrandr, xmodmap, xrdb, etc.
 sudo apt install --no-install-recommends mesa-utils             # tools like glxinfo, glxgears, glxinfo, glxheads
