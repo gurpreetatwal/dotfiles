@@ -132,17 +132,15 @@ flags/fasd:
 	cd $(tmp) && sudo make install
 	ln -sf /usr/local/bin/fasd flags
 
-flags/pip2: apt.python-dev apt.python-pip
-	python2 -m pip install --user --upgrade pip
-	python2 -m pip install --user --upgrade wheel
-	python2 -m pip install --user --upgrade setuptools
-	touch flags/pip2
+flags/pip2:
+	curl --location --silent --show-error https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
+	python2 /tmp/get-pip.py --user
+	ln -sf "$(XDG_DATA_HOME)/bin/pip2" "flags"
 
-flags/pip3: apt.python3-dev apt.python3-pip
-	python3 -m pip install --user --upgrade pip
-	python3 -m pip install --user --upgrade wheel
-	python3 -m pip install --user --upgrade setuptools
-	touch flags/pip3
+flags/pip3:
+	curl --location --silent --show-error https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
+	python3 /tmp/get-pip.py --user
+	ln -sf "$(XDG_DATA_HOME)/bin/pip3" "flags"
 
 flags/i3: apt.i3 apt.i3lock apt.xautolock
 	mkdir --parents "$(XDG_CONFIG_HOME)/i3"
