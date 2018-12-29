@@ -79,9 +79,11 @@ libinput: flags/libinput
 firefox-fix:
 	sudo sed -i 's/Exec=.*firefox/Exec=env MOZ_USE_XINPUT2=1 GTK_THEME=Adwaita:light firefox/' /usr/share/applications/firefox.desktop
 
-pgcli: pip2 apt.libpq-dev apt.libevent-dev
-	pip install --user --upgrade pgcli
+pgcli: pip3 apt.python3-dev apt.libpq-dev apt.libevent-dev
+	pip3 install --user --upgrade pgcli
+	mkdir --parents "$(XDG_CONFIG_HOME)/pgcli"
 	@bash ./install/run-helper link pgcli $(XDG_CONFIG_HOME)/pgcli/config
+	-ln -sf "$$(which pgcli)" "flags"
 
 bindkeys: apt.xbindkeys apt.xdotool
 	@bash ./install/run-helper link xbindkeysrc $(HOME)/.xbindkeysrc
