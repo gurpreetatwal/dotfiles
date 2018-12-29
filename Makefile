@@ -142,11 +142,13 @@ flags/pip3:
 	python3 /tmp/get-pip.py --user
 	ln -sf "$(XDG_DATA_HOME)/bin/pip3" "flags"
 
-flags/i3: apt.i3 apt.i3lock apt.xautolock
+flags/i3: apt.i3 apt.i3lock apt.xautolock apt.rofi
 	mkdir --parents "$(XDG_CONFIG_HOME)/i3"
 	mkdir --parents "$(XDG_CONFIG_HOME)/i3status"
+	mkdir --parents "$(XDG_CONFIG_HOME)/rofi"
 	@bash ./install/run-helper link "i3.conf" "$(XDG_CONFIG_HOME)/i3/config"
 	@bash ./install/run-helper link "i3status.conf" "$(XDG_CONFIG_HOME)/i3status/config"
+	@bash ./install/run-helper link "rofi.rasi" "$(XDG_CONFIG_HOME)/rofi/config.rasi"
 	ln -sf "$(XDG_CONFIG_HOME)/i3/config" "flags/i3"
 
 flags/node:
