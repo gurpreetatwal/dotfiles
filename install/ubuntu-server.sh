@@ -84,12 +84,16 @@ sudo apt install --no-install-recommends xserver-xorg           # X11 server
 sudo apt install --no-install-recommends xorg-docs-core         # Docs for X
 sudo apt install --no-install-recommends xinit                  # xinit + startx
 sudo apt install --no-install-recommends x11-xserver-utils      # tools like xrandr, xmodmap, xrdb, etc.
+sudo apt install --no-install-recommends x11-utils              # tools like xdpyinfo, xev, xfontsel, xkill, etc.
+sudo apt install --no-install-recommends xdg-utils              # tools like xdg-open, xdg-desktop-menu, xdg-settings, etc.
 sudo apt install --no-install-recommends mesa-utils             # tools like glxinfo, glxgears, glxinfo, glxheads
 sudo apt install --no-install-recommends alsa-utils             # tools like amixer, aplay, alsaloop, speaker-test, etc.
+sudo apt install --no-install-recommends dbus-x11               # dbus-launch
 sudo apt install --no-install-recommends make                   # lol
 git clone "https://github.com/gurpreetatwal/dotfiles" "$HOME/dotfiles"
 cd "$HOME/dotfiles"
 make alacritty
 make i3
 sudo apt install --no-install-recommends firefox                # see above
+sudo apt install --no-install-recommends chromium-browser       # see above
 sudo apt install --no-install-recommends apulse                 # pulse -> alsa bridge, needed for firefox
