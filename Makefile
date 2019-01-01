@@ -72,6 +72,7 @@ postman: flags/postman
 gestures: flags/gestures
 hall-monitor: flags/hall-monitor
 libinput: flags/libinput
+redshift: flags/redshift
 
 # Fixes for firefox when using dark themes and for scrolling using a touchscreen
 # Theme fix from https://wiki.archlinux.org/index.php/Firefox#Unreadable_input_fields_with_dark_GTK.2B_themes
@@ -263,6 +264,12 @@ flags/libinput:
 	sudo mkdir --parents "/etc/X11/xorg.conf.d"
 	@sudo bash ./install/run-helper link "40-libinput.conf" "/etc/X11/xorg.conf.d/40-libinput.conf"
 	ln -sf "/etc/X11/xorg.conf.d/40-libinput.conf" "flags"
+
+flags/redshift:
+	sudo apt-get install --no-install-recommends redshift-gtk
+	command -v debfoster && sudo debfoster redshift-gtk
+	@sudo bash ./install/run-helper link "redshift.conf" "$(XDG_CONFIG_HOME)/redshift.conf"
+	-ln -sf "$$(which redshift)" "flags"
 
 opt-dir: flags/opt-dir
 flags/opt-dir:
