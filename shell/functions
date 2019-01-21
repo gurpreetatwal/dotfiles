@@ -63,3 +63,19 @@ temp() {
   fi
   cd "$whereto" || exit
 }
+
+# Switch between different development environments
+prod() {
+  export NODE_ENV='production'
+  export AWS_PROFILE='production'
+}
+
+qa() {
+  export NODE_ENV='qa'
+  export AWS_PROFILE='qa'
+}
+
+dev() {
+  export NODE_ENV='development'
+  unset AWS_PROFILE
+}
