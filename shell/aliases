@@ -85,7 +85,7 @@ alias grsu="git remote set-url"
 
 ### Log
 alias glg="git log --stat --graph"
-alias glgp="git log --stat --graph --patch"
+alias glgp="git log --stat --graph --patch -- ':!package-lock.json'"
 alias glgo="git log --stat --graph --oneline"
 alias glgpo="git log --stat --graph --path --oneline"
 
