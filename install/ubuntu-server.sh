@@ -88,12 +88,14 @@ install manpages-dev           # GNU/Linux manpages
 install xserver-xorg           # X11 server
 install xorg-docs-core         # Docs for X
 install xinit                  # xinit + startx
+install xinput                 # xinput
 install x11-xserver-utils      # tools like xrandr, xmodmap, xrdb, etc.
 install x11-utils              # tools like xdpyinfo, xev, xfontsel, xkill, etc.
 install xdg-utils              # tools like xdg-open, xdg-desktop-menu, xdg-settings, etc.
 install mesa-utils             # tools like glxinfo, glxgears, glxinfo, glxheads
 install alsa-utils             # tools like amixer, aplay, alsaloop, speaker-test, etc.
 install dbus-x11               # dbus-launch
+install cgroup-tools           # tools like cgcreate, cgexec, cgdelete, etc.
 install make                   # lol
 git clone "https://github.com/gurpreetatwal/dotfiles" "$HOME/dotfiles"
 cd "$HOME/dotfiles"
