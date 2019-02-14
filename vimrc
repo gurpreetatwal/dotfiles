@@ -166,6 +166,7 @@ if has('nvim')
   let g:deoplete#sources#ternjs#docs=1
   let g:deoplete#sources#ternjs#include_keywords=1
   call deoplete#custom#var('file', 'enable_buffer_path', 1)
+  call deoplete#custom#source('ultisnips', 'rank', 1000)
   call deoplete#custom#source('tern', 'rank', 1100) " LanguageClient has rank of 1000
 endif
 
@@ -186,10 +187,13 @@ let g:airline#extensions#default#section_truncate_width={
   \ }
 
 "" Ultisnips Settings
-let g:UltiSnipsExpandTrigger="<TAB>"
+let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsListSnippets="<C-l>"
-let g:UltiSnipsJumpForwardTrigger="<C-j>"
-let g:UltiSnipsJumpBackwardTrigger="<C-k>"
+let g:UltiSnipsJumpForwardTrigger='<tab>'
+let g:UltiSnipsJumpBackwardTrigger ='<s-tab>'
+set runtimepath+=~/dotfiles/vim                             " required b/c https://github.com/SirVer/ultisnips/issues/711#issuecomment-246815553
+let g:UltiSnipsSnippetsDir='~/dotfiles/vim/UltiSnips'
+let g:UltiSnipsSnippetDirectories=['~/dotfiles/vim/UltiSnips', 'UltiSnips']
 
 "" LanguageClient Settings
 set hidden
