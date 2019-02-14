@@ -9,6 +9,7 @@ call plug#begin()
 Plug 'SirVer/ultisnips'                 " snippet engine
 Plug 'Valloric/MatchTagAlways', { 'for' : ['html', 'xhtml', 'xml', 'jinja'] }           " highlights surrounding html tag
 Plug 'airblade/vim-gitgutter'         " add support for viewing and editing git hunks
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'npm install -g javascript-typescript-langserver@latest && bash install.sh' }
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'gurpreetatwal/vim-avro'
@@ -28,7 +29,6 @@ Plug 'tpope/vim-surround'              " add/remove/change surrounding things li
 Plug 'tpope/vim-unimpaired'            " key binds for common commands like :bnext, :lnext, etc.
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'npm install -g javascript-typescript-langserver@latest && bash install.sh' }
 
 "" Vim plugins
 " Plug 'example', Cond(!has('nvim'))
