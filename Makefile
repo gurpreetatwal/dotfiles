@@ -156,6 +156,7 @@ flags/i3: apt.i3 apt.i3lock apt.xautolock apt.rofi
 
 flags/node:
 	curl --location https://git.io/n-install | N_PREFIX=$(XDG_DATA_HOME)/nodejs bash -s -- -n
+	@bash ./install/run-helper link "tern-project" "$(HOME)/.tern-project"
 	ln -sf $(XDG_DATA_HOME)/nodejs/bin/node flags/node
 
 flags/rust:

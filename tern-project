@@ -1,11 +1,18 @@
 {
-  "ecmaVersion": 7,
+  "libs": [
+    "ecmascript"
+  ],
   "plugins": {
-    "node": {},
-    "doc_comment": {},
-    "es_modules": {},
+    "commonjs": {},
     "complete_strings": {
       "maxLength": 15
-    }
+    },
+    "doc_comment": {
+      "strong": true
+    },
+    "es_modules": {},
+    "modules": {},
+    "node": {},
+    "node_resolve": {}
   }
 }
