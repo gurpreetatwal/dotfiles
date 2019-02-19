@@ -10,8 +10,31 @@ test('$1', ${2:async }(t) => {
 });
 endsnippet
 
-snippet require "require statement" b
-const $1 = require('$2');
+snippet req "require"
+const $2`!p
+def formatVariableName(path):
+  name = path.split('/')[-1]
+
+  if not name:
+    return name
+
+  overrides = {
+    'ava': 'test',
+    'bluebird': 'Promise',
+    'clutch-assert': 'assert',
+    'lodash': '_',
+    'testdouble': 'td',
+    'v4': 'uuid',
+  }
+
+  if name in overrides:
+    return overrides[name]
+
+  name = name.title() # title case string
+  name = name[0].lower() + name[1:]
+  return re.sub(r'[_\-]', '', name)
+snip.rv = formatVariableName(t[1])
+` = require('$1');$0
 endsnippet
 
 snippet log "a log statement"
