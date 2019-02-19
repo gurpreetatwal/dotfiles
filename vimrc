@@ -101,7 +101,7 @@ nnoremap <leader>x :x<CR>
 nnoremap <leader>z :tabnew %<CR>
 nnoremap <leader>c ^lf(li<CR><ESC>$hf)i<CR><ESC>
 imap jk <Esc>
-iabbrev <expr> uuid system('uuidgen')[:-2]
+iabbrev <expr> uuidgen system('uuidgen')[:-2]
 
 "" Copy & Paste into sytem buffer
 map <leader>y "+y
