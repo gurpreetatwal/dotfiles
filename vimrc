@@ -35,7 +35,7 @@ Plug 'vim-airline/vim-airline-themes'
 
 "" Neovim plugins
 Plug 'Shougo/deoplete.nvim', Cond(has('nvim'), { 'do': ':UpdateRemotePlugins' })
-Plug 'carlitux/deoplete-ternjs', Cond(has('nvim'), {'do': 'npm install -g tern@latest', 'for': ['javascript']})
+Plug 'carlitux/deoplete-ternjs', Cond(has('nvim'), {'do': 'npm install -g tern@latest', 'for': ['javascript', 'typescript']})
 Plug 'w0rp/ale', Cond(has('nvim'))
 call plug#end()
 
@@ -203,6 +203,7 @@ let g:LanguageClient_diagnosticsList = "Location"      " use Location list inste
 " Minimal LSP configuration for JavaScript
 let g:LanguageClient_serverCommands = {
       \ 'javascript.jsx': ['javascript-typescript-stdio'],
+      \ 'typescript': ['javascript-typescript-stdio'],
       \ }
 autocmd FileType javascript.jsx setlocal omnifunc=LanguageClient#complete
 nnoremap <F5> :call LanguageClient_contextMenu()<CR>
