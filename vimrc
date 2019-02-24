@@ -14,11 +14,11 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'gurpreetatwal/vim-avro'
 Plug 'honza/vim-snippets'               " pre-written snippets
+Plug 'joshdick/onedark.vim'             " color scheme based on Atom's One Dark theme
 Plug 'junegunn/goyo.vim'              " creates padding around the window for focused writing
 Plug 'junegunn/limelight.vim'         " highlights the current paragraph and dims all others
 Plug 'lepture/vim-jinja'              " syntax for jinja/nunjucks (*.njk) files
 Plug 'othree/eregex.vim'
-Plug 'rakr/vim-one'
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'sjl/gundo.vim'
@@ -85,8 +85,8 @@ endif
 
 set hlsearch                      " highlight search matches
 set background=dark               " must go before the colorscheme
-let g:one_allow_italics = 1       " italics
-colorscheme one
+let g:onedark_terminal_italics=1        " italics
+colorscheme onedark
 
 "" Make background transparent
 " highlight Normal ctermbg=NONE guibg=NONE
@@ -173,7 +173,7 @@ endif
 "" Airline Settings
 set laststatus=2                " show airline even if no split exists
 set showtabline=2               " show tabline even if no tabs open
-let g:airline_theme='one'
+let g:airline_theme='onedark'
 let g:airline_powerline_fonts=1
 " let g:airline_left_sep=''
 " let g:airline_right_sep=''
