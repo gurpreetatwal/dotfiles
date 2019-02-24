@@ -73,6 +73,7 @@ gestures: flags/gestures
 hall-monitor: flags/hall-monitor
 libinput: flags/libinput
 redshift: flags/redshift
+fonts-hack: flags/fonts-hack
 
 # Fixes for firefox when using dark themes and for scrolling using a touchscreen
 # Theme fix from https://wiki.archlinux.org/index.php/Firefox#Unreadable_input_fields_with_dark_GTK.2B_themes
@@ -271,6 +272,19 @@ flags/redshift:
 	command -v debfoster && sudo debfoster redshift-gtk
 	@sudo bash ./install/run-helper link "redshift.conf" "$(XDG_CONFIG_HOME)/redshift.conf"
 	-ln -sf "$$(which redshift)" "flags"
+
+flags/fonts-hack: repository = https://github.com/source-foundry/Hack
+flags/fonts-hack:
+	@# get latest tagged version
+	$(eval version = $(shell git ls-remote --tags --refs $(repository) | awk -F"[\t/]" 'END{print $$NF}'))
+	$(eval file = Hack-$(version)-ttf.zip)
+	wget --directory-prefix="/tmp" --timestamping "$(repository)/releases/download/$(version)/$(file)"
+	wget --directory-prefix="/tmp" --timestamping "https://raw.githubusercontent.com/source-foundry/Hack/$(version)/config/fontconfig/45-Hack.conf"
+	unzip "/tmp/$(file)" -d "/tmp/hack"
+	sudo mv /tmp/hack/ttf/* "/usr/local/share/fonts"
+	sudo mv "/tmp/45-Hack.conf" "/etc/fonts/conf.d"
+	fc-cache -f -v
+	-ln -sf "$$(fc-list | grep Hack-Regular | awk -F : '{print $$1}')" "flags/fonts-hack"
 
 opt-dir: flags/opt-dir
 flags/opt-dir:
