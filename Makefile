@@ -146,7 +146,7 @@ flags/pip3:
 	python3 /tmp/get-pip.py --user
 	ln -sf "$(XDG_DATA_HOME)/bin/pip3" "flags"
 
-flags/i3: apt.i3 apt.i3lock apt.xautolock apt.rofi
+flags/i3: apt.i3 apt.i3lock apt.xautolock apt.rofi fonts-hack
 	mkdir --parents "$(XDG_CONFIG_HOME)/i3"
 	mkdir --parents "$(XDG_CONFIG_HOME)/i3status"
 	mkdir --parents "$(XDG_CONFIG_HOME)/rofi"
@@ -191,7 +191,7 @@ flags/gradle: flags/java flags/opt-dir
 	ln -sf /opt/gradle flags
 
 flags/alacritty: repository = https://github.com/jwilm/alacritty
-flags/alacritty:
+flags/alacritty: fonts-hack
 	@# get latest tagged version
 	$(eval version = $(shell git ls-remote --tags --refs $(repository) | awk -F"[\t/]" 'END{print $$NF}'))
 	$(eval file = Alacritty-$(version)_amd64.deb)
