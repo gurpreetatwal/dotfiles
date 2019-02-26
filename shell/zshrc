@@ -4,7 +4,8 @@ fpath=("$HOME/.zfunctions" "$XDG_DATA_HOME/zsh-completions/src" $fpath)
 
 # Set up the prompt
 
-export SPACESHIP_DOCKER_SHOW=false      # don't show docker versio in the prompt
+export SPACESHIP_DOCKER_SHOW=false      # don't show docker version in the prompt
+export SPACESHIP_PACKAGE_SHOW=false     # don't show package version in the prompt
 autoload -Uz promptinit
 promptinit
 prompt spaceship
