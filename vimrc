@@ -173,6 +173,7 @@ endif
 "" Airline Settings
 set laststatus=2                " show airline even if no split exists
 set showtabline=2               " show tabline even if no tabs open
+set noshowmode                  " airline shows mode
 let g:airline_theme='onedark'
 let g:airline_powerline_fonts=1
 " let g:airline_left_sep=''
