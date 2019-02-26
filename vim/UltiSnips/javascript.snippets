@@ -1,11 +1,5 @@
-snippet mocha_test "A test for Mocha" b
-test('$1', ${2:async }function() {
-  $0
-});
-endsnippet
-
-snippet ava_test "A test for AVA" b
-test('$1', ${2:async }(t) => {
+snippet test "A test for Mocha/AVA" b
+test('${1:title}', ${2:async }(${3:t}) => {
   $0
 });
 endsnippet
@@ -34,9 +28,23 @@ def formatVariableName(path):
   name = name[0].lower() + name[1:]
   return re.sub(r'[_\-]', '', name)
 snip.rv = formatVariableName(t[1])
-` = require('$1');$0
+` = require('$1');
+$0
 endsnippet
 
-snippet log "a log statement"
+snippet cl "Log a variable along with its name"
 console.log('$1', $1);
+endsnippet
+
+snippet cljs "Log a pretty printed object"
+console.log('$1', JSON.stringify($1, null, 2));
+endsnippet
+
+snippet tdfn "A Testdouble function"
+td.function('$1');
+$0
+endsnippet
+
+snippet twhen "Record a simulation for testdouble"
+td.when($1).then$2($3);
 endsnippet
