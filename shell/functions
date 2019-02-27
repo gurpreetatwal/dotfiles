@@ -79,3 +79,23 @@ dev() {
   export NODE_ENV='development'
   unset AWS_PROFILE
 }
+
+# Pause / unpause notifications
+DND_FILE="/tmp/$USER.do-not-disturb"
+DND_PS1="\e[38;2;255;255;0m⎇  \e[0m"
+
+if [ -f "$DND_FILE" ]; then
+  export SPACESHIP_CHAR_PREFIX="$DND_PS1"
+fi
+
+dnd() {
+  if [ -f "$DND_FILE" ]; then
+    unset SPACESHIP_CHAR_PREFIX
+    killall -SIGUSR2 dunst
+    rm -f "$DND_FILE"
+  else
+    export SPACESHIP_CHAR_PREFIX="$DND_PS1"
+    killall -SIGUSR1 dunst
+    touch "$DND_FILE"
+  fi
+}
