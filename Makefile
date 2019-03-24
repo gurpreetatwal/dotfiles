@@ -73,6 +73,7 @@ gestures: flags/gestures
 hall-monitor: flags/hall-monitor
 libinput: flags/libinput
 redshift: flags/redshift
+intel-backlight: flags/intel-backlight
 fonts-hack: flags/fonts-hack
 
 # Fixes for firefox when using dark themes and for scrolling using a touchscreen
@@ -265,13 +266,17 @@ flags/hall-monitor: apt.jq apt.lxrandr apt.x11-xserver-utils
 flags/libinput:
 	sudo mkdir --parents "/etc/X11/xorg.conf.d"
 	@sudo bash ./install/run-helper link "40-libinput.conf" "/etc/X11/xorg.conf.d/40-libinput.conf"
-	ln -sf "/etc/X11/xorg.conf.d/40-libinput.conf" "flags"
+	ln -sf "/etc/X11/xorg.conf.d/40-libinput.conf" "flags/libinput"
 
 flags/redshift:
 	sudo apt-get install --no-install-recommends redshift-gtk
 	command -v debfoster && sudo debfoster redshift-gtk
 	@sudo bash ./install/run-helper link "redshift.conf" "$(XDG_CONFIG_HOME)/redshift.conf"
 	-ln -sf "$$(which redshift)" "flags"
+
+flags/intel-backlight: apt.xserver-xorg-video-intel apt.xbacklight
+	@sudo bash ./install/run-helper link "install/20-intel-backlight.conf" "/etc/X11/xorg.conf.d/20-intel-backlight.conf"
+	-ln -sf "/etc/X11/xorg.conf.d/20-intel-backlight.conf" "flags/intel-backlight"
 
 flags/fonts-hack: repository = https://github.com/source-foundry/Hack
 flags/fonts-hack:
