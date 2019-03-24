@@ -16,6 +16,7 @@ def formatVariableName(path):
     'ava': 'test',
     'bluebird': 'Promise',
     'clutch-assert': 'assert',
+    'joi': 'Joi',
     'lodash': '_',
     'testdouble': 'td',
     'v4': 'uuid',
@@ -47,4 +48,24 @@ endsnippet
 
 snippet twhen "Record a simulation for testdouble"
 td.when($1).then$2($3);
+endsnippet
+
+snippet iife "function expression"
+(function() {
+  try {
+    $0
+  } catch (e) {
+    console.error(e);
+  }
+})();
+
+endsnippet
+snippet asynciife "async function expression"
+(async function() {
+  try {
+    $0
+  } catch (e) {
+    console.error(e);
+  }
+})();
 endsnippet
