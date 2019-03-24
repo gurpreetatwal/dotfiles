@@ -19,6 +19,7 @@ Plug 'junegunn/goyo.vim'              " creates padding around the window for fo
 Plug 'junegunn/limelight.vim'         " highlights the current paragraph and dims all others
 Plug 'lepture/vim-jinja'              " syntax for jinja/nunjucks (*.njk) files
 Plug 'othree/eregex.vim'
+Plug 'ekalinin/Dockerfile.vim'          " syntax + snippets for Dockerfile
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'sjl/gundo.vim'
