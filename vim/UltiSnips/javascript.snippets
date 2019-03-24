@@ -1,3 +1,9 @@
+snippet suite "A suite for mocha" b
+suite('${1:title}', function() {
+  $0
+});
+endsnippet
+
 snippet test "A test for Mocha/AVA" b
 test('${1:title}', ${2:async }(${3:t}) => {
   $0
