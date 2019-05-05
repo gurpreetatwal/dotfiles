@@ -228,6 +228,7 @@ let g:ale_fix_on_save=1
 let g:ale_fixers = {
 \   'javascript': ['prettier', 'eslint', 'remove_trailing_lines'],
 \   'python': ['trim_whitespace', 'remove_trailing_lines'],
+  \ 'terraform': ['terraform', 'trim_whitespace'],
 \ }
 
 "" CtrlP Settings
