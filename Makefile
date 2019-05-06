@@ -254,9 +254,11 @@ flags/postman: opt-dir
 	rm -f "/tmp/postman.tar.gz"
 	ln -sf "/usr/local/bin/postman" "flags"
 
-flags/gestures:
+flags/gestures: apt.libinput-tools
 	@# Only known to work with libinput on Ubuntu 18.04
-	git clone https://github.com/bulletmark/libinput-gestures.git "/tmp/libinput-gestures"
+	@bash ./install/run-helper git-clone \
+	  "https://github.com/bulletmark/libinput-gestures.git" \
+	  "/tmp/libinput-gestures"
 	sudo usermod --append --groups input "$(USER)"
 	sudo make -C "/tmp/libinput-gestures" install
 	@bash ./install/run-helper link "libinput-gestures.conf" "$(XDG_CONFIG_HOME)/libinput-gestures.conf"
