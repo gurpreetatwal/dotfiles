@@ -225,7 +225,7 @@ flags/stterm: apt.libx11-dev apt.libxft-dev
 	-rm -rf /tmp/st-$(version)
 	ln -sf /usr/local/bin/st flags/stterm
 
-flags/docker:
+flags/docker: flags/docker-credential-ecr-login
 	sudo apt-key add install/docker.gpg
 	sudo add-apt-repository --update "deb [arch=amd64] https://download.docker.com/linux/ubuntu $$(lsb_release -cs) stable"
 	@bash ./install/run-helper installif docker-ce
@@ -233,6 +233,14 @@ flags/docker:
 	sudo groupadd --force docker
 	sudo usermod --append --groups docker $(USER)
 	ln -sf "$$(which docker)" flags/docker
+
+flags/docker-credential-ecr-login:
+	@bash ./install/run-helper git-clone "https://github.com/awslabs/amazon-ecr-credential-helper" "/tmp/amazon-ecr-credential-helper"
+	make -C "/tmp/amazon-ecr-credential-helper" docker
+	cp "/tmp/amazon-ecr-credential-helper/bin/local/docker-credential-ecr-login" "$(HOME)/bin"
+	mkdir -p "$(HOME)/.docker"
+	@bash ./install/run-helper link "install/docker-config.json" "$(HOME)/.docker/config.json"
+	ln -sf "$(HOME)/bin/docker-credential-ecr-login" "flags"
 
 flags/docker-compose:
 	curl --location --silent --show-error https://github.com/docker/compose/releases/download/$(compose-version)/docker-compose-Linux-x86_64 -o $(HOME)/bin/docker-compose
