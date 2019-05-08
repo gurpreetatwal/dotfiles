@@ -195,7 +195,7 @@ flags/alacritty: repository = https://github.com/jwilm/alacritty
 flags/alacritty: fonts-hack
 	@# get latest tagged version
 	$(eval version = $(shell git ls-remote --tags --refs $(repository) | awk -F"[\t/]" 'END{print $$NF}'))
-	$(eval file = Alacritty-$(version)_amd64.deb)
+	$(eval file = Alacritty-$(version)-ubuntu_18_04_amd64.deb)
 	wget --directory-prefix="/tmp" --timestamping "$(repository)/releases/download/$(version)/$(file)"
 	sudo apt install "/tmp/$(file)"
 	mkdir -p "$(XDG_CONFIG_HOME)/alacritty"
