@@ -170,10 +170,7 @@ flags/rust:
 	ln -sf $(HOME)/.cargo/bin/rustc flags/rust
 
 flags/java:
-	sudo apt-get remove --purge 'openjdk8*'
-	sudo add-apt-repository --yes --update ppa:webupd8team/java
-	echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections
-	@bash ./install/run-helper installif oracle-java8-installer oracle-java8-set-default
+	@bash ./install/run-helper installif default-jdk
 	ln -sf "$$(update-alternatives --list java)" flags/java
 
 flags/maven: flags/java flags/opt-dir
