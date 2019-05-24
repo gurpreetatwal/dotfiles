@@ -17,5 +17,8 @@ if [ $(command -v fasd) ]; then
 
 fi
 
+# gpg
+export GPG_TTY="$(tty)"
+
 source ~/dotfiles/shell/functions
 source ~/dotfiles/shell/aliases

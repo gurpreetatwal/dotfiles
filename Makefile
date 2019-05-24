@@ -69,6 +69,7 @@ docker-compose-update: update.flags/docker-compose flags/docker-compose
 postman: flags/postman
 
 # System Configuration
+gpg: flags/gpg
 gestures: flags/gestures
 hall-monitor: flags/hall-monitor
 libinput: flags/libinput
@@ -250,6 +251,13 @@ flags/postman: opt-dir
 	sudo ln -sf "/opt/Postman/app/Postman" "/usr/local/bin/postman"
 	rm -f "/tmp/postman.tar.gz"
 	ln -sf "/usr/local/bin/postman" "flags"
+
+flags/gpg: apt.scdaemon
+	@sudo bash ./install/run-helper link "install/70-yubikey.rules" "/etc/udev/rules.d/70-yubikey.rules"
+	mkdir "$(HOME)/.gnupg"
+	chmod 700 "$(HOME)/.gnupg"
+	@sudo bash ./install/run-helper link "gpg.conf" "$(HOME)/.gnupg/gpg.conf"
+	@sudo bash ./install/run-helper link "gpg-agent.conf" "$(HOME)/.gnupg/gpg-agent.conf"
 
 flags/gestures: apt.libinput-tools
 	@# Only known to work with libinput on Ubuntu 18.04

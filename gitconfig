@@ -18,3 +18,5 @@
 	autocorrect=5
 [rerere]
 	enabled = true
+[commit]
+	gpgsign = true
