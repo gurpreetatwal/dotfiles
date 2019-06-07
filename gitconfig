@@ -12,8 +12,9 @@
 [merge]
 	tool=vimdiff
 [advice]
-	pushNonFastForward=false
-	resolveConflict=false
+	pushNonFastForward = false
+	resolveConflict = false
+	statusHints = false
 [help]
 	autocorrect=5
 [rerere]
