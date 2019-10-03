@@ -138,6 +138,7 @@ alias gcom="git checkout master"
 ### Merge
 alias gm="git merge"
 alias gma="git merge --abort"
+alias gmc="git status --short | awk '/^U/{print \$2}'  | xargs vim"
 
 ### Rebasing
 alias grb="git rebase"
