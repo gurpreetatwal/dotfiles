@@ -15,9 +15,6 @@ const $2`!p
 def formatVariableName(path):
   name = path.split('/')[-1]
 
-  if not name:
-    return name
-
   overrides = {
     'ava': 'test',
     'bluebird': 'Promise',
@@ -30,6 +27,11 @@ def formatVariableName(path):
 
   if name in overrides:
     return overrides[name]
+  elif name.startswith('gulp-'):
+    name = name[5:]
+
+  if not name:
+    return name
 
   name = name.title() # title case string
   name = name[0].lower() + name[1:]
