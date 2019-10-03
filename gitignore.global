@@ -1,3 +1,4 @@
 *.swp
 Session.vim
 .tern-port
+z-ignored/
