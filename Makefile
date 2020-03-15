@@ -192,7 +192,7 @@ flags/gradle: flags/java flags/opt-dir
 flags/alacritty: repository = https://github.com/jwilm/alacritty
 flags/alacritty: fonts-hack
 	@# get latest tagged version
-	$(eval version = $(shell git ls-remote --tags --refs $(repository) | awk -F"[\t/]" 'END{print $$NF}'))
+	$(eval version = $(shell git ls-remote --tags --refs $(repository) | grep -P -o '(v\d+\.\d+\.\d+)$$' | sort | tail -1))
 	$(eval file = Alacritty-$(version)-ubuntu_18_04_amd64.deb)
 	wget --directory-prefix="/tmp" --timestamping "$(repository)/releases/download/$(version)/$(file)"
 	sudo apt install "/tmp/$(file)"
