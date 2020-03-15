@@ -23,8 +23,8 @@ alias mv="mv -i"
 alias rm="rm -i"
 
 ## Colors
-alias_g ls="ls --color=auto"
-alias_g dir="dir --color=auto"
+alias ls="ls --color=auto"
+alias dir="dir --color=auto"
 alias_g vdir="vdir --color=auto"
 alias_g grep="grep --color=auto"
 alias_g fgrep="fgrep --color=auto"
