@@ -6,7 +6,7 @@ view() {
 
 json() {
   # need to use subshell otherwise file is empty
-  echo "$(jq . "$1")" | tee "$1"
+  echo "$(jq --sort-keys . "$1")" | tee "$1"
 }
 
 screenshot() {
