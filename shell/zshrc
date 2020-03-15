@@ -17,9 +17,12 @@ HISTSIZE=10000
 SAVEHIST=10000
 HISTFILE=~/.zsh_history
 
-# Use modern completion system
-autoload -Uz compinit
-compinit
+## Completions
+autoload -Uz compinit && compinit
+autoload -U +X bashcompinit && bashcompinit
+
+# terraform
+test -f "$HOME/bin/terraform" && complete -o nospace -C "$HOME/bin/terraform" terraform
 
 ## Options
 ### Changing Directories
