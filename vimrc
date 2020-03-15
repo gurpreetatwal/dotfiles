@@ -226,11 +226,15 @@ autocmd FileType zsh let g:ale_sh_shellcheck_options = '-s bash'                
 """ Fix Settings
 let g:ale_fix_on_save=1
 let g:ale_fixers = {
-\   'sass': ['prettier', 'remove_trailing_lines'],
-\   'html': ['tidy', 'prettier', 'remove_trailing_lines'],
-\   'javascript': ['prettier', 'eslint', 'remove_trailing_lines'],
-\   'python': ['trim_whitespace', 'remove_trailing_lines'],
-\   'terraform': ['terraform', 'trim_whitespace'],
+\   '*': ['remove_trailing_lines'],
+\   'css': ['prettier'],
+\   'html': ['tidy', 'prettier'],
+\   'javascript': ['prettier', 'eslint'],
+\   'json': ['prettier'],
+\   'markdown': ['prettier'],
+\   'sass': ['prettier'],
+\   'terraform': ['terraform'],
+\   'yaml': ['prettier'],
 \ }
 
 "" CtrlP Settings
