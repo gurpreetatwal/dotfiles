@@ -3,6 +3,7 @@
 # @see https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#basics
 XDG_DATA_HOME ?= $(HOME)/.local/share
 XDG_CONFIG_HOME ?= $(HOME)/.config
+SHELL := /bin/bash
 
 tmux: version ?= 2.6
 maven: version ?= 3.5.2
@@ -67,6 +68,7 @@ docker-compose-update: update.flags/docker-compose flags/docker-compose
 
 # Tools
 postman: flags/postman
+onedrive: flags/onedrive
 
 # System Configuration
 gpg: flags/gpg
@@ -283,6 +285,25 @@ flags/postman: opt-dir
 	sudo ln -sf "/opt/Postman/app/Postman" "/usr/local/bin/postman"
 	rm -f "/tmp/postman.tar.gz"
 	ln -sf "/usr/local/bin/postman" "flags"
+
+flags/onedrive:
+	@bash ./install/run-helper installif build-essential libnotify-dev libcurl4-openssl-dev libsqlite3-dev pkg-config git curl
+	wget --directory-prefix="/tmp" --timestamping "https://dlang.org/install.sh"
+	chmod a+x /tmp/install.sh
+	/tmp/install.sh install dmd
+	@bash ./install/run-helper git-clone "https://github.com/abraunegg/onedrive.git" "/tmp/onedrive"
+	source "$$(/tmp/install.sh dmd -a)" && cd /tmp/onedrive && ./configure --enable-notifications
+	source "$$(/tmp/install.sh dmd -a)" && make -C /tmp/onedrive
+	sudo make -C /tmp/onedrive install
+	mkdir -p "$(XDG_CONFIG_HOME)/onedrive"
+	@bash ./install/run-helper link "onedrive" "$(XDG_CONFIG_HOME)/onedrive/config"
+	@bash ./install/run-helper link "sync_list" "$(XDG_CONFIG_HOME)/onedrive/sync_list"
+	-/tmp/install.sh uninstall dmd
+	-rm -rf "$(HOME)/dlang"
+	onedrive
+	systemctl --user enable onedrive
+	systemctl --user start onedrive
+	-ln -sf "$$(which onedrive)" "flags"
 
 flags/gpg: apt.scdaemon
 	@sudo bash ./install/run-helper link "install/70-yubikey.rules" "/etc/udev/rules.d/70-yubikey.rules"
