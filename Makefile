@@ -307,7 +307,7 @@ flags/onedrive:
 
 flags/gpg: apt.scdaemon
 	@sudo bash ./install/run-helper link "install/70-yubikey.rules" "/etc/udev/rules.d/70-yubikey.rules"
-	mkdir "$(HOME)/.gnupg"
+	mkdir --parents "$(HOME)/.gnupg"
 	chmod 700 "$(HOME)/.gnupg"
 	@sudo bash ./install/run-helper link "gpg.conf" "$(HOME)/.gnupg/gpg.conf"
 	@sudo bash ./install/run-helper link "gpg-agent.conf" "$(HOME)/.gnupg/gpg-agent.conf"
