@@ -16,6 +16,9 @@ alias ll="ls -l"
 alias la="ls -al"
 alias tree="tree -I '*node_modules*'"
 alias cl="fc -e -| xclip -i -sel clip"  # copies output of last command
+alias clipin="xclip -in -selection clipboard"  # copies input to clipboard
+alias clipout="xclip -out -selection clipboard"  # outputs clipboard contents
+# see also clippipe in shell/functions
 
 ## Interactive Mode
 alias cp="cp -i"

@@ -16,6 +16,10 @@ screenshot() {
   xclip -selection clipboard -target image/png -i < "${file}"
 }
 
+clippipe() {
+  xclip -out -selection clipboard | "$@" | xclip -in -selection clipboard
+}
+
 # fasd
 if [ "$(command -v fasd)" ]; then
   # taken from: https://github.com/clvv/fasd/blob/master/fasd#L89
