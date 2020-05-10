@@ -10,7 +10,7 @@ maven: version ?= 3.5.2
 gradle: version ?= 4.8.1
 stterm: version ?= 0.8.1
 flags/docker-compose: compose-version ?= 1.23.1
-zsh: prompt-location ?= $(XDG_DATA_HOME)/spaceship-prompt
+zsh: prompt-location ?= $(XDG_DATA_HOME)/powerlevel10k
 zsh: completions-location ?= $(XDG_DATA_HOME)/zsh-completions
 npm-%: packages = bower browser-sync bunyan gulp-cli eslint_d nodemon prettier
 
@@ -38,11 +38,8 @@ zsh: apt.zsh
 	mkdir --parents "$(HOME)/.zfunctions"
 	@bash ./install/run-helper link "shell/zshrc" "$(HOME)/.zshrc"
 	@bash ./install/run-helper link "shell/profile" "$(HOME)/.zprofile"
-	test -d "$(prompt-location)" || git clone https://github.com/denysdovhan/spaceship-prompt.git "$(prompt-location)"
-	test -d "$(completions-location)" || git clone git://github.com/zsh-users/zsh-completions.git "$(completions-location)"
-	git -C "$(prompt-location)" pull
-	git -C "$(completions-location)" pull
-	ln -sf "$(prompt-location)/spaceship.zsh" "$(HOME)/.zfunctions/prompt_spaceship_setup"
+	@bash ./install/run-helper git-clone "https://github.com/romkatv/powerlevel10k" "$(prompt-location)"
+	@bash ./install/run-helper git-clone "https://github.com/zsh-users/zsh-completions.git" "$(completions-location)"
 	rm "$(HOME)/.zcompdump"
 	zsh -c "source $(HOME)/.zshrc && compinit"
 

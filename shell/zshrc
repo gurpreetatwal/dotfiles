@@ -1,14 +1,13 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block, everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 source ~/dotfiles/shell/commonrc
 
-fpath=("$HOME/.zfunctions" "$XDG_DATA_HOME/zsh-completions/src" $fpath)
-
-# Set up the prompt
-
-export SPACESHIP_DOCKER_SHOW=false      # don't show docker version in the prompt
-export SPACESHIP_PACKAGE_SHOW=false     # don't show package version in the prompt
-autoload -Uz promptinit
-promptinit
-prompt spaceship
+fpath=("$XDG_DATA_HOME/zsh-completions/src" $fpath)
 
 setopt histignorealldups sharehistory
 
@@ -65,3 +64,6 @@ preexec () {
 if [ -e "$HOME/.zshrc.local" ]; then
   source "$HOME/.zshrc.local"
 fi
+
+source "${XDG_DATA_HOME}/powerlevel10k/powerlevel10k.zsh-theme"
+source ~/dotfiles/shell/p10k.zsh
