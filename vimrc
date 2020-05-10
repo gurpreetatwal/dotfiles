@@ -162,10 +162,10 @@ nnoremap <leader>tdoc :YcmCompleter GetDoc<CR>
 "" Deoplete
 if has('nvim')
   let g:deoplete#enable_at_startup=1
-  let g:deoplete#enable_smart_case=1
   let g:deoplete#sources#ternjs#types=1
   let g:deoplete#sources#ternjs#docs=1
   let g:deoplete#sources#ternjs#include_keywords=1
+  call deoplete#custom#option('smartcase', v:true)
   call deoplete#custom#var('file', 'enable_buffer_path', 1)
   call deoplete#custom#source('ultisnips', 'rank', 1000)
   call deoplete#custom#source('tern', 'rank', 1100) " LanguageClient has rank of 1000
