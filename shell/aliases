@@ -51,6 +51,9 @@ fi
 ## Python
 alias venv="python3 -m venv"
 
+## Others
+alias ffmpeg="ffmpeg -hide_banner"
+
 ##
 ## Git
 ##
