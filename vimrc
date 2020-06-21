@@ -96,6 +96,8 @@ colorscheme onedark
 " Custom keybindings
 "" General
 nnoremap <C-g> :GundoToggle<CR>
+nnoremap <C-n><C-n> :NERDTreeToggle<CR>
+nnoremap <C-n>f :NERDTreeFind<CR>
 noremap <A-z> :Goyo<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>x :x<CR>
