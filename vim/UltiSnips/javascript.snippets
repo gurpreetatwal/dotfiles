@@ -70,11 +70,21 @@ snippet iife "function expression"
 
 endsnippet
 snippet asynciife "async function expression"
-(async function() {
-  try {
+const main = async function() {
     $0
-  } catch (e) {
-    console.error(e);
-  }
-})();
+};
+
+main().catch(function(error) {
+  console.error('Top level error');
+  console.error(error);
+});
+endsnippet
+
+
+snippet me "module.exports"
+module.exports = $0
+endsnippet
+
+snippet meo "module.exports = {}"
+module.exports = { $0 }
 endsnippet
