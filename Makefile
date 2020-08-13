@@ -12,7 +12,7 @@ stterm: version ?= 0.8.1
 flags/docker-compose: compose-version ?= 1.23.1
 zsh: prompt-location ?= $(XDG_DATA_HOME)/powerlevel10k
 zsh: completions-location ?= $(XDG_DATA_HOME)/zsh-completions
-npm-%: packages = bower browser-sync bunyan gulp-cli eslint_d nodemon prettier
+npm-%: packages = browser-sync bunyan eslint_d geckodriver gulp-cli html nodemon ndb prettier tern
 
 .PHONY:
 	install
