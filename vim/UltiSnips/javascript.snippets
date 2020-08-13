@@ -5,7 +5,7 @@ suite('${1:title}', function() {
 endsnippet
 
 snippet test "A test for Mocha/AVA" b
-test('${1:title}', ${2:async }(${3:t}) => {
+test('${1:title}', ${2:async }function (${3:t}) {
   $0
 });
 endsnippet
@@ -42,8 +42,16 @@ snip.rv = formatVariableName(t[1])
 $0
 endsnippet
 
-snippet cl "Log a variable along with its name"
+snippet cl "Log"
+console.log($1);
+endsnippet
+
+snippet clvar "Log a variable along with its name"
 console.log('$1', $1);
+endsnippet
+
+snippet js "JSON stringify an object"
+JSON.stringify($1, null, 2));
 endsnippet
 
 snippet cljs "Log a pretty printed object"
