@@ -220,10 +220,10 @@ flags/gradle: flags/java flags/opt-dir
 	-rm "$(tmp)"
 	ln -sf /opt/gradle flags
 
-flags/alacritty: repository = https://github.com/jwilm/alacritty
+flags/alacritty: repository = https://github.com/alacritty/alacritty
+# all versions after don't have prebuilt binaries
+flags/alacritty: version = v0.4.3
 flags/alacritty: fonts-hack
-	@# get latest tagged version
-	$(eval version = $(shell git ls-remote --tags --refs $(repository) | grep -P -o '(v\d+\.\d+\.\d+)$$' | sort | tail -1))
 	$(eval file = Alacritty-$(version)-ubuntu_18_04_amd64.deb)
 	wget --directory-prefix="/tmp" --timestamping "$(repository)/releases/download/$(version)/$(file)"
 	sudo apt install "/tmp/$(file)"
@@ -232,7 +232,7 @@ flags/alacritty: fonts-hack
 	ln -sf "/usr/bin/alacritty" "flags"
 
 flags/alacritty-src: rust apt.cmake apt.libfreetype6-dev apt.libfontconfig1-dev apt.xclip
-	@bash ./install/run-helper git-clone "https://github.com/jwilm/alacritty" "/tmp/alacritty"
+	@bash ./install/run-helper git-clone "https://github.com/alacritty/alacritty" "/tmp/alacritty"
 	rustup override set stable
 	rustup update stable
 	cd "/tmp/alacritty" && cargo build --release
