@@ -64,6 +64,7 @@ docker-compose: flags/docker-compose
 docker-compose-update: update.flags/docker-compose flags/docker-compose
 
 # Tools
+kdeconnect: flags/kdeconnect
 postman: flags/postman
 onedrive: flags/onedrive
 
@@ -275,6 +276,18 @@ flags/docker-compose:
 	curl --location --silent --show-error https://github.com/docker/compose/releases/download/$(compose-version)/docker-compose-Linux-x86_64 -o $(HOME)/bin/docker-compose
 	chmod +x $(HOME)/bin/docker-compose
 	ln -sf $(HOME)/bin/docker-compose flags
+
+flags/kdeconnect:
+	sudo add-apt-repository --update --yes ppa:kubuntu-ppa/backports
+	@bash ./install/run-helper installif kdeconnect plasma-browser-integration
+	sudo ufw allow from 192.168.0.0/16 to any port 1714:1764 proto tcp
+	sudo ufw allow from 192.168.0.0/16 to any port 1714:1764 proto udp
+	sudo ufw reload
+	@sudo bash ./install/run-helper link "install/kdeconnect.service" "/etc/systemd/user/kdeconnect.service"
+	systemctl --user enable kdeconnect.service
+	systemctl --user start kdeconnect.service
+	-ln -sf "$$(which kdeconnect-cli)" "flags/kdeconnect"
+
 
 flags/postman: opt-dir
 	wget --output-document "/tmp/postman.tar.gz" https://dl.pstmn.io/download/latest/linux64

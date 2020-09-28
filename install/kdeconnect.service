@@ -1,0 +1,14 @@
+[Unit]
+Description=Starts an indicator for kdeconnect (which also starts kdeconnectd behind the scenes)
+After=default.target
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/kdeconnect-indicator
+Restart=always
+RestartSec=10s
+StartLimitBurst=6
+StartLimitInterval=60
