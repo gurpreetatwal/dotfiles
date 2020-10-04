@@ -67,6 +67,7 @@ docker-compose-update: update.flags/docker-compose flags/docker-compose
 kdeconnect: flags/kdeconnect
 postman: flags/postman
 onedrive: flags/onedrive
+onedrive-update: update.flags/onedrive flags/onedrive
 
 # System Configuration
 gpg: flags/gpg
@@ -310,7 +311,7 @@ flags/onedrive:
 	@bash ./install/run-helper link "sync_list" "$(XDG_CONFIG_HOME)/onedrive/sync_list"
 	-/tmp/install.sh uninstall dmd
 	-rm -rf "$(HOME)/dlang"
-	onedrive
+	onedrive --display-sync-status
 	systemctl --user enable onedrive
 	systemctl --user start onedrive
 	-ln -sf "$$(which onedrive)" "flags"
