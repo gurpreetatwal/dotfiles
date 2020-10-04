@@ -55,7 +55,7 @@ esac
 # Setup vars for the installation
 tmp=/tmp/$program
 dir=/opt/$program
-tar=$base-$version-no-jdk.tar.gz
+tar=$base-$version.tar.gz
 sha=$tar.sha256
 
 # Create temporary directory
