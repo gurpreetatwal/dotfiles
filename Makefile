@@ -78,6 +78,7 @@ libinput: flags/libinput
 redshift: flags/redshift
 intel-backlight: flags/intel-backlight
 fonts-hack: flags/fonts-hack
+grub-theme: flags/grub-theme
 
 # Fixes for firefox when using dark themes and for scrolling using a touchscreen
 # Theme fix from https://wiki.archlinux.org/index.php/Firefox#Unreadable_input_fields_with_dark_GTK.2B_themes
@@ -369,6 +370,11 @@ flags/fonts-hack:
 	sudo mv "/tmp/45-Hack.conf" "/etc/fonts/conf.d"
 	fc-cache -f -v
 	-ln -sf "$$(fc-list | grep Hack-Regular | awk -F : '{print $$1}')" "flags/fonts-hack"
+
+flags/grub-theme:
+	@bash ./install/run-helper git-clone "git@github.com:vinceliuice/grub2-themes.git" "/tmp/grub2-themes"
+	sudo /tmp/grub2-themes/install.sh --vimix --4k
+	-ln -sf "/usr/share/grub/themes/Vimix/theme.txt" "flags/grub-theme"
 
 opt-dir: flags/opt-dir
 flags/opt-dir:
