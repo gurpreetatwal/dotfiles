@@ -22,6 +22,7 @@ autoload -U +X bashcompinit && bashcompinit
 
 # terraform
 test -f "$HOME/bin/terraform" && complete -o nospace -C "$HOME/bin/terraform" terraform
+test -d "$XDG_DATA_HOME/awscli" && complete -C "$HOME/.local/bin/aws_completer" aws
 
 ## Options
 ### Changing Directories

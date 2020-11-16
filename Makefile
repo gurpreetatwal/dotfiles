@@ -63,6 +63,8 @@ docker-compose: flags/docker-compose
 docker-compose-update: update.flags/docker-compose flags/docker-compose
 
 # Tools
+awscli: flags/awscli
+awscli-update: update.flags/awscli flags/awscli
 kdeconnect: flags/kdeconnect
 postman: flags/postman
 onedrive: flags/onedrive
@@ -271,6 +273,12 @@ flags/docker-compose:
 	curl --location --silent --show-error https://github.com/docker/compose/releases/download/$(compose-version)/docker-compose-Linux-x86_64 -o $(HOME)/bin/docker-compose
 	chmod +x $(HOME)/bin/docker-compose
 	ln -sf $(HOME)/bin/docker-compose flags
+
+flags/awscli:
+	wget --directory-prefix="/tmp" --timestamping "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+	unzip -u -d "/tmp" "/tmp/awscli-exe-linux-x86_64.zip"
+	/tmp/aws/install --update --install-dir "$(XDG_DATA_HOME)/awscli" --bin-dir "$(HOME)/.local/bin"
+	-ln -sf "$$(which aws)" "flags/awscli"
 
 flags/kdeconnect:
 	sudo add-apt-repository --update --yes ppa:kubuntu-ppa/backports
