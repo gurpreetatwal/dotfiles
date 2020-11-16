@@ -45,7 +45,6 @@ zsh: apt.zsh
 
 fasd: flags/fasd
 
-pip2: flags/pip2
 pip3: flags/pip3
 
 i3: flags/i3
@@ -106,10 +105,9 @@ tmux: apt.libevent-dev apt.libncurses-dev apt.xclip
 alacritty: flags/alacritty
 stterm: flags/stterm
 
-flags/neovim: pip2 pip3
+flags/neovim: pip3
 	sudo add-apt-repository --update --yes ppa:neovim-ppa/stable
 	@bash ./install/run-helper installif neovim
-	python2 -m pip install --user --upgrade pynvim
 	python3 -m pip install --user --upgrade pynvim
 	mkdir -p ~/.config/nvim
 	@bash ./install/run-helper link vimrc $(HOME)/.config/nvim/init.vim
@@ -141,15 +139,10 @@ flags/fasd:
 	cd $(tmp) && sudo make install
 	ln -sf /usr/local/bin/fasd flags
 
-flags/pip2:
-	curl --location --silent --show-error https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
-	python2 /tmp/get-pip.py --user
-	ln -sf "$(XDG_DATA_HOME)/bin/pip2" "flags"
-
 flags/pip3:
 	curl --location --silent --show-error https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
 	python3 /tmp/get-pip.py --user
-	ln -sf "$(XDG_DATA_HOME)/bin/pip3" "flags"
+	ln -sf "$(HOME)/.local/bin/pip3" "flags"
 
 flags/i3: apt.i3 apt.i3lock apt.xautolock apt.rofi fonts-hack
 	mkdir --parents "$(XDG_CONFIG_HOME)/i3"
