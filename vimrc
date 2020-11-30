@@ -46,7 +46,7 @@ set number                        " line numbers
 set relativenumber                " show relative line numbers
 set incsearch                     " highlight search matches as you type
 set wildmenu                      " show autocomplete menu for vim commands
-set wildignore=*.o,*.obj,*.so
+set wildignore=*.o,*.obj,*.so,__pycache__
 set backspace=indent,eol,start    " backspace works as intended
 set autoread                      " reload files if changed by other program
 set cursorline                    " show horizontal cursor line
