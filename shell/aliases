@@ -51,6 +51,8 @@ fi
 ## Python
 alias venv="python3 -m venv"
 
+## Node
+alias npmup="rm -rf node_modules package-lock.json && npm install"
 ## Others
 alias ffmpeg="ffmpeg -hide_banner"
 
