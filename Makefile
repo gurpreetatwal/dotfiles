@@ -6,7 +6,7 @@ XDG_CONFIG_HOME ?= $(HOME)/.config
 SHELL := /bin/bash
 
 tmux: version ?= 2.6
-maven: version ?= 3.5.2
+maven: version ?= 3.6.3
 gradle: version ?= 5.4.1
 stterm: version ?= 0.8.1
 flags/docker-compose: compose-version ?= 1.26.2
