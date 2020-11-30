@@ -168,6 +168,7 @@ if has('nvim')
   let g:deoplete#sources#ternjs#docs=1
   let g:deoplete#sources#ternjs#include_keywords=1
   call deoplete#custom#option('smartcase', v:true)
+  call deoplete#custom#option('num_processes', 4)
   call deoplete#custom#var('file', 'enable_buffer_path', 1)
   call deoplete#custom#source('ultisnips', 'rank', 1000)
   call deoplete#custom#source('tern', 'rank', 1100) " LanguageClient has rank of 1000
