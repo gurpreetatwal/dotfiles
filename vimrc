@@ -9,7 +9,7 @@ call plug#begin()
 Plug 'SirVer/ultisnips'                 " snippet engine
 Plug 'Valloric/MatchTagAlways', { 'for' : ['html', 'xhtml', 'xml', 'jinja'] }           " highlights surrounding html tag
 Plug 'airblade/vim-gitgutter'         " add support for viewing and editing git hunks
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'npm install -g javascript-typescript-langserver@latest && bash install.sh' }
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'npm install -g typescript-language-server && bash install.sh' }
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'gurpreetatwal/vim-avro'
@@ -207,8 +207,8 @@ let g:LanguageClient_diagnosticsList = "Location"      " use Location list inste
 
 " Minimal LSP configuration for JavaScript
 let g:LanguageClient_serverCommands = {
-      \ 'javascript.jsx': ['javascript-typescript-stdio'],
-      \ 'typescript': ['javascript-typescript-stdio'],
+      \ 'javascript.jsx': ['typescript-language-server --stdio'],
+      \ 'typescript': ['typescript-language-server --stdio'],
       \ }
 autocmd FileType javascript.jsx setlocal omnifunc=LanguageClient#complete
 nnoremap <F5> :call LanguageClient_contextMenu()<CR>
