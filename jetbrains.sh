@@ -18,7 +18,7 @@ clear
 
 # Get the name of the porgam
 color "What application would you like to update?" 32
-select app in WebStorm PhpStorm PyCharm Idea; do
+select app in WebStorm PhpStorm PyCharm Idea Datagrip; do
   if [[ -n $app ]]; then
     break
   else
@@ -49,6 +49,10 @@ case $app in
   "Idea")
     program=idea
     base=$base/idea/ideaIU
+    ;;
+  "Datagrip")
+    program=datagrip
+    base=$base/datagrip/datagrip
     ;;
 esac
 
