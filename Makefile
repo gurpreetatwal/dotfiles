@@ -36,7 +36,7 @@ basic: apt.tree apt.silversearcher-ag apt.xclip apt.jq
 
 zsh: apt.zsh
 	grep "$$(whoami):$$(which zsh)$$" /etc/passwd || sudo usermod --shell "$$(which zsh)" "$$(whoami)"
-	mkdir --parents "$(HOME)/.zfunctions"
+	mkdir --parents "$(XDG_DATA_HOME)/zsh"
 	@bash ./install/run-helper link "shell/zshrc" "$(HOME)/.zshrc"
 	@bash ./install/run-helper link "shell/profile" "$(HOME)/.zprofile"
 	@bash ./install/run-helper git-clone "https://github.com/romkatv/powerlevel10k" "$(prompt-location)"

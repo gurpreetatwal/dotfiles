@@ -13,7 +13,7 @@ fpath=("$XDG_DATA_HOME/zsh-completions/src" $fpath)
 # Keep 1 million lines of history within the shell and save it to ~/.zsh_history:
 HISTSIZE=1000000                # number of records loaded into memory
 SAVEHIST=1000000                # number of records saved to the history file
-HISTFILE=~/.zsh_history
+HISTFILE="$XDG_DATA_HOME/zsh/history"
 
 setopt HIST_FIND_NO_DUPS        # do not display duplicates when searching
 setopt HIST_IGNORE_ALL_DUPS     # if the command is a duplicate of a previous command, delete the older
