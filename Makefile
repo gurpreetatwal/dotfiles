@@ -175,13 +175,13 @@ flags/polybar:
 	  libnl-genl-3-dev
 	@# get latest tagged version
 	$(eval version = $(shell git ls-remote --tags --refs $(repository) | awk -F"[\t/]" 'END{print $$NF}'))
-	$(eval file = polybar-$(version).tar)
+	$(eval file = polybar-$(version).tar.gz)
 	wget --directory-prefix="/tmp" --timestamping "$(repository)/releases/download/$(version)/$(file)"
-	tar --directory "/tmp" --extract --file  "/tmp/$(file)"
-	mkdir --parents "/tmp/polybar/build"
-	cd "/tmp/polybar/build" && cmake ..
-	make -C "/tmp/polybar/build" -j$$(nproc)
-	sudo make -C "/tmp/polybar/build" install
+	tar --directory "/tmp" --extract --gzip --file "/tmp/$(file)"
+	mkdir --parents "/tmp/polybar-$(version)/build"
+	cd "/tmp/polybar-$(version)/build" && cmake ..
+	make -C "/tmp/polybar-$(version)/build" -j$$(nproc)
+	sudo make -C "/tmp/polybar-$(version)/build" install
 	mkdir --parents "$(XDG_CONFIG_HOME)/polybar"
 	@bash ./install/run-helper link "polybar.ini" "$(XDG_CONFIG_HOME)/polybar/config"
 	@bash ./install/run-helper link "install/launch-polybar.sh" "$(XDG_CONFIG_HOME)/polybar/launch.sh"
