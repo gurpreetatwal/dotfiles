@@ -105,7 +105,7 @@ tmux: apt.libevent-dev apt.libncurses-dev apt.xclip
 	tic -o ~/.terminfo install/tmux-256color.terminfo
 	@bash ./install/run-helper link tmux.conf $(HOME)/.tmux.conf
 
-alacritty: flags/alacritty
+alacritty: flags/alacritty-src
 stterm: flags/stterm
 
 flags/neovim: pip3
@@ -219,24 +219,33 @@ flags/gradle: flags/java flags/opt-dir
 	-rm "$(tmp)"
 	ln -sf /opt/gradle flags
 
-flags/alacritty: repository = https://github.com/alacritty/alacritty
 # all versions after don't have prebuilt binaries
 flags/alacritty: version = v0.4.3
 flags/alacritty: fonts-hack
 	$(eval file = Alacritty-$(version)-ubuntu_18_04_amd64.deb)
-	wget --directory-prefix="/tmp" --timestamping "$(repository)/releases/download/$(version)/$(file)"
+	wget --directory-prefix="/tmp" --timestamping "https://github.com/alacritty/alacritty/releases/download/$(version)/$(file)"
 	sudo apt install "/tmp/$(file)"
 	mkdir -p "$(XDG_CONFIG_HOME)/alacritty"
 	@bash ./install/run-helper link "alacritty.yml" "$(XDG_CONFIG_HOME)/alacritty/alacritty.yml"
 	ln -sf "/usr/bin/alacritty" "flags"
 
-flags/alacritty-src: rust apt.cmake apt.libfreetype6-dev apt.libfontconfig1-dev apt.xclip
+flags/alacritty-src: version = v0.7.2
+flags/alacritty-src: rust fonts-hack apt.cmake apt.libfreetype6-dev apt.libfontconfig1-dev apt.libxcb-xfixes0-dev apt.xclip
 	@bash ./install/run-helper git-clone "https://github.com/alacritty/alacritty" "/tmp/alacritty"
+	cd /tmp/alacritty && git checkout "$(version)"
 	rustup override set stable
 	rustup update stable
 	cd "/tmp/alacritty" && cargo build --release
 	sudo mv "/tmp/alacritty/target/release/alacritty" "/usr/local/bin"
-	sudo mv "/tmp/alacritty/alacritty.desktop" "/usr/share/applications"
+	sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/local/bin/alacritty 50
+	# Desktop Entry
+	sudo cp "/tmp/alacritty/extra/logo/alacritty-term.svg" "/usr/share/pixmaps/Alacritty.svg"
+	sudo desktop-file-install "/tmp/alacritty/extra/linux/Alacritty.desktop"
+	sudo update-desktop-database
+	# Man Page
+	sudo mkdir -p "/usr/local/share/man/man1"
+	gzip -c "/tmp/alacritty/extra/alacritty.man" | sudo tee "/usr/local/share/man/man1/alacritty.1.gz" > /dev/null
+	# Cleanup
 	-rm -rf "/tmp/alacritty"
 	mkdir -p "$(XDG_CONFIG_HOME)/alacritty"
 	@bash ./install/run-helper link "alacritty.yml" "$(XDG_CONFIG_HOME)/alacritty/alacritty.yml"
