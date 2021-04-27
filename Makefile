@@ -111,7 +111,7 @@ stterm: flags/stterm
 flags/neovim: pip3
 	sudo add-apt-repository --update --yes ppa:neovim-ppa/stable
 	@bash ./install/run-helper installif neovim
-	python3 -m pip install --user --upgrade pynvim
+	pip3 install --user --upgrade pynvim
 	mkdir -p ~/.config/nvim
 	@bash ./install/run-helper link vimrc $(HOME)/.config/nvim/init.vim
 	curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -164,7 +164,7 @@ flags/polybar:
 	  libxcb-util0-dev \
 	  libxcb-randr0-dev \
 	  libxcb-composite0-dev \
-	  python-xcbgen \
+	  python3-xcbgen \
 	  xcb-proto \
 	  libxcb-image0-dev \
 	  libxcb-ewmh-dev \
@@ -291,7 +291,6 @@ flags/awscli:
 	-ln -sf "$$(which aws)" "flags/awscli"
 
 flags/kdeconnect:
-	sudo add-apt-repository --update --yes ppa:kubuntu-ppa/backports
 	@bash ./install/run-helper installif kdeconnect plasma-browser-integration
 	sudo ufw allow from 192.168.0.0/16 to any port 1714:1764 proto tcp
 	sudo ufw allow from 192.168.0.0/16 to any port 1714:1764 proto udp
