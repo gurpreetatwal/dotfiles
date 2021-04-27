@@ -187,7 +187,7 @@ flags/polybar:
 	@bash ./install/run-helper link "install/launch-polybar.sh" "$(XDG_CONFIG_HOME)/polybar/launch.sh"
 	-ln -sf "$$(which polybar)" "flags"
 
-flags/node:
+flags/node: flags/sysctl-inotify
 	curl --location https://git.io/n-install | N_PREFIX=$(XDG_DATA_HOME)/nodejs bash -s -- -n
 	@bash ./install/run-helper link "tern-project" "$(HOME)/.tern-project"
 	ln -sf $(XDG_DATA_HOME)/nodejs/bin/node flags/node
@@ -352,6 +352,11 @@ flags/hall-monitor: apt.jq apt.lxrandr apt.x11-xserver-utils
 	systemctl --user enable hall-monitor.service
 	systemctl --user start hall-monitor.service
 	ln -sf "/usr/local/bin/hall-monitor" "flags"
+
+flags/sysctl-inotify:
+	@sudo bash ./install/run-helper link "install/60-inotify-watches.conf" "/etc/sysctl.d/60-inotify-watches.conf"
+	sudo systemctl restart procps
+	-ln -sf "/etc/sysctl.d/60-inotify-watches.conf" "flags/sysctl-inotify"
 
 flags/libinput:
 	sudo mkdir --parents "/etc/X11/xorg.conf.d"
