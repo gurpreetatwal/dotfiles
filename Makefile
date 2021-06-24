@@ -68,6 +68,7 @@ awscli: flags/awscli
 awscli-update: update.flags/awscli flags/awscli
 kdeconnect: flags/kdeconnect
 postman: flags/postman
+etcher: flags/etcher
 onedrive: flags/onedrive
 onedrive-update: update.flags/onedrive flags/onedrive
 
@@ -307,6 +308,16 @@ flags/postman: opt-dir
 	sudo ln -sf "/opt/Postman/app/Postman" "/usr/local/bin/postman"
 	rm -f "/tmp/postman.tar.gz"
 	ln -sf "/usr/local/bin/postman" "flags"
+
+flags/etcher: repository = balena-io/etcher
+flags/etcher: apt.jq
+	@# get latest tagged version
+	$(eval version = $(shell curl --silent "https://api.github.com/repos/$(repository)/releases/latest" | jq -r .tag_name))
+	$(eval file = balenaEtcher-$(shell echo $(version) | sed "s/v//" )-x64.AppImage)
+	wget --directory-prefix="/tmp" --timestamping "https://github.com/$(repository)/releases/download/$(version)/$(file)"
+	mv "/tmp/$(file)" "$(HOME)/bin/etcher"
+	chmod a+x "$(HOME)/bin/etcher"
+	ln -sf "$(HOME)/bin/etcher" "flags"
 
 flags/onedrive:
 	@bash ./install/run-helper installif build-essential libnotify-dev libcurl4-openssl-dev libsqlite3-dev pkg-config git curl
