@@ -1,8 +1,10 @@
 
-# default XDG_DATA_HOME to ~/.local/share and XDG_CONFIG_HOME to ~/.config if not set
+# default XDG user directories if they are not set
 # @see https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#basics
-XDG_DATA_HOME ?= $(HOME)/.local/share
 XDG_CONFIG_HOME ?= $(HOME)/.config
+XDG_CACHE_HOME ?= $(HOME)/.cache
+XDG_DATA_HOME ?= $(HOME)/.local/share
+XDG_STATE_HOME ?= $(HOME)/.local/state
 SHELL := /bin/bash
 
 tmux: version ?= 2.6
@@ -27,6 +29,10 @@ install:
 basic: apt.tree apt.silversearcher-ag apt.xclip apt.jq
 	mkdir -p $(HOME)/bin
 	mkdir -p $(HOME)/temp
+	mkdir -p "$(XDG_CONFIG_HOME)"
+	mkdir -p "$(XDG_CACHE_HOME)"
+	mkdir -p "$(XDG_DATA_HOME)"
+	mkdir -p "$(XDG_STATE_HOME)"
 	test -d $(HOME)/scripts/.git || git clone https://github.com/gurpreetatwal/scripts.git  $(HOME)/scripts
 	@bash ./install/run-helper link "agignore" "$(HOME)/.agignore"
 	@bash ./install/run-helper link "shell/profile" "$(HOME)/.profile"

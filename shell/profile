@@ -4,8 +4,10 @@
 
 ## Set XDG vars to the default values
 # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#basics
-export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
 
 ## Path
 PATH="$HOME/bin:$PATH"                                          # personal bin directory
