@@ -34,8 +34,9 @@ basic: apt.tree apt.silversearcher-ag apt.xclip apt.jq
 	mkdir -p "$(XDG_DATA_HOME)"
 	mkdir -p "$(XDG_STATE_HOME)"
 	test -d $(HOME)/scripts/.git || git clone https://github.com/gurpreetatwal/scripts.git  $(HOME)/scripts
-	@bash ./install/run-helper link "agignore" "$(HOME)/.agignore"
 	@bash ./install/run-helper link "shell/profile" "$(HOME)/.profile"
+	mkdir -p "$(XDG_CONFIG_HOME)/ag"
+	@bash ./install/run-helper link "agignore" "$(XDG_CONFIG_HOME)/ag/ignore"
 	mkdir -p $(XDG_CONFIG_HOME)/git
 	@bash ./install/run-helper link "gitconfig" "$(XDG_CONFIG_HOME)/git/config"
 	@bash ./install/run-helper link "gitignore.global" "$(XDG_CONFIG_HOME)/git/global-ignore"

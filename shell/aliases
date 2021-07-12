@@ -9,7 +9,7 @@ alias_g() {
 # General
 #
 
-alias ag='ag --path-to-ignore $HOME/.agignore'
+alias ag='ag --path-to-ignore $XDG_CONFIG_HOME/ag/ignore'
 alias serve="browser-sync start -s"
 alias https="http --default-scheme=https"
 alias ll="ls -l"
