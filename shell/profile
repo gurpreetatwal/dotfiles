@@ -23,7 +23,8 @@ test -d /opt/gradle      && PATH+=":/opt/gradle/bin"            # gradle
 # Application Environment Variables
 
 ## java
-[ "$(command -v java)" ] && export JAVA_HOME="$(update-alternatives --list java | sed 's_/bin/java__')"
+[ "$(command -v java)" ] && \
+  export JAVA_HOME="$(update-alternatives --query java | grep --perl-regexp --only-matching '(?<=Best: ).*(?=/bin/java)')"
 
 ## psql
 export PGHOST="localhost"
