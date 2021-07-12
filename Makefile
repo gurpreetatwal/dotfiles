@@ -12,8 +12,6 @@ maven: version ?= 3.6.3
 gradle: version ?= 6.8.3
 stterm: version ?= 0.8.1
 flags/docker-compose: compose-version ?= 1.29.1
-zsh: prompt-location ?= $(XDG_DATA_HOME)/powerlevel10k
-zsh: completions-location ?= $(XDG_DATA_HOME)/zsh-completions
 npm-%: packages = browser-sync bunyan eslint_d geckodriver gulp-cli html nodemon ndb prettier tern
 
 .PHONY:
@@ -42,14 +40,17 @@ basic: apt.tree apt.silversearcher-ag apt.xclip apt.jq
 	@bash ./install/run-helper link "gitignore.global" "$(XDG_CONFIG_HOME)/git/ignore"
 
 zsh: apt.zsh
-	grep "$$(whoami):$$(which zsh)$$" /etc/passwd || sudo usermod --shell "$$(which zsh)" "$$(whoami)"
+	grep --quiet "$$(whoami):$$(which zsh)$$" /etc/passwd || sudo usermod --shell "$$(which zsh)" "$$(whoami)"
+	grep --quiet --fixed-strings 'ZDOTDIR="$$HOME/.config/zsh"' "/etc/zsh/zshenv" || \
+		echo 'ZDOTDIR="$$HOME/.config/zsh"' | sudo tee -a "/etc/zsh/zshenv"
+	mkdir --parents "$(XDG_CONFIG_HOME)/zsh"
+	@bash ./install/run-helper link "shell/zshrc" "$(XDG_CONFIG_HOME)/zsh/.zshrc"
+	@bash ./install/run-helper link "shell/profile" "$(XDG_CONFIG_HOME)/zsh/.zprofile"
 	mkdir --parents "$(XDG_DATA_HOME)/zsh"
-	@bash ./install/run-helper link "shell/zshrc" "$(HOME)/.zshrc"
-	@bash ./install/run-helper link "shell/profile" "$(HOME)/.zprofile"
-	@bash ./install/run-helper git-clone "https://github.com/romkatv/powerlevel10k" "$(prompt-location)"
-	@bash ./install/run-helper git-clone "https://github.com/zsh-users/zsh-completions.git" "$(completions-location)"
-	rm "$(HOME)/.zcompdump"
-	zsh -c "source $(HOME)/.zshrc && compinit"
+	@bash ./install/run-helper git-clone "https://github.com/romkatv/powerlevel10k" "$(XDG_DATA_HOME)/zsh/powerlevel10k"
+	@bash ./install/run-helper git-clone "https://github.com/zsh-users/zsh-completions.git" "$(XDG_DATA_HOME)/zsh/completions"
+	mkdir --parents "$(XDG_STATE_HOME)/zsh" # history is stored here
+	mkdir --parents "$(XDG_CACHE_HOME)/zsh" # completion cache is stored here
 
 fasd: flags/fasd
 

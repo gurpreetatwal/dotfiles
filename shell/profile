@@ -45,8 +45,8 @@ if test -f "$HOME/.profile.local"; then
 fi
 
 # Source the correct RC file
-if [[ -n "$ZSH_VERSION" && -f "$HOME/.zshrc" ]]; then
-  source "$HOME/.zshrc"
+if [[ -n "$ZSH_VERSION" && -f "$XDG_CONFIG_HOME/zsh/.zshrc" ]]; then
+  source "$XDG_CONFIG_HOME/zsh/.zshrc"
 elif [[ -n "$BASH_VERSION" && -f "$HOME/.bashrc" ]]; then
   source "$HOME/.bashrc"
 fi

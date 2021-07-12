@@ -1,26 +1,26 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block, everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+if [[ -r "${XDG_CACHE_HOME}/zsh/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME}/zsh/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 source ~/dotfiles/shell/commonrc
 
-fpath=("$XDG_DATA_HOME/zsh-completions/src" $fpath)
+fpath=("$XDG_DATA_HOME/zsh/completions/src" $fpath)
 
 
 # Keep 1 million lines of history within the shell and save it to ~/.zsh_history:
 HISTSIZE=1000000                # number of records loaded into memory
 SAVEHIST=1000000                # number of records saved to the history file
-HISTFILE="$XDG_DATA_HOME/zsh/history"
+HISTFILE="$XDG_STATE_HOME/zsh/history"
 
 setopt HIST_FIND_NO_DUPS        # do not display duplicates when searching
 setopt HIST_IGNORE_ALL_DUPS     # if the command is a duplicate of a previous command, delete the older
 setopt INC_APPEND_HISTORY       # write to the history file rightaway rather than waiting for shell to exit
 
 ## Completions
-autoload -Uz compinit && compinit
+autoload -Uz compinit && compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
 autoload -U +X bashcompinit && bashcompinit
 
 # terraform
@@ -40,7 +40,7 @@ setopt correct
 # Try to correct the spelling of all arguments in a line
 setopt correct_all
 
-
+zstyle ':completion:*' cache-path $XDG_CACHE_HOME/zsh/zcompcache
 zstyle ':completion:*' auto-description 'specify: %d'
 zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' format 'Completing %d'
@@ -69,5 +69,5 @@ if [ -e "$HOME/.zshrc.local" ]; then
   source "$HOME/.zshrc.local"
 fi
 
-source "${XDG_DATA_HOME}/powerlevel10k/powerlevel10k.zsh-theme"
+source "${XDG_DATA_HOME}/zsh/powerlevel10k/powerlevel10k.zsh-theme"
 source ~/dotfiles/shell/p10k.zsh
