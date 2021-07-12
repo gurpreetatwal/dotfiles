@@ -3,7 +3,7 @@
 	name=Gurpreet Atwal
 [core]
 	editor=vim
-	excludesfile=~/.config/git/global-ignore
+	excludesfile=~/.config/git/ignore
 [push]
 	default=current
 [branch]

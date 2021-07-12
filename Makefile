@@ -37,9 +37,9 @@ basic: apt.tree apt.silversearcher-ag apt.xclip apt.jq
 	@bash ./install/run-helper link "shell/profile" "$(HOME)/.profile"
 	mkdir -p "$(XDG_CONFIG_HOME)/ag"
 	@bash ./install/run-helper link "agignore" "$(XDG_CONFIG_HOME)/ag/ignore"
-	mkdir -p $(XDG_CONFIG_HOME)/git
+	mkdir -p "$(XDG_CONFIG_HOME)/git"
 	@bash ./install/run-helper link "gitconfig" "$(XDG_CONFIG_HOME)/git/config"
-	@bash ./install/run-helper link "gitignore.global" "$(XDG_CONFIG_HOME)/git/global-ignore"
+	@bash ./install/run-helper link "gitignore.global" "$(XDG_CONFIG_HOME)/git/ignore"
 
 zsh: apt.zsh
 	grep "$$(whoami):$$(which zsh)$$" /etc/passwd || sudo usermod --shell "$$(which zsh)" "$$(whoami)"
