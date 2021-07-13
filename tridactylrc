@@ -1,0 +1,16 @@
+" vim: filetype=vim
+
+set theme midnight
+
+" Ctrl-F should use the browser's native 'find' functionality.
+unbind <C-f>
+
+bind gd tabdetach
+bind gD composite tabduplicate; tabdetach
+
+" Disable <C-q>
+bind --mode=insert <C-q> js alert("<C-q> is for quitters.")
+bind --mode=input  <C-q> js alert("<C-q> is for quitters.")
+bind --mode=normal <C-q> js alert("<C-q> is for quitters.")
+bind --mode=ex     <C-q> js alert("<C-q> is for quitters.")
+bind --mode=hint   <C-q> js alert("<C-q> is for quitters.")

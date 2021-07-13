@@ -97,6 +97,12 @@ grub-theme: flags/grub-theme
 firefox-fix:
 	sudo sed -i 's/Exec=.*firefox/Exec=env MOZ_USE_XINPUT2=1 GTK_THEME=Adwaita:light firefox/' /usr/share/applications/firefox.desktop
 
+tridactyl:
+	wget --directory-prefix="/tmp" --timestamping "https://tridactyl.cmcaine.co.uk/betas/nonewtab/tridactyl_no_new_tab_beta-latest.xpi"
+	firefox "/tmp/tridactyl_no_new_tab_beta-latest.xpi"
+	mkdir -p "$(XDG_CONFIG_HOME)/tridactyl"
+	@bash ./install/run-helper link tridactylrc "$(XDG_CONFIG_HOME)/tridactyl/tridactylrc"
+
 pgcli: pip3 apt.python3-dev apt.libpq-dev
 	pip3 install --user --upgrade pgcli
 	mkdir --parents "$(XDG_CONFIG_HOME)/pgcli"
