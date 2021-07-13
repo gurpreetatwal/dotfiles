@@ -97,7 +97,7 @@ grub-theme: flags/grub-theme
 firefox-fix:
 	sudo sed -i 's/Exec=.*firefox/Exec=env MOZ_USE_XINPUT2=1 GTK_THEME=Adwaita:light firefox/' /usr/share/applications/firefox.desktop
 
-pgcli: pip3 apt.python3-dev apt.libpq-dev apt.libevent-dev
+pgcli: pip3 apt.python3-dev apt.libpq-dev
 	pip3 install --user --upgrade pgcli
 	mkdir --parents "$(XDG_CONFIG_HOME)/pgcli"
 	@bash ./install/run-helper link pgcli $(XDG_CONFIG_HOME)/pgcli/config
@@ -151,7 +151,7 @@ flags/fasd:
 	cd $(tmp) && sudo make install
 	ln -sf /usr/local/bin/fasd flags
 
-flags/pip3:
+flags/pip3: apt.python3-distutils
 	curl --location --silent --show-error https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
 	python3 /tmp/get-pip.py --user
 	ln -sf "$(HOME)/.local/bin/pip3" "flags"
