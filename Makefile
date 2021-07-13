@@ -67,7 +67,7 @@ java: flags/java
 maven: flags/maven
 gradle: flags/gradle
 
-docker: flags/docker docker-compose
+docker: flags/docker flags/docker-credential-ecr-login docker-compose
 docker-compose: flags/docker-compose
 docker-compose-update: update.flags/docker-compose flags/docker-compose
 
@@ -271,7 +271,7 @@ flags/stterm: apt.libx11-dev apt.libxft-dev
 	-rm -rf /tmp/st-$(version)
 	ln -sf /usr/local/bin/st flags/stterm
 
-flags/docker: flags/docker-credential-ecr-login
+flags/docker:
 	sudo apt-key add install/docker.gpg
 	sudo add-apt-repository --update "deb [arch=amd64] https://download.docker.com/linux/ubuntu $$(lsb_release -cs) stable"
 	@bash ./install/run-helper installif docker-ce
