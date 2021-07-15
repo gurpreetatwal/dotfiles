@@ -2,7 +2,7 @@
 
 # Use global aliases if possible
 alias_g() {
-  alias -g "$@" || alias "$@"
+  alias -g "$@" 2>/dev/null || alias "$@"
 }
 
 #
