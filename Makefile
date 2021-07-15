@@ -62,7 +62,11 @@ $(XDG_DATA_HOME)/fzf:
 $(FZF_FILES):
 	"$(XDG_DATA_HOME)/fzf/install" --xdg --key-bindings --completion --no-update-rc --no-fish
 
-fasd: flags/fasd
+.PHONY: fasd
+fasd: $(HOME)/.local/bin/fasd
+$(HOME)/.local/bin/fasd:
+	@bash ./install/run-helper git-clone "https://github.com/clvv/fasd.git" "/tmp/fasd" --depth 1
+	PREFIX="$(HOME)/.local" make -C "/tmp/fasd" install
 
 pip3: flags/pip3
 
@@ -161,11 +165,6 @@ apt.%:
 update.flags/%:
 	@rm flags/$* || true
 
-flags/fasd:
-	$(eval tmp = $(shell mktemp --dry-run))
-	git clone https://github.com/clvv/fasd $(tmp)
-	cd $(tmp) && sudo make install
-	ln -sf /usr/local/bin/fasd flags
 
 flags/pip3: apt.python3-distutils
 	curl --location --silent --show-error https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
