@@ -53,6 +53,15 @@ zsh: apt.zsh
 	mkdir --parents "$(XDG_STATE_HOME)/zsh" # history is stored here
 	mkdir --parents "$(XDG_CACHE_HOME)/zsh" # completion cache is stored here
 
+.PHONY: fzf
+FZF_FILES = $(XDG_DATA_HOME)/fzf/bin/fzf $(XDG_CONFIG_HOME)/fzf/fzf.bash $(XDG_CONFIG_HOME)/fzf/fzf.zsh
+fzf: $(XDG_DATA_HOME)/fzf $(FZF_FILES)
+$(XDG_DATA_HOME)/fzf:
+	@bash ./install/run-helper git-clone "https://github.com/junegunn/fzf.git" "$(XDG_DATA_HOME)/fzf" --depth 1
+
+$(FZF_FILES):
+	"$(XDG_DATA_HOME)/fzf/install" --xdg --key-bindings --completion --no-update-rc --no-fish
+
 fasd: flags/fasd
 
 pip3: flags/pip3

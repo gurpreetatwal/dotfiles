@@ -1,7 +1,13 @@
 # vi: ft=sh
 
+if [[ -n "$ZSH_VERSION" ]]; then
+  _SHELL="zsh"
+elif [[ -n "$BASH_VERSION" ]]; then
+  _SHELL="bash"
+fi
+
 # fzf
-[ -f $HOME/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f "${XDG_CONFIG_HOME}/fzf/fzf.${_SHELL}" ] && source "${XDG_CONFIG_HOME}/fzf/fzf.${_SHELL}"
 
 # fasd
 if [ $(command -v fasd) ]; then
@@ -22,3 +28,5 @@ export GPG_TTY="$(tty)"
 
 source ~/dotfiles/shell/functions
 source ~/dotfiles/shell/aliases
+
+unset _shell
