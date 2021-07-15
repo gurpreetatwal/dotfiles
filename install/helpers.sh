@@ -47,22 +47,23 @@ link() {
 }
 
 git-clone() {
-  if [[ $# != 2 ]]; then
-    color $red "Usage: git-clone <repo> <dest>\n"
+  if [[ $# -lt 2 ]]; then
+    color $red "Usage: git-clone <repo> <dest> [flags]\n"
     exit 1
   fi
 
   REMOTE="$1"
   DEST="$2"
+  FLAGS="${@:3}"
   repo="$(basename "$REMOTE" ".git")"
 
   color $cyan "[git]:  %-20s" "$repo"
 
   if [[ -d "$DEST" ]]; then
     color $green " pulling in $DEST\n"
-    git -C "$DEST" pull
+    git -C "$DEST" pull  "$FLAGS"
   else
     color $green " cloning to $DEST\n"
-    git clone "$REMOTE" "$DEST"
+    git clone $FLAGS -- "$REMOTE" "$DEST"
   fi
 }
