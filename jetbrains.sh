@@ -12,9 +12,6 @@ color() {
 }
 
 clear
-# if [ "$(whoami)" != "root" ]; then
-#   error "Please run this script as root!" 1
-# fi
 
 # Get the name of the porgam
 color "What application would you like to update?" 32
@@ -63,15 +60,11 @@ tar=$base-$version.tar.gz
 sha=$tar.sha256
 
 # Create temporary directory
-if [ -d $tmp ]; then
-  rm -rf $tmp
-fi
-mkdir $tmp
-cd $tmp
+mkdir --parents "$tmp"
 
 # Download the tarball and sha file
 color "Beginning Download..." 34
-wget $tar $sha
+wget --quiet --show-progress --timestamping --directory-prefix "$tmp" $tar $sha
 if [ $? != 0 ]; then
   error "Download failed!" $?
 fi
@@ -79,7 +72,7 @@ color "Download completed!" 32
 
 # Verify the sha
 color "Verifying File.." 34
-sha256sum -c ./*.sha256
+cd "$tmp" &&sha256sum --check *.sha256
 if [ $? != 0 ]; then
   error "The SHA256 hash does not match the file!" $?
 fi
@@ -93,11 +86,10 @@ mkdir $dir
 
 # Unpack the tar
 color "Unpacking the Tarball.." 34
-tar -xf ./*.tar.gz -C $dir
+tar -xf "$tmp"/*.tar.gz -C "$dir"
 if [ $? != 0 ]; then
   error "Could not unpack the tarball!" $?
 fi
-rm -rf $tmp
 color "Tar unpacked!" 32
 
 # Start application
