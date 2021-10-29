@@ -56,6 +56,7 @@ alias npmup="rm -rf node_modules package-lock.json && npm install"
 alias npmupc="rm -rf node_modules package-lock.json && npm install && git commit package.json package-lock.json -m 'chore(package): update dependencies'"
 ## Others
 alias ffmpeg="ffmpeg -hide_banner"
+alias ffprobe="ffprobe -hide_banner"
 
 ##
 ## Git
