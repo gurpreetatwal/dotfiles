@@ -54,7 +54,7 @@ alias venv="python3 -m venv"
 
 ## Node
 alias npmup="rm -rf node_modules package-lock.json && npm install"
-alias npmupc="rm -rf node_modules package-lock.json && npm install && git commit package.json package-lock.json -m 'chore(package): update dependencies'"
+alias npmupc="rm -rf node_modules package-lock.json && npm install && git commit package.json package-lock.json -m 'chore(deps): regenerate package-lock.json'"
 ## Others
 alias ffmpeg="ffmpeg -hide_banner"
 alias ffprobe="ffprobe -hide_banner"
