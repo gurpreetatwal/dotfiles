@@ -183,6 +183,7 @@ flags/i3: apt.i3 apt.i3lock apt.xautolock apt.rofi fonts-hack
 flags/polybar: repository = https://github.com/jaagr/polybar
 flags/polybar:
 	sudo apt install --no-install-recommends \
+	  libuv1-dev \
 	  libcairo2-dev \
 	  libxcb1-dev \
 	  libxcb-util0-dev \
@@ -207,7 +208,7 @@ flags/polybar:
 	make -C "/tmp/polybar-$(version)/build" -j$$(nproc)
 	sudo make -C "/tmp/polybar-$(version)/build" install
 	mkdir --parents "$(XDG_CONFIG_HOME)/polybar"
-	@bash ./install/run-helper link "polybar.ini" "$(XDG_CONFIG_HOME)/polybar/config"
+	@bash ./install/run-helper link "polybar.ini" "$(XDG_CONFIG_HOME)/polybar/config.ini"
 	@bash ./install/run-helper link "install/launch-polybar.sh" "$(XDG_CONFIG_HOME)/polybar/launch.sh"
 	-ln -sf "$$(which polybar)" "flags"
 
