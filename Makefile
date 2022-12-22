@@ -153,8 +153,8 @@ npm-install: node
 	npm install --global $(packages)
 
 npm-update: node
-	npm install --global npm
-	npm update --global $(packages)
+	npm install --global npm@latest
+	npm install --global $(shell npm ls --global | tail --lines=+2 | sed --regexp-extended -e 's/(├|└)─+ //' -e '/->/d' -e 's/@[0-9]+.*/@latest/' | tr '\n' ' ')
 
 jetbrains:
 	./jetbrains.sh
