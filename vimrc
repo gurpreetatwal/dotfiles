@@ -28,6 +28,8 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-repeat'                " map '.' so that it can repeat command meant for plugins like surround
 Plug 'tpope/vim-surround'              " add/remove/change surrounding things like: quotes, html tags, brackets, etc
 Plug 'tpope/vim-unimpaired'            " key binds for common commands like :bnext, :lnext, etc.
+Plug 'tpope/vim-fugitive'              " git plugin
+Plug 'tpope/vim-rhubarb'               " github integration for vim-fugitive
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
@@ -144,6 +146,10 @@ let g:goyo_width=100
 "" NerdTree
 let g:NERDTreeNatualSort=1          " sort 1, 2, 10, 20, 100 vs 1, 10, 100, 2, 20
 let g:NERDTreeRespectWildIgnore=1   " respect wildignore option
+
+"" fugitive
+map <leader>gb :GBrowse!<CR>
+map <leader>gB :GBrowse<CR>
 
 "" gundo
 let g:gundo_width=30
