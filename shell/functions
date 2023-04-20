@@ -20,6 +20,20 @@ clippipe() {
   xclip -out -selection clipboard | "$@" | xclip -in -selection clipboard
 }
 
+human_time() {
+  if [ ${#1} -gt 10 ]; then
+    ## milliseconds
+    date -d "@${1:0:10}.${1:10}"
+  else
+    ## seconds
+    date -d "@$1"
+  fi
+}
+
+android_screenshot() {
+  adb exec-out screencap -p | xclip -t image/png -sel clip
+}
+
 # fasd
 if [ "$(command -v fasd)" ]; then
   # taken from: https://github.com/clvv/fasd/blob/master/fasd#L89
