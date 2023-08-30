@@ -65,6 +65,7 @@ alias ffprobe="ffprobe -hide_banner"
 ##
 alias g="git"
 alias gd="git diff"
+alias gdiff="git diff --no-index"
 
 ### Cloning
 alias gcl="git clone"
