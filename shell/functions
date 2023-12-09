@@ -20,6 +20,10 @@ clippipe() {
   xclip -out -selection clipboard | "$@" | xclip -in -selection clipboard
 }
 
+escapechars() {
+  sed 's/[^A-Za-z0-9-]/\\\0/g'
+}
+
 human_time() {
   if [ ${#1} -gt 10 ]; then
     ## milliseconds
