@@ -12,6 +12,7 @@ Plug 'airblade/vim-gitgutter'         " add support for viewing and editing git 
 Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'npm install -g typescript-language-server && bash install.sh' }
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'edkolev/tmuxline.vim'
+Plug 'ekalinin/Dockerfile.vim'          " syntax + snippets for Dockerfile
 Plug 'gurpreetatwal/vim-avro'
 Plug 'honza/vim-snippets'               " pre-written snippets
 Plug 'joshdick/onedark.vim'             " color scheme based on Atom's One Dark theme
@@ -19,17 +20,16 @@ Plug 'junegunn/goyo.vim'              " creates padding around the window for fo
 Plug 'junegunn/limelight.vim'         " highlights the current paragraph and dims all others
 Plug 'lepture/vim-jinja'              " syntax for jinja/nunjucks (*.njk) files
 Plug 'othree/eregex.vim'
-Plug 'ekalinin/Dockerfile.vim'          " syntax + snippets for Dockerfile
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'sjl/gundo.vim'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'              " git plugin
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-repeat'                " map '.' so that it can repeat command meant for plugins like surround
+Plug 'tpope/vim-rhubarb'               " github integration for vim-fugitive
 Plug 'tpope/vim-surround'              " add/remove/change surrounding things like: quotes, html tags, brackets, etc
 Plug 'tpope/vim-unimpaired'            " key binds for common commands like :bnext, :lnext, etc.
-Plug 'tpope/vim-fugitive'              " git plugin
-Plug 'tpope/vim-rhubarb'               " github integration for vim-fugitive
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
