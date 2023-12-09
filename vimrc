@@ -248,13 +248,14 @@ let g:ale_fixers = {
 \   'css': ['prettier'],
 \   'html': ['tidy', 'prettier'],
 \   'javascript': ['prettier', 'eslint'],
-\   'typescript': ['prettier'],
 \   'json': ['prettier'],
 \   'json5': ['prettier'],
 \   'markdown': ['prettier'],
 \   'prisma': ['prisma'],
 \   'sass': ['prettier'],
+\   'svelte': ['prettier'],
 \   'terraform': ['terraform'],
+\   'typescript': ['prettier'],
 \   'yaml': ['prettier'],
 \ }
 
@@ -277,6 +278,9 @@ set conceallevel=1
 set concealcursor=c
 let g:javascript_plugin_jsdoc=1
 let g:javascript_conceal_function="λ"
+
+"" Svelte Settings
+let g:vim_svelte_plugin_use_typescript=1
 
 "" Tmuxline settings
 let g:tmuxline_preset='full'
