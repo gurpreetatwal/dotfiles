@@ -20,6 +20,7 @@ Plug 'junegunn/goyo.vim'              " creates padding around the window for fo
 Plug 'junegunn/limelight.vim'         " highlights the current paragraph and dims all others
 Plug 'lepture/vim-jinja'              " syntax for jinja/nunjucks (*.njk) files
 Plug 'othree/eregex.vim'
+Plug 'prisma/vim-prisma'
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'sjl/gundo.vim'
@@ -233,6 +234,13 @@ let g:ale_javascript_eslint_executable='eslint_d'
 autocmd FileType zsh let g:ale_sh_shellcheck_options = '-s bash'                " zsh is not a supported shell
 
 """ Fix Settings
+fun! PrismaFormat(buffer) abort
+  return {
+        \ 'command': 'cp ' . expand('%') . ' /tmp/schema.prisma && npx prisma format --schema /tmp/schema.prisma > /dev/null && cat /tmp/schema.prisma '
+        \}
+endfun
+execute ale#fix#registry#Add('prisma', 'PrismaFormat', ['prisma'], 'Format Prisma schema files')
+
 let g:ale_fix_on_save=1
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines'],
@@ -242,6 +250,7 @@ let g:ale_fixers = {
 \   'typescript': ['prettier'],
 \   'json': ['prettier'],
 \   'markdown': ['prettier'],
+\   'prisma': ['prisma'],
 \   'sass': ['prettier'],
 \   'terraform': ['terraform'],
 \   'yaml': ['prettier'],
