@@ -19,8 +19,9 @@ alias tree="tree -I '*node_modules*'"
 alias cl="fc -e -| xclip -i -sel clip"  # copies output of last command
 alias clipin="xclip -in -selection clipboard"  # copies input to clipboard
 alias clipout="xclip -out -selection clipboard"  # outputs clipboard contents
-alias pathy='echo $PATH | sed "s/:/\n/g"' # credits to @nbry for the name
 # see also clippipe in shell/functions
+alias pathy='echo $PATH | sed "s/:/\n/g"' # credits to @nbry for the name
+alias jwt="jq -R 'split(\".\") | .[1] | @base64d | fromjson'"
 
 ## Interactive Mode
 alias cp="cp -i"
