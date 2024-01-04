@@ -214,6 +214,7 @@ let g:LanguageClient_diagnosticsList = "Location"      " use Location list inste
 
 " Minimal LSP configuration for JavaScript
 let g:LanguageClient_serverCommands = {
+      \ 'javascript': ['typescript-language-server --stdio'],
       \ 'javascript.jsx': ['typescript-language-server --stdio'],
       \ 'typescript': ['typescript-language-server --stdio'],
       \ }
@@ -249,6 +250,7 @@ let g:ale_fixers = {
 \   'javascript': ['prettier', 'eslint'],
 \   'typescript': ['prettier'],
 \   'json': ['prettier'],
+\   'json5': ['prettier'],
 \   'markdown': ['prettier'],
 \   'prisma': ['prisma'],
 \   'sass': ['prettier'],
