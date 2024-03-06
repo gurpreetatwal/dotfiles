@@ -61,7 +61,13 @@ git-clone() {
 
   if [[ -d "$DEST" ]]; then
     color $green " pulling in $DEST\n"
-    git -C "$DEST" pull  "$FLAGS"
+
+    if [[ -n "$FLAGS" ]]; then
+      git -C "$DEST" pull "$FLAGS"
+    else
+      git -C "$DEST" pull
+    fi
+
   else
     color $green " cloning to $DEST\n"
     git clone $FLAGS -- "$REMOTE" "$DEST"
