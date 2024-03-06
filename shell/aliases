@@ -147,7 +147,7 @@ alias gbm="git branch --move"
 alias gco="git checkout"
 alias gcob="git checkout -b"
 alias gcop="git checkout --patch"
-alias gcom="git checkout master"
+alias gcom="git checkout main"
 
 ### Merge
 alias gm="git merge"
@@ -161,10 +161,10 @@ alias grba="git rebase --abort"
 alias grbs="git rebase --skip"
 alias grbc="git rebase --continue"
 alias grbe="git rebase --edit-todo"
-alias grbm="git rebase master"
-alias grbom="git rebase origin/master"
-alias grbim="git rebase --interactive master"
-alias grbiom="git rebase --interactive origin/master"
+alias grbm="git rebase main"
+alias grbom="git rebase origin/main"
+alias grbim="git rebase --interactive main"
+alias grbiom="git rebase --interactive origin/main"
 
 ### Cherry Picking
 alias gcp="git cherry-pick"
