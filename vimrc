@@ -262,6 +262,13 @@ let g:ale_fixers = {
 \   'yaml': ['prettier'],
 \ }
 
+let g:ale_pattern_options = {
+\   'src\/app.html$': {
+\       'ale_linters_ignore': ['tidy'],
+\       'ale_fixers': ['prettier', 'remove_trailing_lines'],
+\   },
+\}
+
 "" CtrlP Settings
 if executable('ag')
   set grepprg=ag\ --nogroup\ --nocolor
