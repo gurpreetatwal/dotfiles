@@ -240,7 +240,7 @@ autocmd FileType zsh let g:ale_sh_shellcheck_options = '-s bash'                
 """ Fix Settings
 fun! PrismaFormat(buffer) abort
   return {
-        \ 'command': 'cp ' . expand('%') . ' /tmp/schema.prisma && npx prisma format --schema /tmp/schema.prisma > /dev/null && cat /tmp/schema.prisma '
+        \ 'command': 'npx prisma format --schema ' . expand('%:p:h') . ' > /dev/null && cat ' . expand('%')
         \}
 endfun
 execute ale#fix#registry#Add('prisma', 'PrismaFormat', ['prisma'], 'Format Prisma schema files')
