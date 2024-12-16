@@ -15,6 +15,8 @@ HISTSIZE=1000000                # number of records loaded into memory
 SAVEHIST=1000000                # number of records saved to the history file
 HISTFILE="$XDG_STATE_HOME/zsh/history"
 
+#https://www.soberkoder.com/better-zsh-history/
+#https://unix.stackexchange.com/questions/273861/unlimited-history-in-zsh
 setopt HIST_FIND_NO_DUPS        # do not display duplicates when searching
 setopt HIST_IGNORE_ALL_DUPS     # if the command is a duplicate of a previous command, delete the older
 setopt INC_APPEND_HISTORY       # write to the history file rightaway rather than waiting for shell to exit
