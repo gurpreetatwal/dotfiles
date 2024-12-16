@@ -1,0 +1,54 @@
+priority 10
+snippet each "each statement" b
+{#each $1 as $2, $3 ($4)}
+  $5
+{/each}
+endsnippet
+
+snippet if "if statement"  b
+{#if ${1:expression}}
+  ${2:statement}
+{/if}
+endsnippet
+
+snippet ifel "if ... else" b
+{#if ${1:expression}}
+  ${2:statement}
+{:else}
+  ${3:statement}
+{/if}
+endsnippet
+
+snippet ifelif "if ... else if" b
+{#if ${1:expression}}
+  ${2:statement}
+{:else if ${3:expression}}
+  ${4:statement}
+{/if}
+endsnippet
+
+snippet formfield "Form.Field"
+<Form.Field {config} name="${1:name}">
+  <Form.Item>
+    <Form.Label>${2:label}</Form.Label>
+    <Form.Input type="text" />
+    <Form.Description>
+    </Form.Description>
+    <Form.Validation />
+  </Form.Item>
+</Form.Field>
+endsnippet
+
+snippet printj "print json in a pre tag"
+<pre>{JSON.stringify(${1:expression}, null, 2)}</pre>
+endsnippet
+
+snippet icon "Lucide Icon"
+import $2`!p
+def formatVariableName(name):
+  name = name.title() # title case string
+  return re.sub(r'[_\-]', '', name)
+snip.rv = formatVariableName(t[1])
+` from 'lucide-svelte/icons/$1';
+$0
+endsnippet
