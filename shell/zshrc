@@ -24,7 +24,7 @@ autoload -Uz compinit && compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION
 autoload -U +X bashcompinit && bashcompinit
 
 # terraform
-test -f "$HOME/bin/terraform" && complete -o nospace -C "$HOME/bin/terraform" terraform
+test -f "$(which terraform)" && complete -o nospace -C "$(which terraform)" terraform
 test -f "$(which terragrunt)" && complete -C "$(which terragrunt)" "terragrunt"
 test -d "$XDG_DATA_HOME/awscli" && complete -C "$HOME/.local/bin/aws_completer" aws
 
