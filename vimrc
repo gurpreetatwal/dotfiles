@@ -33,6 +33,7 @@ Plug 'tpope/vim-surround'              " add/remove/change surrounding things li
 Plug 'tpope/vim-unimpaired'            " key binds for common commands like :bnext, :lnext, etc.
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'suy/vim-context-commentstring'
 
 "" Vim plugins
 " Plug 'example', Cond(!has('nvim'))
@@ -119,6 +120,8 @@ map <leader>x "+x
 " Plugin Settings
 "" Commentary
 autocmd FileType cpp setlocal commentstring=//%s
+let g:context#commentstring#table = {'svelte' : { 'htmlSvelteTemplate': '<!-- %s -->' , 'typescriptSvelteScript': '// %s'}}
+
 
 "" Goyo
 function! s:goyo_enter()
