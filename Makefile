@@ -343,12 +343,14 @@ flags/etcher: apt.jq
 	chmod a+x "$(HOME)/bin/etcher"
 	ln -sf "$(HOME)/bin/etcher" "flags"
 
+flags/onedrive: version = v2.4.25
 flags/onedrive:
 	@bash ./install/run-helper installif build-essential libnotify-dev libcurl4-openssl-dev libsqlite3-dev pkg-config git curl
 	wget --directory-prefix="/tmp" --timestamping "https://dlang.org/install.sh"
 	chmod a+x /tmp/install.sh
 	/tmp/install.sh install dmd
 	@bash ./install/run-helper git-clone "https://github.com/abraunegg/onedrive.git" "/tmp/onedrive"
+	cd "/tmp/onedrive" && git checkout "$(version)"
 	source "$$(/tmp/install.sh dmd -a)" && cd /tmp/onedrive && ./configure --enable-notifications
 	source "$$(/tmp/install.sh dmd -a)" && make -C /tmp/onedrive
 	sudo make -C /tmp/onedrive install
