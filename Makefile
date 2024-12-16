@@ -143,6 +143,7 @@ flags/neovim: pip3
 	pip3 install --user --upgrade pynvim
 	mkdir -p ~/.config/nvim
 	@bash ./install/run-helper link vimrc $(HOME)/.config/nvim/init.vim
+	@bash ./install/run-helper link vim/syntax $(HOME)/.config/nvim/syntax
 	curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	nvim +PlugUpdate +qa
 	touch flags/neovim

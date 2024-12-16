@@ -266,6 +266,15 @@ if executable('ag')
   let g:ctrlp_use_caching = 0
 endif
 
+" Define an autocmd to set filetype to ag for ag results
+augroup ag_results
+  autocmd!
+  autocmd BufNewFile,BufRead * if getline(1) =~# '\[.*\]' | set filetype=ag | endif
+augroup END
+
+" Set up custom syntax highlighting for ag filetype
+autocmd FileType ag setlocal syntax=agresults
+
 let g:ctrlp_show_hidden=1
 let g:ctrlp_clear_cache_on_exit=0
 let g:ctrlp_custom_ignore={
