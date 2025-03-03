@@ -89,12 +89,10 @@ temp() {
 # Switch between different development environments
 prod() {
   export NODE_ENV='production'
-  export AWS_PROFILE='smartcar'
 }
 
 qa() {
   export NODE_ENV='qa'
-  export AWS_PROFILE='smartcar:staging'
 }
 
 dev() {

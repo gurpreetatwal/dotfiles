@@ -74,9 +74,6 @@ alias gcl="git clone"
 gclgh() {
   git clone "git@github.com:$1"
 }
-gcls() {
-  git clone "git@github.com:smartcar/$1"
-}
 gclgurp() {
   git clone "git@github.com:gurpreetatwal/$1"
 }
