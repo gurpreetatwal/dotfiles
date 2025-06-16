@@ -20,3 +20,5 @@
 	enabled = true
 [commit]
 	gpgsign = false
+[init]
+	defaultBranch = main
