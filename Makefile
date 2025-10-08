@@ -12,7 +12,7 @@ maven: version ?= 3.6.3
 gradle: version ?= 6.8.3
 stterm: version ?= 0.8.1
 flags/docker-compose: compose-version ?= 1.29.1
-npm-%: packages = browser-sync bunyan eslint_d geckodriver gulp-cli html nodemon ndb prettier tern
+npm-%: packages = browser-sync eslint_d geckodriver html nodemon prettier tern
 
 .PHONY:
 	install
