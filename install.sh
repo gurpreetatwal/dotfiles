@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo apt-get install laptop-mode-tools ttf-mscorefonts-installer
+
 # install base16-shell
 if [[ ! -e ~/.config/base16-shell ]]; then
   git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
