@@ -1,3 +1,6 @@
 {
-	"credsStore": "ecr-login"
+  "credHelpers": {
+    "public.ecr.aws": "ecr-login",
+    "678413367276.dkr.ecr.us-west-2.amazonaws.com": "ecr-login"
+  }
 }
