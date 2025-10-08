@@ -176,9 +176,11 @@ flags/i3: apt.i3 apt.i3lock apt.xautolock apt.rofi fonts-hack
 	mkdir --parents "$(XDG_CONFIG_HOME)/i3"
 	mkdir --parents "$(XDG_CONFIG_HOME)/i3status"
 	mkdir --parents "$(XDG_CONFIG_HOME)/rofi"
+	mkdir --parents "$(HOME)/.local/bin"
 	@bash ./install/run-helper link "i3.conf" "$(XDG_CONFIG_HOME)/i3/config"
 	@bash ./install/run-helper link "i3status.conf" "$(XDG_CONFIG_HOME)/i3status/config"
 	@bash ./install/run-helper link "rofi.rasi" "$(XDG_CONFIG_HOME)/rofi/config.rasi"
+	@bash ./install/run-helper link "install/rofi-bluetooth" "$(HOME)/.local/bin/rofi-bluetooth"
 	ln -sf "$(XDG_CONFIG_HOME)/i3/config" "flags/i3"
 
 flags/polybar: repository = https://github.com/jaagr/polybar

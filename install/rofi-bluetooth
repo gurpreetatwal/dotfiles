@@ -1,0 +1,87 @@
+#!/bin/bash
+# Bluetooth device selector using rofi
+
+# Ensure Bluetooth is powered on
+bluetoothctl power on > /dev/null 2>&1
+
+# Cache outputs
+paired_devices=$(bluetoothctl paired-devices)
+info=$(bluetoothctl info)
+
+# Get list of connected device MACs
+connected_macs=$(echo "$info" | awk '/^Device/{mac=$2} /Connected: yes/{print mac}')
+
+# Build device list with connected devices first
+connected_devices=""
+other_devices=""
+declare -A device_macs
+
+while IFS= read -r line; do
+    mac=$(echo "$line" | awk '{print $2}')
+    name=$(echo "$line" | awk '{$1=""; $2=""; print substr($0,3)}')
+
+    # Store MAC for later lookup
+    device_macs["$name"]="$mac"
+
+    # Check if device is connected
+    if echo "$connected_macs" | grep --quiet "$mac"; then
+        connected_devices="${connected_devices}${name} [Connected]\n"
+    else
+        other_devices="${other_devices}${name}\n"
+    fi
+done <<< "$paired_devices"
+
+# Combine lists with connected devices first
+device_list="${connected_devices}${other_devices}"
+
+if [ -z "$device_list" ]; then
+    rofi -e "No Bluetooth devices found"
+    exit 1
+fi
+
+# Show device selection in rofi
+selected=$(echo -e "$device_list" | rofi -dmenu -i -p "Bluetooth Devices")
+
+if [ -z "$selected" ]; then
+    exit 0
+fi
+
+# Remove connection status indicator if present
+device_name=${selected% \[Connected\]}
+
+echo $device_name
+# Get MAC address from cached lookup
+mac="${device_macs[$device_name]}"
+
+if [ -z "$mac" ]; then
+    rofi -e "Failed to get device MAC address"
+    exit 1
+fi
+
+# Check if device is currently connected
+if echo "$selected" | grep --quiet "\[Connected\]"; then
+    # Disconnect
+    if bluetoothctl disconnect "$mac" 2>&1 | grep --quiet "Successful disconnected"; then
+        notify-send "Bluetooth" "Disconnected from $device_name" --icon=bluetooth
+        exit 0
+    else
+        notify-send "Bluetooth" "Failed to disconnect from $device_name"
+        exit 1
+    fi
+else
+    # Connect with retry
+    attempts=0
+    max_attempts=3
+    while [ $attempts -lt $max_attempts ]; do
+        output=$(bluetoothctl connect "$mac" 2>&1)
+        if echo "$output" | grep --quiet "Connection successful"; then
+            notify-send "Bluetooth" "Connected to $device_name" --icon=bluetooth
+            exit 0
+        fi
+        attempts=$((attempts + 1))
+        [ $attempts -lt $max_attempts ] && sleep 2
+    done
+
+    notify-send "Bluetooth" "Failed to connect to $device_name after $max_attempts attempts"
+    exit 1
+fi
