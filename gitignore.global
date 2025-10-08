@@ -2,3 +2,4 @@
 Session.vim
 .tern-port
 z-ignored/
+.claude/settings.local.json
