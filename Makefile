@@ -172,7 +172,7 @@ flags/pip3: apt.python3-distutils
 	python3 /tmp/get-pip.py --user
 	ln -sf "$(HOME)/.local/bin/pip3" "flags"
 
-flags/i3: apt.i3 apt.i3lock apt.xautolock apt.rofi fonts-hack
+flags/i3: apt.i3 apt.i3lock apt.xautolock apt.rofi apt.playerctl fonts-hack
 	mkdir --parents "$(XDG_CONFIG_HOME)/i3"
 	mkdir --parents "$(XDG_CONFIG_HOME)/i3status"
 	mkdir --parents "$(XDG_CONFIG_HOME)/rofi"
