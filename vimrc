@@ -9,7 +9,6 @@ call plug#begin()
 Plug 'SirVer/ultisnips'                 " snippet engine
 Plug 'Valloric/MatchTagAlways', { 'for' : ['html', 'xhtml', 'xml', 'jinja'] }           " highlights surrounding html tag
 Plug 'airblade/vim-gitgutter'         " add support for viewing and editing git hunks
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'npm install -g typescript-language-server && bash install.sh' }
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'ekalinin/Dockerfile.vim'          " syntax + snippets for Dockerfile
@@ -40,6 +39,8 @@ Plug 'suy/vim-context-commentstring'
 
 "" Neovim plugins
 Plug 'Shougo/deoplete.nvim', Cond(has('nvim'), { 'do': ':UpdateRemotePlugins' })
+Plug 'deoplete-plugins/deoplete-lsp', Cond(has('nvim'))
+Plug 'neovim/nvim-lspconfig', Cond(has('nvim-0.10'))
 Plug 'carlitux/deoplete-ternjs', Cond(has('nvim'), {'do': 'npm install -g tern@latest', 'for': ['javascript', 'typescript']})
 Plug 'w0rp/ale', Cond(has('nvim'))
 call plug#end()
@@ -109,6 +110,12 @@ nnoremap <leader>z :tabnew %<CR>
 nnoremap <leader>c ^lf(li<CR><ESC>$hf)i<CR><ESC>
 imap jk <Esc>
 iabbrev <expr> uuidgen system('uuidgen')[:-2]
+if has('nvim')
+  nnoremap [d <cmd>lua vim.diagnostic.goto_prev()<CR>
+  nnoremap ]d <cmd>lua vim.diagnostic.goto_next()<CR>
+  autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
+endif
+
 
 "" Copy & Paste into sytem buffer
 map <leader>y "+y
@@ -213,7 +220,6 @@ if has('nvim')
   call deoplete#custom#option('num_processes', 4)
   call deoplete#custom#var('file', 'enable_buffer_path', 1)
   call deoplete#custom#source('ultisnips', 'rank', 1000)
-  call deoplete#custom#source('tern', 'rank', 1100) " LanguageClient has rank of 1000
 endif
 
 "" Airline Settings
@@ -241,20 +247,6 @@ let g:UltiSnipsJumpBackwardTrigger ='<s-tab>'
 set runtimepath+=~/dotfiles/vim                             " required b/c https://github.com/SirVer/ultisnips/issues/711#issuecomment-246815553
 let g:UltiSnipsSnippetsDir='~/dotfiles/vim/UltiSnips'
 let g:UltiSnipsSnippetDirectories=['~/dotfiles/vim/UltiSnips', 'UltiSnips']
-
-"" LanguageClient Settings
-set hidden
-let g:LanguageClient_autoStart = 1
-let g:LanguageClient_diagnosticsList = "Location"      " use Location list instead of window list as errors are scoped to one file
-
-" Minimal LSP configuration for JavaScript
-let g:LanguageClient_serverCommands = {
-      \ 'javascript': ['typescript-language-server --stdio'],
-      \ 'javascript.jsx': ['typescript-language-server --stdio'],
-      \ 'typescript': ['typescript-language-server --stdio'],
-      \ }
-autocmd FileType javascript.jsx setlocal omnifunc=LanguageClient#complete
-nnoremap <F5> :call LanguageClient_contextMenu()<CR>
 
 "" ALE Settings
 
@@ -377,3 +369,16 @@ fun! SetupCommandAlias(from, to)
         \ .'? ("'.a:to.'") : ("'.a:from.'"))'
 endfun
 call SetupCommandAlias("W","w")
+
+if has('nvim-0.10')
+    lua << EOF
+    vim.lsp.enable('svelte')
+    vim.lsp.enable('ts_ls')
+EOF
+endif
+
+" LSP Keybindings
+nnoremap <silent> gD <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <silent> gi <cmd>lua vim.lsp.buf.implementation()<CR>
+" nnoremap <silent> <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
