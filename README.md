@@ -12,5 +12,5 @@ Look into gnome-keyring-daemon
 Create systemd unit for ssh-agent
 Look into moving it all into ansible
 
-[ci-url]: https://travis-ci.com/gurpreetatwal/dotfiles
-[ci-image]: https://travis-ci.com/gurpreetatwal/dotfiles.svg?branch=master
+[ci-url]: https://github.com/gurpreetatwal/dotfiles/actions
+[ci-image]: https://github.com/gurpreetatwal/dotfiles/actions/workflows/ci.yml/badge.svg

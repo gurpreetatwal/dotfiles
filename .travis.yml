@@ -1,4 +1,0 @@
-language: bash
-
-script:
-  - shellcheck git-hooks/* install/run-helper install/helpers.sh shell/*
