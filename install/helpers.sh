@@ -1,9 +1,16 @@
-# vi: ft=zsh
+#!/usr/bin/env bash
 
 # Colored output
+# shellcheck disable=SC2034  # Color codes defined for potential use
 black=30 red=31 green=32 brown=33 blue=34 purple=35 cyan=36 gray=37
 color() {
-  printf "\e[1;$1m$2\e[0m" "${*:3}"
+  local color_code="$1"
+  local format="$2"
+  shift 2
+  printf '\e[1;%sm' "$color_code"
+  # shellcheck disable=SC2059  # Format string is intentionally variable
+  printf "$format" "$@"
+  printf '\e[0m'
 }
 
 # use apt if its available
@@ -20,7 +27,7 @@ installif() {
     fi
 
     color $green " installing\n"
-    sudo $apt install --quiet=4 --yes "$pkg"
+    sudo "$apt" install --quiet=4 --yes "$pkg"
   done
 }
 
@@ -54,7 +61,7 @@ git-clone() {
 
   REMOTE="$1"
   DEST="$2"
-  FLAGS="${@:3}"
+  FLAGS=("${@:3}")
   repo="$(basename "$REMOTE" ".git")"
 
   color $cyan "[git]:  %-20s" "$repo"
@@ -62,14 +69,14 @@ git-clone() {
   if [[ -d "$DEST" ]]; then
     color $green " pulling in $DEST\n"
 
-    if [[ -n "$FLAGS" ]]; then
-      git -C "$DEST" pull "$FLAGS"
+    if [[ ${#FLAGS[@]} -gt 0 ]]; then
+      git -C "$DEST" pull "${FLAGS[@]}"
     else
       git -C "$DEST" pull
     fi
 
   else
     color $green " cloning to $DEST\n"
-    git clone $FLAGS -- "$REMOTE" "$DEST"
+    git clone "${FLAGS[@]}" -- "$REMOTE" "$DEST"
   fi
 }

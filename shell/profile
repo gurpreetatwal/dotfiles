@@ -1,4 +1,4 @@
-# vi: ft=sh
+#!/usr/bin/env bash
 
 # General Environment Setup
 
@@ -18,13 +18,15 @@ test -d /opt/maven       && PATH+=":/opt/maven/bin"             # maven
 test -d /opt/gradle      && PATH+=":/opt/gradle/bin"            # gradle
 
 ## Editor
-[ "$(command -v nvim)" ] && export EDITOR="nvim" || export EDITOR="vim"
+if [ "$(command -v nvim)" ]; then export EDITOR="nvim"; else export EDITOR="vim"; fi
 
 # Application Environment Variables
 
 ## java
-[ "$(command -v java)" ] && \
-  export JAVA_HOME="$(update-alternatives --query java | grep --perl-regexp --only-matching '(?<=Best: ).*(?=/bin/java)')"
+if [ "$(command -v java)" ]; then
+  JAVA_HOME="$(update-alternatives --query java | grep --perl-regexp --only-matching '(?<=Best: ).*(?=/bin/java)')"
+  export JAVA_HOME
+fi
 
 ## psql
 export PGHOST="localhost"

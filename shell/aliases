@@ -1,4 +1,4 @@
-# vi: ft=sh
+#!/usr/bin/env bash
 
 # Use global aliases if possible
 alias_g() {
@@ -150,7 +150,9 @@ alias gcom="git checkout main"
 ### Merge
 alias gm="git merge"
 alias gma="git merge --abort"
-alias gmc="git status --short | awk '/^U/{print \$2}'  | xargs vim"
+gmc() {
+  git status --short | awk '/^U/{print $2}' | xargs vim
+}
 
 ### Rebasing
 alias grb="git rebase"

@@ -1,4 +1,4 @@
-# vi: ft=sh
+#!/usr/bin/env bash
 
 if [[ -n "$ZSH_VERSION" ]]; then
   _SHELL="zsh"
@@ -10,12 +10,12 @@ fi
 [ -f "${XDG_CONFIG_HOME}/fzf/fzf.${_SHELL}" ] && source "${XDG_CONFIG_HOME}/fzf/fzf.${_SHELL}"
 
 # fasd
-if [ $(command -v fasd) ]; then
+if [ "$(command -v fasd)" ]; then
 
-  fasd_cache="$HOME/.fasd-init-$(basename $SHELL)"
+  fasd_cache="$HOME/.fasd-init-$(basename "$SHELL")"
 
   # Update cache if needed
-  if [ "$(command -v fasd)" -nt "$fasd_cache" -o ! -s "$fasd_cache" ]; then
+  if [ "$(command -v fasd)" -nt "$fasd_cache" ] || [ ! -s "$fasd_cache" ]; then
     fasd --init zsh-hook zsh-ccomp zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install >| "$fasd_cache"
   fi
   source "$fasd_cache"
@@ -24,7 +24,8 @@ if [ $(command -v fasd) ]; then
 fi
 
 # gpg
-export GPG_TTY="$(tty)"
+GPG_TTY="$(tty)"
+export GPG_TTY
 
 source ~/dotfiles/shell/functions
 source ~/dotfiles/shell/aliases

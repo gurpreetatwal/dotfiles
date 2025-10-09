@@ -1,4 +1,4 @@
 #!/bin/bash
 
-source $(dirname "$0")/helpers.sh
-$1 ${@:2}
+source "$(dirname "$0")/helpers.sh"
+"$1" "${@:2}"

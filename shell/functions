@@ -1,11 +1,11 @@
-# vi: ft=zsh
+#!/usr/bin/env bash
 
 view() {
   pygmentize -f 16m -O style=paraiso-dark "$1"
 }
 
 json() {
-  # need to use subshell otherwise file is empty
+  # shellcheck disable=SC2005  # echo with command substitution is intentional to capture output
   echo "$(jq --sort-keys . "$1")" | tee "$1"
 }
 
