@@ -276,6 +276,12 @@ if executable('ag')
   let g:ctrlp_use_caching = 0
 endif
 
+if executable('rg')
+  set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+  let g:ctrlp_user_command = 'rg %s --files --color=never'
+  let g:ctrlp_use_caching = 0
+endif
+
 " Define an autocmd to set filetype to ag for ag results
 augroup ag_results
   autocmd!
