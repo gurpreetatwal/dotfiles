@@ -117,6 +117,38 @@ map <leader>p "+p
 map <leader>P "+P
 map <leader>x "+x
 
+function! GetGitURL()
+    let l:remote = system('git config --get remote.origin.url')
+    let l:remote = substitute(l:remote, '\n', '', 'g')
+
+    " Convert SSH to HTTPS format
+    let l:remote = substitute(l:remote, 'git@github\.com:', 'https://github.com/', '')
+    let l:remote = substitute(l:remote, 'git@gitlab\.com:', 'https://gitlab.com/', '')
+
+    " Remove .git suffix
+    let l:remote = substitute(l:remote, '\.git$', '', '')
+
+    " Get current branch
+    let l:branch = system('git rev-parse --abbrev-ref HEAD')
+    let l:branch = substitute(l:branch, '\n', '', 'g')
+
+    " Get file path relative to git root
+    let l:filepath = system('git ls-files --full-name ' . expand('%'))
+    let l:filepath = substitute(l:filepath, '\n', '', 'g')
+
+    " Construct URL based on platform
+    if l:remote =~ 'gitlab'
+        let l:url = l:remote . '/-/blob/' . l:branch . '/' . l:filepath
+    else
+        let l:url = l:remote . '/blob/' . l:branch . '/' . l:filepath
+    endif
+
+    return l:url
+endfunction
+
+" Copy git URL to clipboard
+nnoremap <leader>cg :let @+=GetGitURL()<CR>:echo 'Git URL copied to clipboard'<CR>
+
 " Plugin Settings
 "" Commentary
 autocmd FileType cpp setlocal commentstring=//%s
