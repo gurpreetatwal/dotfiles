@@ -27,6 +27,22 @@ multi_line = True
 # a command.
 multi_line_mode = psql
 
+# Destructive warning mode will alert you before executing a sql statement
+# that may cause harm to the database such as "drop table", "drop database"
+# or "shutdown".
+destructive_warning = True
+
+# When `destructive_warning` is on and the user declines to proceed with a
+# destructive statement, the current transaction (if any) is left untouched,
+# by default. When setting `destructive_warning_restarts_connection` to
+# "True", the connection to the server is restarted. In that case, the
+# transaction (if any) is rolled back.
+destructive_warning_restarts_connection = False
+
+# When this option is on (and if `destructive_warning` is set),
+# destructive statements are not executed when outside of a transaction.
+destructive_statements_require_transaction = False
+
 # Enables expand mode, which is similar to `\x` in psql.
 # Basically makes the values display in Column, Value format rather than as rows
 expand = False
@@ -121,10 +137,16 @@ row_limit = 1000
 less_chatty = True
 
 # Postgres prompt
+# \t - Current date and time
 # \u - Username
-# \h - Hostname of the server
+# \h - Short hostname of the server (up to first '.')
+# \H - Hostname of the server
 # \d - Database name
+# \p - Database port
+# \i - Postgres PID
+# \# - "@" sign if logged in as superuser, '>' in other case
 # \n - Newline
+# \dsn_alias - name of dsn alias if -D option is used (empty otherwise)
 prompt = '\u@\h:\d> '
 
 # Number of lines to reserve for the suggestion menu
@@ -135,6 +157,16 @@ multiline_continuation_char = ''
 
 # The string used in place of a null value.
 null_string = '<null>'
+
+# manage pager on startup
+enable_pager = True
+
+# Use keyring to automatically save and load password in a secure manner
+keyring = True
+
+# Automatically set the session time zone to the local time zone
+# If unset, uses the server's time zone, which is the Postgres default
+use_local_timezone = True
 
 # Custom colors for the completion menu, toolbar, etc.
 [colors]
@@ -159,10 +191,18 @@ Token.Toolbar.Arg.Text = 'nobold'
 Token.Toolbar.Transaction.Valid = 'bg:#222222 #00ff5f bold'
 Token.Toolbar.Transaction.Failed = 'bg:#222222 #ff005f bold'
 
+# color of table
+# you can use token or custom colors
+Token.Output.Header = "#00ff5f bold"
+Token.Output.OddRow = ""
+Token.Output.EvenRow = ""
+
 # Named queries are queries you can execute by name.
 [named queries]
+# See the documentation on named queries for more examples.
+simple = select * from abc where a is not Null
 
-# DNS to call by -D option
+# DSN to call by -D option
 [alias_dsn]
 # example_dsn = postgresql://[user[:password]@][netloc][:port][/dbname]
 
@@ -172,3 +212,7 @@ Token.Toolbar.Transaction.Failed = 'bg:#222222 #ff005f bold'
 [data_formats]
 decimal = ""
 float = ""
+
+# Automatically open SSH tunnels for the matched hosts
+[ssh tunnels]
+# ^example.*\.host$ = myuser:mypasswd@my.tunnel.com:4000
