@@ -13,7 +13,6 @@ alias ag='ag --path-to-ignore $XDG_CONFIG_HOME/ag/ignore'
 alias ssh='TERM=xterm-256color ssh'
 alias serve="browser-sync start -s"
 alias https="http --default-scheme=https"
-alias gh='GH_TOKEN="" gh'
 alias ll="ls -l"
 alias la="ls -al"
 alias tree="tree -I '*node_modules*'"
