@@ -27,6 +27,9 @@ fi
 GPG_TTY="$(tty)"
 export GPG_TTY
 
+# Terraform
+export TF_PLUGIN_CACHE_DIR="$HOME/.cache/terraform"
+
 source ~/dotfiles/shell/functions
 source ~/dotfiles/shell/aliases
 
