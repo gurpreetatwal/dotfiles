@@ -97,6 +97,8 @@ onedrive-update: update.flags/onedrive flags/onedrive
 # System Configuration
 gpg: flags/gpg
 polybar: flags/polybar
+dunst: flags/dunst
+dunst-update: update.flags/dunst flags/dunst
 gestures: flags/gestures
 hall-monitor: flags/hall-monitor
 libinput: flags/libinput
@@ -230,6 +232,11 @@ flags/polybar:
 	@bash ./install/run-helper link "polybar.ini" "$(XDG_CONFIG_HOME)/polybar/config.ini"
 	@bash ./install/run-helper link "install/launch-polybar.sh" "$(XDG_CONFIG_HOME)/polybar/launch.sh"
 	-ln -sf "$$(which polybar)" "flags"
+
+flags/dunst: apt.dunst apt.libnotify-bin
+	@mkdir --parents "$(XDG_CONFIG_HOME)/dunst"
+	@bash ./install/run-helper link "dunstrc" "$(XDG_CONFIG_HOME)/dunst/dunstrc"
+	-ln -sf "$$(which dunst)" "flags/dunst"
 
 flags/node: flags/sysctl-inotify
 	curl --location https://git.io/n-install | N_PREFIX=$(XDG_DATA_HOME)/nodejs bash -s -- -n

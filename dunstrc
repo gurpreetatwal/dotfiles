@@ -1,0 +1,41 @@
+[global]
+    # Geometry
+    width = 600
+    origin = top-right
+    offset = 10x50
+
+    # Appearance
+    padding = 12
+    horizontal_padding = 12
+    frame_width = 2
+    frame_color = "#61afef"
+    corner_radius = 8
+
+    # Text
+    font = Hack 10
+    format = "<b>%a</b>\n%s\n<i>%b</i>"  # %a=app %s=summary %b=body
+
+    # Misc
+    dmenu = /usr/bin/rofi -dmenu -p dunst:
+    browser = /usr/bin/xdg-open
+
+    # Mouse
+    mouse_left_click = do_action, close_current
+
+[urgency_low]
+    background = "#282c34"
+    foreground = "#98c379"
+    frame_color = "#98c379"
+    timeout = 5
+
+[urgency_normal]
+    background = "#282c34"
+    foreground = "#dfdfdf"
+    frame_color = "#61afef"
+    timeout = 10
+
+[urgency_critical]
+    background = "#282c34"
+    foreground = "#e06c75"
+    frame_color = "#e06c75"
+    timeout = 0
