@@ -163,6 +163,7 @@ vnoremap <leader>cg :<C-u>let @+=GetGitURL(line("'<"), line("'>"))<CR>:echo 'Git
 " Plugin Settings
 "" Commentary
 autocmd FileType cpp setlocal commentstring=//%s
+autocmd FileType sql setlocal commentstring=--\ %s
 let g:context#commentstring#table = {'svelte' : { 'htmlSvelteTemplate': '<!-- %s -->' , 'typescriptSvelteScript': '// %s'}}
 
 
