@@ -133,7 +133,7 @@ function! GetGitURL()
     let l:branch = substitute(l:branch, '\n', '', 'g')
 
     " Get file path relative to git root
-    let l:filepath = system('git ls-files --full-name ' . expand('%'))
+    let l:filepath = system('git ls-files --full-name ' . shellescape(expand('%')))
     let l:filepath = substitute(l:filepath, '\n', '', 'g')
 
     " Construct URL based on platform
