@@ -389,3 +389,18 @@ fun! SetupCommandAlias(from, to)
         \ .'? ("'.a:to.'") : ("'.a:from.'"))'
 endfun
 call SetupCommandAlias("W","w")
+
+lua << EOF
+  -- diff mode
+  vim.opt.diffopt:append('iwhite') -- ignore whitespace
+  vim.keymap.set({'n', 'x'}, '<leader>dl', ':diffget LO<CR>')
+  vim.keymap.set({'n', 'x'}, '<leader>dr', ':diffget RE<CR>')
+  vim.keymap.set('n', '<leader>dw', function()
+    local opts = vim.opt.diffopt:get()
+    if vim.tbl_contains(opts, 'iwhite') then
+      vim.opt.diffopt:remove('iwhite')
+    else
+      vim.opt.diffopt:append('iwhite')
+    end
+  end)
+EOF

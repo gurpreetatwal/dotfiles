@@ -10,7 +10,9 @@
 [branch]
 	autosetuprebase=always
 [merge]
-	tool=vimdiff
+	tool = nvimdiff
+[diff]
+	tool = nvimdiff
 [advice]
 	pushNonFastForward = false
 	resolveConflict = false
@@ -23,3 +25,8 @@
 	gpgsign = false
 [init]
 	defaultBranch = main
+[mergetool]
+	keepBackup = false
+	hideResolved = true
+[mergetool "vimdiff"]
+	layout = LOCAL,REMOTE / MERGED

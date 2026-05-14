@@ -149,6 +149,8 @@ alias gcom="git checkout main"
 ### Merge
 alias gm="git merge"
 alias gma="git merge --abort"
+alias gmt="git mergetool"
+alias gdt="git difftool"
 gmc() {
   local -a files
   while IFS= read -r -d '' line; do
