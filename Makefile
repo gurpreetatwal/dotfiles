@@ -105,6 +105,15 @@ intel-backlight: flags/intel-backlight
 fonts-hack: flags/fonts-hack
 grub-theme: flags/grub-theme
 
+browser-router: flags/browser-router
+
+flags/browser-router:
+	@sudo bash ./install/run-helper link "browser-router/browser-router" /usr/local/bin/browser-router
+	@bash ./install/run-helper link "browser-router/browser-router.desktop" "$(XDG_DATA_HOME)/applications/browser-router.desktop"
+	update-desktop-database "$(XDG_DATA_HOME)/applications"
+	xdg-settings set default-web-browser browser-router.desktop
+	ln -sf /usr/local/bin/browser-router flags/browser-router
+
 # Fixes for firefox when using dark themes and for scrolling using a touchscreen
 # Theme fix from https://wiki.archlinux.org/index.php/Firefox#Unreadable_input_fields_with_dark_GTK.2B_themes
 # Scrolling fix from https://wiki.gentoo.org/wiki/Firefox#Xinput2_scrolling

@@ -1,0 +1,15 @@
+#!/bin/bash
+# Routes URLs to specific browsers based on hostname
+
+url="$1"
+
+hostname=$(python3 -c "from urllib.parse import urlparse; print(urlparse('$url').netloc)" 2>/dev/null)
+
+case "$hostname" in
+  meet.google.com)
+    exec microsoft-edge "$url"
+    ;;
+  *)
+    exec ${BROWSER:-firefox} "$url"
+    ;;
+esac

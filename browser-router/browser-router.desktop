@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Browser Router
+Exec=/usr/local/bin/browser-router %u
+Type=Application
+NoDisplay=true
+MimeType=x-scheme-handler/http;x-scheme-handler/https;
