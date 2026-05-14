@@ -117,7 +117,7 @@ map <leader>p "+p
 map <leader>P "+P
 map <leader>x "+x
 
-function! GetGitURL()
+function! GetGitURL(...)
     let l:remote = system('git config --get remote.origin.url')
     let l:remote = substitute(l:remote, '\n', '', 'g')
 
@@ -143,11 +143,22 @@ function! GetGitURL()
         let l:url = l:remote . '/blob/' . l:branch . '/' . l:filepath
     endif
 
+    if a:0 >= 1
+        let l:line1 = a:1
+        let l:line2 = get(a:000, 1, a:1)
+        if l:line1 == l:line2
+            let l:url = l:url . '#L' . l:line1
+        else
+            let l:url = l:url . '#L' . l:line1 . '-L' . l:line2
+        endif
+    endif
+
     return l:url
 endfunction
 
 " Copy git URL to clipboard
 nnoremap <leader>cg :let @+=GetGitURL()<CR>:echo 'Git URL copied to clipboard'<CR>
+vnoremap <leader>cg :<C-u>let @+=GetGitURL(line("'<"), line("'>"))<CR>:echo 'Git URL copied to clipboard'<CR>
 
 " Plugin Settings
 "" Commentary
