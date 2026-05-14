@@ -136,6 +136,13 @@ bindkeys: apt.xbindkeys apt.xdotool
 	@bash ./install/run-helper link xbindkeysrc $(HOME)/.xbindkeysrc
 	xbindkeys
 
+flags/xmodmap: apt.x11-xserver-utils
+	@bash ./install/run-helper link xmodmap $(HOME)/.Xmodmap
+	xmodmap $(HOME)/.Xmodmap
+	ln -sf $(HOME)/.Xmodmap flags/xmodmap
+
+xmodmap: flags/xmodmap
+
 tmux: apt.libevent-dev apt.libncurses-dev apt.xclip
 	curl --location --silent --show-error https://github.com/tmux/tmux/releases/download/$(version)/tmux-$(version).tar.gz | tar -xz -C /tmp
 	cd /tmp/tmux-$(version) && ./configure && make
