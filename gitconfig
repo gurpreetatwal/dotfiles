@@ -6,6 +6,7 @@
 	excludesfile=~/.config/git/ignore
 [push]
 	default=current
+	autoSetupRemote = true
 [branch]
 	autosetuprebase=always
 [merge]
