@@ -111,11 +111,47 @@ imap jk <Esc>
 iabbrev <expr> uuidgen system('uuidgen')[:-2]
 
 "" Copy & Paste into sytem buffer
-map <leader>y "+y
-map <leader>d "+d
-map <leader>p "+p
-map <leader>P "+P
-map <leader>x "+x
+function! s:ClipboardOpFunc(type) abort
+  let op = s:clipboard_op
+  let cmd = op ==# 'c' ? 'd' : op
+  if a:type ==# 'line'
+    silent execute "normal! `[V`]\"+" . cmd
+  elseif a:type ==# 'block'
+    silent execute "normal! `[\<C-v>`]\"+" . cmd
+  else
+    silent execute "normal! `[v`]\"+" . cmd
+  endif
+  if op ==# 'c'
+    call feedkeys('i', 'n')
+  endif
+endfunction
+
+function! s:ClipboardExpr(op, linewise) abort
+  if a:linewise
+    return '"+'  . (a:op ==# 'c' ? 'cc' : a:op . a:op)
+  endif
+  let s:clipboard_op = a:op
+  let &operatorfunc = function('s:ClipboardOpFunc')
+  return 'g@'
+endfunction
+
+nnoremap <expr> <silent> <leader>y  <SID>ClipboardExpr('y', 0)
+nnoremap <expr> <silent> <leader>yy <SID>ClipboardExpr('y', 1)
+nnoremap <expr> <silent> <leader>d  <SID>ClipboardExpr('d', 0)
+nnoremap <expr> <silent> <leader>dd <SID>ClipboardExpr('d', 1)
+nnoremap <expr> <silent> <leader>c  <SID>ClipboardExpr('c', 0)
+nnoremap <expr> <silent> <leader>cc <SID>ClipboardExpr('c', 1)
+
+nnoremap <silent> <leader>x "+x
+nnoremap <silent> <leader>p "+p
+nnoremap <silent> <leader>P "+P
+
+xnoremap <silent> <leader>y "+y
+xnoremap <silent> <leader>d "+d
+xnoremap <silent> <leader>c "+c
+xnoremap <silent> <leader>x "+x
+xnoremap <silent> <leader>p "+p
+xnoremap <silent> <leader>P "+P
 
 function! GetGitURL(...)
     let l:remote = system('git config --get remote.origin.url')
