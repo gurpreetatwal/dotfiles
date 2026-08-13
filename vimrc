@@ -34,6 +34,7 @@ Plug 'tpope/vim-unimpaired'            " key binds for common commands like :bne
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'suy/vim-context-commentstring'
+Plug 'github/copilot.vim'
 
 "" Vim plugins
 " Plug 'example', Cond(!has('nvim'))
