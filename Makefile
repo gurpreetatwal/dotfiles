@@ -369,23 +369,35 @@ flags/etcher: apt.jq
 	chmod a+x "$(HOME)/bin/etcher"
 	ln -sf "$(HOME)/bin/etcher" "flags"
 
-flags/onedrive: version = v2.4.25
+# Upstream recommends the OpenSuSE Build Service packages over a source build:
+# https://github.com/abraunegg/onedrive/blob/master/docs/ubuntu-package-install.md
+# The signing key is fetched at install time but only trusted if it matches the
+# fingerprint pinned below, so a substituted key aborts the install rather than
+# becoming trusted. Pinning the fingerprint instead of vendoring the key means an
+# expiry extension is picked up by re-running this target: expiry lives in a
+# self-signature, so extending it leaves the fingerprint unchanged. A genuine
+# rotation to a different key fails here and should be reviewed before updating.
+flags/onedrive: fingerprint = 63CE457B3C269D011BCD74ABB8AC39B0876D807E
+flags/onedrive: keyring = /etc/apt/keyrings/obs-onedrive.asc
+flags/onedrive: repository = https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_$(shell lsb_release --release --short)
 flags/onedrive:
-	@bash ./install/run-helper installif build-essential libnotify-dev libcurl4-openssl-dev libsqlite3-dev pkg-config git curl
-	wget --directory-prefix="/tmp" --timestamping "https://dlang.org/install.sh"
-	chmod a+x /tmp/install.sh
-	/tmp/install.sh install dmd
-	@bash ./install/run-helper git-clone "https://github.com/abraunegg/onedrive.git" "/tmp/onedrive"
-	cd "/tmp/onedrive" && git checkout "$(version)"
-	source "$$(/tmp/install.sh dmd -a)" && cd /tmp/onedrive && ./configure --enable-notifications
-	source "$$(/tmp/install.sh dmd -a)" && make -C /tmp/onedrive
-	sudo make -C /tmp/onedrive install
-	mkdir -p "$(XDG_CONFIG_HOME)/onedrive"
+	$(eval key = $(shell mktemp --dry-run --tmpdir="/tmp" obs-onedrive-XXX.asc))
+	wget --quiet --output-document="$(key)" "$(repository)/Release.key"
+	@# Trust the fetched key only if it is the one this repository pinned
+	gpg --show-keys --with-colons "$(key)" | grep --quiet "^fpr:::::::::$(fingerprint):"
+	sudo mkdir --parents "$(dir $(keyring))"
+	sudo install --mode=644 --owner=root --group=root "$(key)" "$(keyring)"
+	-rm --force "$(key)"
+	echo "deb [arch=$$(dpkg --print-architecture) signed-by=$(keyring)] $(repository)/ ./" \
+	  | sudo tee /etc/apt/sources.list.d/onedrive.list
+	sudo apt-get update
+	sudo apt install --yes --no-install-recommends --no-install-suggests onedrive
+	mkdir --parents "$(XDG_CONFIG_HOME)/onedrive"
 	@bash ./install/run-helper link "onedrive" "$(XDG_CONFIG_HOME)/onedrive/config"
 	@bash ./install/run-helper link "sync_list" "$(XDG_CONFIG_HOME)/onedrive/sync_list"
-	-/tmp/install.sh uninstall dmd
-	-rm -rf "$(HOME)/dlang"
-	onedrive --display-sync-status
+	@# Replacing a previously source-built unit leaves systemd running the cached
+	@# copy, which still points at the now-deleted /usr/local/bin/onedrive
+	systemctl --user daemon-reload
 	systemctl --user enable onedrive
 	systemctl --user start onedrive
 	-ln -sf "$$(which onedrive)" "flags"
