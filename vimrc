@@ -9,7 +9,6 @@ call plug#begin()
 Plug 'SirVer/ultisnips'                 " snippet engine
 Plug 'Valloric/MatchTagAlways', { 'for' : ['html', 'xhtml', 'xml', 'jinja'] }           " highlights surrounding html tag
 Plug 'airblade/vim-gitgutter'         " add support for viewing and editing git hunks
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'npm install -g typescript-language-server && bash install.sh' }
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'ekalinin/Dockerfile.vim'          " syntax + snippets for Dockerfile
@@ -41,7 +40,6 @@ Plug 'github/copilot.vim'
 
 "" Neovim plugins
 Plug 'Shougo/deoplete.nvim', Cond(has('nvim'), { 'do': ':UpdateRemotePlugins' })
-Plug 'carlitux/deoplete-ternjs', Cond(has('nvim'), {'do': 'npm install -g tern@latest', 'for': ['javascript', 'typescript']})
 Plug 'w0rp/ale', Cond(has('nvim'))
 call plug#end()
 
@@ -54,6 +52,7 @@ set wildmenu                      " show autocomplete menu for vim commands
 set wildignore=*.o,*.obj,*.so,__pycache__
 set backspace=indent,eol,start    " backspace works as intended
 set autoread                      " reload files if changed by other program
+set hidden                        " allow unsaved buffers in the background (default in nvim, not vim)
 set cursorline                    " show horizontal cursor line
 set scrolloff=5                   " always show 5 lines above and below cursor
 set sidescrolloff=5               " always show 10 characters to left and right of line
@@ -243,26 +242,13 @@ let g:gundo_preview_bottom=1    " show the preview under the current window
 let g:gundo_close_on_revert=1   " close gundo after reverting
 let g:gundo_prefer_python3=1    " needed for python3 support
 
-"" YouCompleteMe/Tern
-""" TODO look into multi-file refactor after learning about vim's quickfix mode
-""" TODO look into cursor hold for getType
-nnoremap <leader>td :YcmCompleter GoToDefinition<CR>
-nnoremap <leader>tt :YcmCompleter GetType<CR>
-nnoremap <leader>tr :YcmCompleter GoToReferences<CR>
-nnoremap <leader>tR :YcmCompleter RefactorRename
-nnoremap <leader>tdoc :YcmCompleter GetDoc<CR>
-
 "" Deoplete
 if has('nvim')
   let g:deoplete#enable_at_startup=1
-  let g:deoplete#sources#ternjs#types=1
-  let g:deoplete#sources#ternjs#docs=1
-  let g:deoplete#sources#ternjs#include_keywords=1
   call deoplete#custom#option('smartcase', v:true)
   call deoplete#custom#option('num_processes', 4)
   call deoplete#custom#var('file', 'enable_buffer_path', 1)
   call deoplete#custom#source('ultisnips', 'rank', 1000)
-  call deoplete#custom#source('tern', 'rank', 1100) " LanguageClient has rank of 1000
 endif
 
 "" Airline Settings
@@ -290,20 +276,6 @@ let g:UltiSnipsJumpBackwardTrigger ='<s-tab>'
 set runtimepath+=~/dotfiles/vim                             " required b/c https://github.com/SirVer/ultisnips/issues/711#issuecomment-246815553
 let g:UltiSnipsSnippetsDir='~/dotfiles/vim/UltiSnips'
 let g:UltiSnipsSnippetDirectories=['~/dotfiles/vim/UltiSnips', 'UltiSnips']
-
-"" LanguageClient Settings
-set hidden
-let g:LanguageClient_autoStart = 1
-let g:LanguageClient_diagnosticsList = "Location"      " use Location list instead of window list as errors are scoped to one file
-
-" Minimal LSP configuration for JavaScript
-let g:LanguageClient_serverCommands = {
-      \ 'javascript': ['typescript-language-server --stdio'],
-      \ 'javascript.jsx': ['typescript-language-server --stdio'],
-      \ 'typescript': ['typescript-language-server --stdio'],
-      \ }
-autocmd FileType javascript.jsx setlocal omnifunc=LanguageClient#complete
-nnoremap <F5> :call LanguageClient_contextMenu()<CR>
 
 "" ALE Settings
 

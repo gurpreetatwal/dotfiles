@@ -13,7 +13,7 @@ gradle: version ?= 6.8.3
 stterm: version ?= 0.8.1
 flags/docker-compose: compose-version ?= 1.29.1
 flags/neovim: version ?= 0.12.4
-npm-%: packages = browser-sync eslint_d geckodriver html nodemon prettier tern
+npm-%: packages = browser-sync eslint_d geckodriver html nodemon prettier
 
 .PHONY:
 	install
@@ -244,7 +244,6 @@ flags/dunst: apt.dunst apt.libnotify-bin
 
 flags/node: flags/sysctl-inotify
 	curl --location https://git.io/n-install | N_PREFIX=$(XDG_DATA_HOME)/nodejs bash -s -- -n
-	@bash ./install/run-helper link "tern-project" "$(HOME)/.tern-project"
 	ln -sf $(XDG_DATA_HOME)/nodejs/bin/node flags/node
 
 flags/rust:
