@@ -2,7 +2,8 @@
 	email=git@gatwal.com
 	name=Gurpreet Atwal
 [core]
-	editor=vim
+	; no editor= on purpose: shell/profile already picks nvim or vim, and git
+	; falls back to $EDITOR then vi, so there is nothing to keep in sync here
 	excludesfile=~/.config/git/ignore
 [push]
 	default=current
