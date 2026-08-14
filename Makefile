@@ -12,6 +12,7 @@ maven: version ?= 3.6.3
 gradle: version ?= 6.8.3
 stterm: version ?= 0.8.1
 flags/docker-compose: compose-version ?= 1.29.1
+flags/neovim: version ?= 0.12.4
 npm-%: packages = browser-sync eslint_d geckodriver html nodemon prettier tern
 
 .PHONY:
@@ -71,8 +72,6 @@ $(HOME)/.local/bin/fasd:
 pip3: flags/pip3
 
 i3: flags/i3
-nvim: flags/neovim
-neovim: flags/neovim
 
 # Programming Languages
 node: flags/node
@@ -91,6 +90,7 @@ awscli-update: update.flags/awscli flags/awscli
 kdeconnect: flags/kdeconnect
 postman: flags/postman
 etcher: flags/etcher
+neovim: flags/neovim
 onedrive: flags/onedrive
 onedrive-update: update.flags/onedrive flags/onedrive
 
@@ -156,15 +156,19 @@ alacritty: flags/alacritty-src
 stterm: flags/stterm
 
 flags/neovim: pip3
-	sudo add-apt-repository --update --yes ppa:neovim-ppa/stable
-	@bash ./install/run-helper installif neovim
+	wget --directory-prefix="/tmp" --timestamping "https://github.com/neovim/neovim/releases/download/v$(version)/nvim-linux-x86_64.tar.gz"
+	rm -rf "$(XDG_DATA_HOME)/neovim"
+	mkdir --parents "$(XDG_DATA_HOME)/neovim"
+	tar --extract --gzip --file="/tmp/nvim-linux-x86_64.tar.gz" --directory="$(XDG_DATA_HOME)/neovim" --strip-components=1
+	mkdir --parents "$(HOME)/bin"
+	ln -sf "$(XDG_DATA_HOME)/neovim/bin/nvim" "$(HOME)/bin/nvim"
 	pip3 install --user --upgrade pynvim
 	mkdir -p ~/.config/nvim
 	@bash ./install/run-helper link vimrc $(HOME)/.config/nvim/init.vim
 	@bash ./install/run-helper link vim/syntax $(HOME)/.config/nvim/syntax
 	curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-	nvim +PlugUpdate +qa
-	touch flags/neovim
+	"$(HOME)/bin/nvim" +PlugUpdate +qa
+	ln -sf "$(HOME)/bin/nvim" flags/neovim
 
 npm: npm-install npm-update
 
