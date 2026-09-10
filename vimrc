@@ -383,21 +383,9 @@ let g:vim_svelte_plugin_use_typescript=1
 let g:tmuxline_preset='full'
 
 
-" Make Shift-K work correctly for nvim  + git (I don't really know how this
-" works....)
-if exists('*shellescape') && exists('b:git_dir') && b:git_dir != ''
-  if b:git_dir =~# '/\.git$' " Not a bare repository
-    let &l:path = escape(fnamemodify(b:git_dir,':h'),'\, ').','.&l:path
-  endif
-  let &l:path = escape(b:git_dir,'\, ').','.&l:path
-  let &l:keywordprg = ':sp | term git --git-dir='.shellescape(b:git_dir).' show'
-else
-  setlocal keywordprg=git\ show
-endif
-
-if has('gui_running')
-  let &l:keywordprg = substitute(&l:keywordprg,'^git\>','git --no-pager','')
-endif
+" K on a commit hash in `git rebase -i` shows that commit. Scoped to the
+" filetype so K keeps nvim's default everywhere else.
+autocmd FileType gitrebase setlocal keywordprg=git\ show
 
 " Strip Whitespace on Save
 autocmd BufWritePre * :call StripTrailingWhitespaces()
