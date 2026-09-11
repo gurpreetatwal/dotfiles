@@ -25,6 +25,9 @@ setopt INC_APPEND_HISTORY       # write to the history file rightaway rather tha
 autoload -Uz compinit && compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
 autoload -U +X bashcompinit && bashcompinit
 
+# gb is a function, so `git branch`'s completion has to be wired up by hand
+compdef _git gb=git-branch
+
 # terraform
 test -f "$(which terraform)" && complete -o nospace -C "$(which terraform)" terraform
 test -f "$(which terragrunt)" && complete -C "$(which terragrunt)" "terragrunt"
