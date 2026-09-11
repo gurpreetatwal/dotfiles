@@ -6,10 +6,13 @@
 	; falls back to $EDITOR then vi, so there is nothing to keep in sync here
 	excludesfile=~/.config/git/ignore
 [push]
-	default=current
+	default=simple
 	autoSetupRemote = true
 [branch]
 	autosetuprebase=always
+[rebase]
+	; rebasing the top of a stack also moves every branch stacked beneath it
+	updateRefs = true
 [merge]
 	tool = nvimdiff
 [diff]
