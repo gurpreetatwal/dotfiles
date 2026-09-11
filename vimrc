@@ -173,6 +173,8 @@ function! GetGitURL(...)
     " Get file path relative to git root
     let l:filepath = system('git ls-files --full-name ' . shellescape(expand('%')))
     let l:filepath = substitute(l:filepath, '\n', '', 'g')
+    let l:filepath = substitute(l:filepath, '[', '%5B', 'g')
+    let l:filepath = substitute(l:filepath, ']', '%5D', 'g')
 
     " Construct URL based on platform
     if l:remote =~ 'gitlab'
