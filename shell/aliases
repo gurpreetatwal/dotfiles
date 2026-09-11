@@ -134,11 +134,56 @@ alias gt="git tag"
 alias gtl="git tag -l"
 
 ### Branching
-alias gb="git branch"
 alias gba="git branch --all"
 alias gbd="git branch --delete"
 alias gbD="git branch --delete --force"
 alias gbm="git branch --move"
+
+# Bare `gb` lists local branches with their push status, newest first; with
+# arguments it falls through to `git branch` (completion wired up in zshrc).
+gb() {
+  if [[ "$#" -gt 0 ]]; then
+    git branch "$@"
+    return
+  fi
+
+  local 'base' 'rows';
+  # Nearest branch tip in HEAD's history. Not %(is-base:HEAD): that scores
+  # branches stacked on top of HEAD as zero-distance, so it names children.
+  base="$(git for-each-ref --count=1 --sort=-committerdate --merged=HEAD --no-contains=HEAD --format='%(refname:short)' refs/heads)"
+
+  rows="$( {
+      git for-each-ref refs/remotes --format='R|%(refname:lstrip=3)'
+      git for-each-ref --sort=-committerdate refs/heads \
+        --format='H|%(if)%(HEAD)%(then)*%(else)%(if)%(worktreepath)%(then)+%(else) %(end)%(end)|%(refname:short)|%(if)%(upstream)%(then)%(if)%(upstream:track)%(then)%(upstream:track)%(else)in sync%(end)%(else)?%(end)|%(committerdate:relative)'
+    } | awk -F'|' -v OFS='|' -v base="$base" '
+        $1 == "R" { remote[$2] = 1; next }
+        {
+          if ($4 == "?") $4 = ($3 in remote) ? "pushed, untracked" : "local only"
+          if ($3 == base) $3 = $3 " (base)"
+          print $2, $3, $4, $5
+        }
+      ' | column -t -s'|')"
+
+  # `git branch` only colours a terminal, so match that
+  if [[ ! -t 1 ]]; then
+    printf '%s\n' "$rows"
+    return
+  fi
+
+  # column -t counts ANSI escapes as visible width, so colour the padded rows
+  # rather than the format string
+  printf '%s\n' "$rows" | sed -E \
+    -e 's/^\*( +)([^ ]+)/\x1b[1;32m*\x1b[0m\1\x1b[1m\2\x1b[0m/' \
+    -e 's/^\+/\x1b[33m+\x1b[0m/' \
+    -e 's/ \(base\)/ \x1b[36m(base)\x1b[0m/' \
+    -e 's/ in sync / \x1b[32min sync\x1b[0m /' \
+    -e 's/ pushed, untracked / \x1b[33mpushed, untracked\x1b[0m /' \
+    -e 's/ local only / \x1b[35mlocal only\x1b[0m /' \
+    -e 's/ \[gone\] / \x1b[1;31m[gone]\x1b[0m /' \
+    -e 's/ (\[(ahead|behind)[^]]*\]) / \x1b[31m\1\x1b[0m /' \
+    -e 's/([0-9]+ [a-z0-9, ]*ago)$/\x1b[2m\1\x1b[0m/'
+}
 
 ### Checkout
 alias gco="git checkout"
