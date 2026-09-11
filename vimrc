@@ -405,5 +405,65 @@ lua << EOF
     -- TODO(2027-09): drop the pin once most projects are on TS 7
     vim.lsp.config('tsc', { cmd = { 'tsc', '--lsp', '--stdio' } })
     vim.lsp.enable({ 'tsc', 'svelte' })
+
+    vim.keymap.set('n', 'gru', function()
+      vim.lsp.buf.code_action({ context = { only = { 'source.removeUnusedImports' } }, apply = true })
+    end)
+
+    -- inlay hints: lspconfig enables every category for tsc and svelte; the
+    -- type ones print whole object types, so they wait for yoI
+    local inlay_basic = {
+      parameterNames = { enabled = 'literals', suppressWhenArgumentMatchesName = true },
+      enumMemberValues = { enabled = true },
+      parameterTypes = { enabled = false },
+      variableTypes = { enabled = false },
+      propertyDeclarationTypes = { enabled = false },
+      functionLikeReturnTypes = { enabled = false },
+    }
+    local inlay_full = vim.tbl_deep_extend('force', inlay_basic, {
+      parameterTypes = { enabled = true },
+      variableTypes = { enabled = true },
+      propertyDeclarationTypes = { enabled = true },
+      functionLikeReturnTypes = { enabled = true },
+    })
+
+    local function use_inlay_hints(hints)
+      for _, server in ipairs({ 'tsc', 'svelte' }) do
+        vim.lsp.config(server, { settings = { typescript = { inlayHints = hints } } })
+        for _, client in ipairs(vim.lsp.get_clients({ name = server })) do
+          client.settings.typescript.inlayHints = hints
+          client:notify('workspace/didChangeConfiguration', { settings = client.settings })
+        end
+      end
+      -- svelte-language-server doesn't request a refresh after a settings change
+      vim.lsp.inlay_hint.enable(false)
+      vim.lsp.inlay_hint.enable(true)
+    end
+    use_inlay_hints(inlay_basic)
+
+    -- yoi is vim-unimpaired's ignorecase toggle
+    local inlay_is_full = false
+    vim.keymap.set('n', 'yoI', function()
+      inlay_is_full = not inlay_is_full
+      use_inlay_hints(inlay_is_full and inlay_full or inlay_basic)
+    end)
+
+    -- diagnostics: virtual text on every line but the cursor's, which gets
+    -- virtual lines; the float wraps what those cut off
+    vim.diagnostic.config({
+      virtual_text = { current_line = false },
+      virtual_lines = { current_line = true },
+    })
+    vim.keymap.set('n', 'gh', vim.diagnostic.open_float) -- shadows gh (Select mode)
+    vim.api.nvim_create_autocmd('CursorHold', {
+      group = vim.api.nvim_create_augroup('diagnostic_float_on_hold', {}),
+      callback = function()
+        -- don't replace a hover or gh float
+        local float = vim.b.lsp_floating_preview
+        if not (float and vim.api.nvim_win_is_valid(float)) then
+          vim.diagnostic.open_float()
+        end
+      end,
+    })
   end
 EOF
