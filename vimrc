@@ -40,6 +40,8 @@ Plug 'github/copilot.vim'
 
 "" Neovim plugins
 Plug 'Shougo/deoplete.nvim', Cond(has('nvim'), { 'do': ':UpdateRemotePlugins' })
+Plug 'deoplete-plugins/deoplete-lsp', Cond(has('nvim'))
+Plug 'neovim/nvim-lspconfig', Cond(has('nvim-0.11.3'))
 Plug 'w0rp/ale', Cond(has('nvim'))
 call plug#end()
 
@@ -280,6 +282,9 @@ let g:UltiSnipsSnippetDirectories=['~/dotfiles/vim/UltiSnips', 'UltiSnips']
 "" ALE Settings
 
 """ Lint Settings
+" nvim's LSP client runs the language servers. 'auto' only detects the legacy
+" require('lspconfig') setup, so without this diagnostics show up twice.
+let g:ale_disable_lsp=1
 let g:ale_linters={
   \ 'zsh':  ['all'],
   \ 'python': ['mypy', 'pylint'],
@@ -391,4 +396,14 @@ lua << EOF
       vim.opt.diffopt:append('iwhite')
     end
   end)
+
+  -- LSP
+  if vim.fn.has('nvim-0.11.3') == 1 then
+    -- TS 7's `tsc --lsp` serves TS 6 projects too. Pinned to the global tsc
+    -- because lspconfig prefers node_modules/.bin/tsc, which is TS 6 in
+    -- unmigrated projects and exits on --lsp.
+    -- TODO(2027-09): drop the pin once most projects are on TS 7
+    vim.lsp.config('tsc', { cmd = { 'tsc', '--lsp', '--stdio' } })
+    vim.lsp.enable({ 'tsc', 'svelte' })
+  end
 EOF

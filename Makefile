@@ -13,7 +13,7 @@ gradle: version ?= 6.8.3
 stterm: version ?= 0.8.1
 flags/docker-compose: compose-version ?= 1.29.1
 flags/neovim: version ?= 0.12.4
-npm-%: packages = browser-sync eslint_d geckodriver html nodemon prettier
+npm-%: packages = browser-sync eslint_d geckodriver html nodemon prettier typescript svelte-language-server
 
 .PHONY:
 	install
