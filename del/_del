@@ -1,0 +1,9 @@
+#compdef del
+
+_arguments -s -S \
+  '(-n --dry-run)'{-n,--dry-run}'[list what would be deleted, then exit]' \
+  '(--purge)--force[delete without asking for confirmation]' \
+  '(--purge)--permanent[unlink outright instead of trashing]' \
+  '(- *)--purge[empty items trashed more than N days ago]:days:(7 30 90)' \
+  '(- *)'{-h,--help}'[show this message]' \
+  '*:path:_files'

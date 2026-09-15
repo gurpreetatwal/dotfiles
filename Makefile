@@ -109,8 +109,12 @@ grub-theme: flags/grub-theme
 
 del: flags/del
 
+completions = $(XDG_DATA_HOME)/zsh/site-functions
+
 flags/del: flags/gomi
 	@bash ./install/run-helper link "del/del" "$(HOME)/bin/del"
+	mkdir -p "$(completions)"
+	@bash ./install/run-helper link "del/_del" "$(completions)/_del"
 	ln -sf "$(HOME)/bin/del" flags/del
 
 gomi: flags/gomi

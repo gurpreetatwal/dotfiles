@@ -7,7 +7,7 @@ fi
 
 source ~/dotfiles/shell/commonrc
 
-fpath=("$XDG_DATA_HOME/zsh/completions/src" $fpath)
+fpath=("$XDG_DATA_HOME/zsh/completions/src" "$XDG_DATA_HOME/zsh/site-functions" $fpath)
 
 
 # Keep 1 million lines of history within the shell and save it to ~/.zsh_history:
