@@ -11,6 +11,7 @@
 set -euo pipefail
 
 GOMI_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/gomi/config.yaml"
+RETENTION_DAYS="${DEL_RETENTION_DAYS:-30}"
 
 if [[ -t 1 ]]; then
   bold=$'\e[1m' red=$'\e[1;31m' cyan=$'\e[1;36m' reset=$'\e[0m'
@@ -27,6 +28,38 @@ plural() {
   [[ "$1" -eq 1 ]] && printf 'item' || printf 'items'
 }
 
+# GNU and BSD date share no relative-date syntax; try each.
+days_ago() {
+  date -d "$1 days ago" '+%Y-%m-%dT%H:%M:%S' 2> /dev/null ||
+    date -v-"$1"d '+%Y-%m-%dT%H:%M:%S'
+}
+
+config_value() {
+  local value
+  value="$(awk -F': *' -v key="$1" \
+    '$0 ~ "^[[:space:]]*" key ":" {print $2; exit}' "$GOMI_CONFIG" 2> /dev/null)"
+  value="${value//\$XDG_DATA_HOME/${XDG_DATA_HOME:-$HOME/.local/share}}"
+  printf '%s\n' "${value//\$HOME/$HOME}"
+}
+
+# Report only. Emptying the trash is always something you ask for, so an
+# unattended `del` can never be the reason something is gone for good.
+retention_notice() {
+  local history cutoff count
+  command -v jq > /dev/null || return 0
+
+  history="$(config_value gomi_dir)/history.json"
+  test -r "$history" || return 0
+
+  cutoff="$(days_ago "$RETENTION_DAYS")"
+  count="$(jq --arg cutoff "$cutoff" \
+    '[.files[] | select(.timestamp < $cutoff)] | length' "$history" 2> /dev/null)" || return 0
+
+  [[ "${count:-0}" -gt 0 ]] || return 0
+  printf '%s%s %s in the trash over %s days old, run: del --purge%s\n' \
+    "$cyan" "$count" "$(plural "$count")" "$RETENTION_DAYS" "$reset"
+}
+
 usage() {
   cat <<'EOF'
 Usage: del [options] <path>...
@@ -37,15 +70,20 @@ Options:
   -n, --dry-run     list what would be deleted, then exit
       --force       delete without asking for confirmation
       --permanent   unlink outright instead of trashing
+      --purge [N]   delete nothing new; empty items trashed over N days ago
   -h, --help        show this message
 
 Recover with `undel`, which opens gomi's restore browser.
+
+Nothing is ever removed from the trash automatically. Once a day del reports
+how much has aged past 30 days; $DEL_RETENTION_DAYS changes the window.
 EOF
 }
 
 force=false
 dry_run=false
 permanent=false
+purge_only=false
 paths=()
 
 while [[ $# -gt 0 ]]; do
@@ -54,6 +92,13 @@ while [[ $# -gt 0 ]]; do
     -n|--dry-run) dry_run=true ;;
     --force) force=true ;;
     --permanent) permanent=true ;;
+    --purge)
+      purge_only=true
+      if [[ "${2:-}" =~ ^[0-9]+$ ]]; then
+        RETENTION_DAYS="$2"
+        shift
+      fi
+      ;;
     # rm's own flags are accepted so muscle memory works, but they deliberately
     # do not skip the prompt: `rm -rf` is the habit that most needs one
     -[rRiIvdfF]*|--recursive|--verbose|--dir) ;;
@@ -63,6 +108,11 @@ while [[ $# -gt 0 ]]; do
   esac
   shift
 done
+
+if [[ "$purge_only" == true ]]; then
+  gomi --prune="${RETENTION_DAYS}d" --force
+  exit 0
+fi
 
 if [[ ${#paths[@]} -eq 0 ]]; then
   usage >&2
@@ -168,6 +218,14 @@ fi
 
 if [[ "$permanent" == true ]]; then
   rm -rf -- "${paths[@]}"
-else
-  gomi -- "${paths[@]}"
+  exit 0
+fi
+
+gomi -- "${paths[@]}"
+
+stamp="${XDG_STATE_HOME:-$HOME/.local/state}/del/last-notice"
+if [[ ! -e "$stamp" ]] || [[ -n "$(find "$stamp" -mtime +0 2> /dev/null)" ]]; then
+  mkdir -p "$(dirname "$stamp")"
+  retention_notice
+  touch "$stamp"
 fi
