@@ -1,0 +1,53 @@
+core:
+  trash:
+    # A single pinned store rather than the XDG trash: one place to look, and
+    # the same layout on Linux and macOS. Variables are expanded by gomi, so
+    # this resolves per-machine.
+    strategy: legacy
+    gomi_dir: $XDG_DATA_HOME/gomi
+
+    # The source of truth for protected paths. `del` reads this list and
+    # enforces it properly; gomi's own check compares the literal argument
+    # without resolving it, so a relative path walks straight past it. Keeping
+    # the list here anyway catches direct `gomi` calls that bypass `del`.
+    forbidden_paths:
+      - /
+      - /bin
+      - /boot
+      - /dev
+      - /etc
+      - /home
+      - /lib
+      - /lib32
+      - /lib64
+      - /media
+      - /mnt
+      - /opt
+      - /private
+      - /proc
+      - /root
+      - /run
+      - /sbin
+      - /srv
+      - /sys
+      - /tmp
+      - /usr
+      - /var
+      - /Applications
+      - /Library
+      - /System
+      - /Users
+      - /Volumes
+      - $HOME
+      - $HOME/temp
+      - $HOME/projects
+      - $XDG_DATA_HOME/gomi
+
+  restore:
+    confirm: true
+    verbose: true
+
+  # `del --permanent` covers this, and it is one keypress away in the restore
+  # browser otherwise.
+  permanent_delete:
+    enable: false

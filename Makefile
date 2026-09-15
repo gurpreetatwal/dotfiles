@@ -107,6 +107,19 @@ intel-backlight: flags/intel-backlight
 fonts-hack: flags/fonts-hack
 grub-theme: flags/grub-theme
 
+gomi: flags/gomi
+
+flags/gomi: version ?= 1.6.4
+flags/gomi: repository = https://github.com/babarot/gomi
+flags/gomi: asset = gomi_$(shell uname -s)_$(shell uname -m).tar.gz
+
+flags/gomi:
+	curl --location --silent --show-error --output "/tmp/$(asset)" "$(repository)/releases/download/v$(version)/$(asset)"
+	tar --extract --gzip --file="/tmp/$(asset)" --directory="$(HOME)/bin" gomi
+	mkdir -p "$(XDG_CONFIG_HOME)/gomi"
+	@bash ./install/run-helper link "del/gomi.yaml" "$(XDG_CONFIG_HOME)/gomi/config.yaml"
+	ln -sf "$(HOME)/bin/gomi" flags/gomi
+
 browser-router: flags/browser-router
 
 flags/browser-router:
