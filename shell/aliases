@@ -26,7 +26,14 @@ alias jwt="jq -R 'split(\".\") | .[1] | @base64d | fromjson'"
 ## Interactive Mode
 alias cp="cp -i"
 alias mv="mv -i"
-alias rm="rm -i"
+
+## Deletion
+# `del` previews everything that matched, confirms once, then trashes it.
+# Use `\rm` or `command rm` for the real thing.
+if [ "$(command -v del)" ]; then
+  alias rm="del"
+fi
+alias undel="gomi --restore"
 
 ## Colors
 alias ls="ls --color=auto"

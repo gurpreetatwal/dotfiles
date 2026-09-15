@@ -1,0 +1,173 @@
+#!/usr/bin/env bash
+
+# A safer rm: show everything that matched, confirm once, then hand the batch
+# to `gomi`, which moves it to a trash it can restore from. Replaces the
+# `ls <pattern>` / `rm <pattern>` dance without `rm -i`'s per-file prompt tax.
+#
+# Portability: this runs on Linux and macOS, so external commands use short
+# flags. BSD userland has no long-flag spelling for `du -sh` and friends, which
+# is why this file is exempt from the long-form rule in CLAUDE.md.
+
+set -euo pipefail
+
+GOMI_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/gomi/config.yaml"
+
+if [[ -t 1 ]]; then
+  bold=$'\e[1m' red=$'\e[1;31m' cyan=$'\e[1;36m' reset=$'\e[0m'
+else
+  bold='' red='' cyan='' reset=''
+fi
+
+die() {
+  printf '%sdel:%s %s\n' "$red" "$reset" "$1" >&2
+  exit 1
+}
+
+plural() {
+  [[ "$1" -eq 1 ]] && printf 'item' || printf 'items'
+}
+
+usage() {
+  cat <<'EOF'
+Usage: del [options] <path>...
+
+Lists everything that matched, asks once, then moves it to the trash.
+
+Options:
+  -n, --dry-run     list what would be deleted, then exit
+      --force       delete without asking for confirmation
+      --permanent   unlink outright instead of trashing
+  -h, --help        show this message
+
+Recover with `undel`, which opens gomi's restore browser.
+EOF
+}
+
+force=false
+dry_run=false
+permanent=false
+paths=()
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help) usage; exit 0 ;;
+    -n|--dry-run) dry_run=true ;;
+    --force) force=true ;;
+    --permanent) permanent=true ;;
+    # rm's own flags are accepted so muscle memory works, but they deliberately
+    # do not skip the prompt: `rm -rf` is the habit that most needs one
+    -[rRiIvdfF]*|--recursive|--verbose|--dir) ;;
+    --) shift; paths+=("$@"); break ;;
+    -*) die "unknown option: $1" ;;
+    *) paths+=("$1") ;;
+  esac
+  shift
+done
+
+if [[ ${#paths[@]} -eq 0 ]]; then
+  usage >&2
+  exit 1
+fi
+
+if [[ "$permanent" == false && "$dry_run" == false ]] && ! command -v gomi > /dev/null; then
+  die "gomi not found, run \`make gomi\` or pass --permanent"
+fi
+
+# gomi.yaml owns the protected list. Read it rather than keeping a second copy
+# here, and refuse to run if it cannot be read: a silent fallback would drift
+# out of sync with what gomi itself enforces.
+protected=()
+while IFS= read -r guard; do
+  guard="${guard//\$XDG_DATA_HOME/${XDG_DATA_HOME:-$HOME/.local/share}}"
+  guard="${guard//\$HOME/$HOME}"
+  protected+=("$guard")
+done < <(awk '/forbidden_paths:/ {found = 1; next}
+              found && /^[[:space:]]*-[[:space:]]/ {sub(/^[[:space:]]*-[[:space:]]*/, ""); print; next}
+              found {exit}' "$GOMI_CONFIG" 2> /dev/null)
+
+if [[ ${#protected[@]} -eq 0 ]]; then
+  die "no forbidden_paths found in $GOMI_CONFIG, refusing to run"
+fi
+
+# Absolute path without resolving the final component, so `del <symlink>`
+# removes the link. Stands in for `realpath --no-symlinks`, which macOS lacks.
+# gomi compares the literal argument instead, which a relative path walks past.
+resolve() {
+  local dir base
+  [[ "$1" == "/" ]] && { printf '/\n'; return; }
+
+  base="$(basename -- "$1")"
+  if [[ "$base" == "." || "$base" == ".." ]]; then
+    (cd -- "$1" && pwd -P)
+    return
+  fi
+
+  dir="$(cd -- "$(dirname -- "$1")" && pwd -P)"
+  [[ "$dir" == "/" ]] && printf '/%s\n' "$base" || printf '%s/%s\n' "$dir" "$base"
+}
+
+is_protected() {
+  local guard
+  for guard in "${protected[@]}"; do
+    [[ "$1" == "$guard" ]] && return 0
+  done
+  return 1
+}
+
+# Checked up front, so one bad path in a batch stops everything rather than
+# leaving half a glob deleted. gomi on its own would take the rest.
+for path in "${paths[@]}"; do
+  [[ -e "$path" || -L "$path" ]] || die "no such file or directory: $path"
+  is_protected "$(resolve "$path")" &&
+    die "refusing to delete protected path: $path"
+done
+
+describe() {
+  local path="$1" size items
+  size="$(du -sh -- "$path" 2> /dev/null | cut -f1)"
+
+  if [[ -d "$path" && ! -L "$path" ]]; then
+    items="$(find "$path" -mindepth 1 2> /dev/null | wc -l | tr -d ' ')"
+    printf '  %6s  %s%s/%s  (%s %s)\n' "$size" "$cyan" "$path" "$reset" "$items" "$(plural "$items")"
+  else
+    printf '  %6s  %s\n' "$size" "$path"
+  fi
+}
+
+for path in "${paths[@]}"; do
+  describe "$path"
+done
+
+# Kilobytes, not bytes: `du -k` is portable where --block-size is not, and it
+# keeps the threshold comparison in shell integers.
+kb="$(du -sck -- "${paths[@]}" 2> /dev/null | tail -n 1 | cut -f1)"
+kb="${kb:-0}"
+total="$(du -sch -- "${paths[@]}" 2> /dev/null | tail -n 1 | cut -f1)"
+printf '%s%s %s, %s%s\n' "$bold" "${#paths[@]}" "$(plural "${#paths[@]}")" "${total:-0}" "$reset"
+
+if [[ "$dry_run" == true ]]; then
+  exit 0
+fi
+
+# Trashing is a rename, so the space is not reclaimed until the trash is
+# emptied. Large deletions are usually build output nobody restores.
+if [[ "$permanent" == false && "$kb" -gt "${DEL_WARN_KB:-1048576}" ]]; then
+  printf '%sthis stays on disk until the trash is emptied, --permanent frees it now%s\n' "$red" "$reset"
+fi
+
+if [[ "$force" == false ]]; then
+  if [[ "$permanent" == true ]]; then
+    prompt="Permanently delete? [y/N] "
+  else
+    prompt="Move to trash? [y/N] "
+  fi
+  { : < /dev/tty; } 2> /dev/null || die "no terminal to confirm on, pass --force"
+  read -r -p "$prompt" reply < /dev/tty
+  [[ "$reply" == [yY]* ]] || die "aborted"
+fi
+
+if [[ "$permanent" == true ]]; then
+  rm -rf -- "${paths[@]}"
+else
+  gomi -- "${paths[@]}"
+fi
