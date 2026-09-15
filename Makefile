@@ -107,6 +107,12 @@ intel-backlight: flags/intel-backlight
 fonts-hack: flags/fonts-hack
 grub-theme: flags/grub-theme
 
+del: flags/del
+
+flags/del: flags/gomi
+	@bash ./install/run-helper link "del/del" "$(HOME)/bin/del"
+	ln -sf "$(HOME)/bin/del" flags/del
+
 gomi: flags/gomi
 
 flags/gomi: version ?= 1.6.4
