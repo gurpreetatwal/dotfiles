@@ -128,6 +128,44 @@ case_purge_dry_run_deletes_nothing() {
   trashed "$PWD/a"; verdict "--dry-run --purge deletes nothing"
 }
 
+case_option_named_file_does_not_force() {
+  workdir; touch a b; touch -- --force
+  # shellcheck disable=SC2035  # reproducing exactly what an unguarded rm * passes
+  run *
+  [[ -e a && -e b ]]; verdict "a file named --force does not skip the prompt for *"
+}
+
+case_option_named_file_does_not_go_permanent() {
+  workdir; touch keep1 keep2; touch -- --permanent --force
+  # shellcheck disable=SC2035
+  run *
+  [[ -e keep1 && -e keep2 ]]; verdict "files named --permanent and --force do not unlink *"
+}
+
+case_option_named_file_does_not_purge() {
+  workdir; touch old; run --force old
+  touch x; touch -- --purge
+  # shellcheck disable=SC2035
+  run *
+  [[ $status -ne 0 && -e x ]] && trashed "$PWD/old"
+  verdict "a file named --purge does not turn * into a purge"
+}
+
+case_options_after_a_path_are_paths() {
+  workdir; touch a
+  run a --force
+  [[ $status -ne 0 && -e a ]]; verdict "an option after a path is treated as a path"
+}
+
+case_double_dash_deletes_option_named_file() {
+  workdir; touch -- --force
+  answer y -- --force
+  [[ ! -e --force ]] && trashed "$PWD/--force"; verdict "-- deletes a file named like an option"
+  touch -- --force
+  run --force -- --force
+  [[ $status -ne 0 && -e --force ]]; verdict "an option that names a file here is refused as ambiguous"
+}
+
 for case in $(declare -F | awk '{print $3}' | grep '^case_'); do
   "$case"
 done

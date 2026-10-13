@@ -125,7 +125,14 @@ permanent=false
 purge_only=false
 paths=()
 
+# `rm *` hands del every name in the directory, so a file called --force or
+# --permanent would otherwise switch that mode on. Options must come before the
+# first path, and an option that is also the name of a file is refused.
 while [[ $# -gt 0 ]]; do
+  if [[ "$1" == -?* && "$1" != "--" ]] && [[ -e "$1" || -L "$1" ]]; then
+    die "'$1' is both an option and a file here; to delete the file, put it after --"
+  fi
+
   case "$1" in
     -h|--help) usage; exit 0 ;;
     -n|--dry-run) dry_run=true ;;
@@ -141,12 +148,13 @@ while [[ $# -gt 0 ]]; do
     # rm's own flags are accepted so muscle memory works, but they deliberately
     # do not skip the prompt: `rm -rf` is the habit that most needs one
     -[rRiIvdfF]*|--recursive|--verbose|--dir) ;;
-    --) shift; paths+=("$@"); break ;;
-    -*) die "unknown option: $1" ;;
-    *) paths+=("$1") ;;
+    --) shift; break ;;
+    -?*) die "unknown option: $1" ;;
+    *) break ;;
   esac
   shift
 done
+paths=("$@")
 
 if [[ "$purge_only" == true ]]; then
   purge
