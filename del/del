@@ -42,6 +42,45 @@ config_value() {
   printf '%s\n' "${value//\$HOME/$HOME}"
 }
 
+# --purge is the one path that destroys data rather than moving it, so it shows
+# what would go and asks first, exactly like a deletion. Trusting the flag on
+# its own once turned `--dry-run --purge` into an unconfirmed permanent delete.
+purge() {
+  local history cutoff listing count when from reply
+  command -v jq > /dev/null || die "purge needs jq to list what would be removed"
+
+  history="$(config_value gomi_dir)/history.json"
+  test -r "$history" || die "cannot read $history"
+
+  cutoff="$(days_ago "$RETENTION_DAYS")"
+  listing="$(jq -r --arg cutoff "$cutoff" \
+    '.files[] | select(.timestamp < $cutoff) | "\(.timestamp[0:10])\t\(.from)"' \
+    "$history")"
+
+  if [[ -z "$listing" ]]; then
+    printf 'nothing in the trash over %s days old\n' "$RETENTION_DAYS"
+    return 0
+  fi
+
+  while IFS=$'\t' read -r when from; do
+    printf '  %s  %s\n' "$when" "$from"
+  done <<< "$listing"
+
+  count="$(printf '%s\n' "$listing" | wc -l | tr -d ' ')"
+  printf '%s%s %s in the trash over %s days old%s\n' \
+    "$bold" "$count" "$(plural "$count")" "$RETENTION_DAYS" "$reset"
+
+  [[ "$dry_run" == false ]] || return 0
+
+  if [[ "$force" == false ]]; then
+    { : < /dev/tty; } 2> /dev/null || die "no terminal to confirm on, pass --force"
+    read -r -p "Permanently delete these? [y/N] " reply < /dev/tty
+    [[ "$reply" == [yY]* ]] || die "aborted"
+  fi
+
+  gomi --prune="${RETENTION_DAYS}d" --force
+}
+
 # Report only. Emptying the trash is always something you ask for, so an
 # unattended `del` can never be the reason something is gone for good.
 retention_notice() {
@@ -70,7 +109,7 @@ Options:
   -n, --dry-run     list what would be deleted, then exit
       --force       delete without asking for confirmation
       --permanent   unlink outright instead of trashing
-      --purge [N]   delete nothing new; empty items trashed over N days ago
+      --purge [N]   list items trashed over N days ago, then delete for good
   -h, --help        show this message
 
 Recover with `undel`, which opens gomi's restore browser.
@@ -110,7 +149,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ "$purge_only" == true ]]; then
-  gomi --prune="${RETENTION_DAYS}d" --force
+  purge
   exit 0
 fi
 

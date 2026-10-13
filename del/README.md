@@ -71,3 +71,7 @@ most once a day.
 - **Moving to the trash is a rename, so space is not freed** until it is
   emptied. `del` warns above 1 GiB and suggests `--permanent`.
 - **The retention notice needs `jq`** and is skipped silently without it.
+- **`--purge` is the only thing here that destroys data.** Everything else
+  moves files; that empties them for good. It lists what it would take and
+  asks first, and honours `--dry-run`, because it originally did neither and
+  took 80 files that were only meant to be listed.
