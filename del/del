@@ -156,6 +156,17 @@ while [[ $# -gt 0 ]]; do
 done
 paths=("$@")
 
+# With a trailing slash, a symlink to a directory resolves to the directory:
+# `rm -rf link/` empties the target, and the preview measured the target too.
+# del acts on the name it is given, never on what that name points at.
+if [[ ${#paths[@]} -gt 0 ]]; then
+  for i in "${!paths[@]}"; do
+    while [[ "${paths[$i]}" == */ && "${paths[$i]}" != / ]]; do
+      paths[i]="${paths[$i]%/}"
+    done
+  done
+fi
+
 if [[ "$purge_only" == true ]]; then
   purge
   exit 0
@@ -221,9 +232,14 @@ done
 
 describe() {
   local path="$1" size items
-  size="$(du -sh -- "$path" 2> /dev/null | cut -f1)"
 
-  if [[ -d "$path" && ! -L "$path" ]]; then
+  if [[ -L "$path" ]]; then
+    printf '  %6s  %s -> %s\n' "link" "$path" "$(readlink -- "$path")"
+    return
+  fi
+
+  size="$(du -sh -- "$path" 2> /dev/null | cut -f1)"
+  if [[ -d "$path" ]]; then
     items="$(find "$path" -mindepth 1 2> /dev/null | wc -l | tr -d ' ')"
     printf '  %6s  %s%s/%s  (%s %s)\n' "$size" "$cyan" "$path" "$reset" "$items" "$(plural "$items")"
   else
