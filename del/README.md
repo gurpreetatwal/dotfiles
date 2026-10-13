@@ -65,6 +65,10 @@ most once a day.
   tries to delete files named `completions` and `zsh`. There is no completion
   generator; `_del` is hand-written and must be updated alongside the script's
   flags.
+- **Options must come before paths, and a file named like an option is
+  refused.** `rm *` passes every name in the directory as an argument, so a
+  file called `--force` or `--permanent` would otherwise switch that mode on.
+  Delete such a file with `del -- --force`.
 - **Protected paths are exact matches**, not prefixes. `del ~/projects` is
   refused, `del ~/projects/old` is not — deliberately, since these are
   directories worth emptying but never removing.
