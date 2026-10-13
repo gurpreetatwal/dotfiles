@@ -1,0 +1,143 @@
+#!/usr/bin/env bash
+
+# Regression tests for del. Every case runs against a throwaway HOME and XDG
+# tree, and the real trash locations are fingerprinted before and after the run
+# so a test that escapes the sandbox fails loudly instead of eating real data.
+
+set -uo pipefail
+
+here="$(cd -- "$(dirname -- "$0")" && pwd -P)"
+DEL="${DEL_UNDER_TEST:-$here/del}"
+
+REAL_HOME="$HOME"
+real_trash_fingerprint() {
+  local dir
+  for dir in "$REAL_HOME/.local/share/gomi" "$REAL_HOME/.local/share/Trash" /mnt/*/.Trash-"$(id -u)"; do
+    [[ -d "$dir" ]] || continue
+    printf '%s %s\n' "$dir" "$(find "$dir" 2> /dev/null | wc -l | tr -d ' ')"
+  done
+}
+fingerprint_before="$(real_trash_fingerprint)"
+
+root="$(mktemp -d)"
+root="$(cd -- "$root" && pwd -P)"
+trap 'chmod -R u+w "$root" 2> /dev/null; rm -rf -- "$root"' EXIT
+
+export HOME="$root/home"
+export XDG_CONFIG_HOME="$root/config"
+export XDG_DATA_HOME="$root/data"
+export XDG_STATE_HOME="$root/state"
+mkdir -p "$HOME/temp" "$HOME/projects" "$XDG_CONFIG_HOME/gomi" "$XDG_DATA_HOME" "$XDG_STATE_HOME"
+cp "$here/gomi.yaml" "$XDG_CONFIG_HOME/gomi/config.yaml"
+
+passed=0
+failed=0
+
+# Records the outcome of whatever ran immediately before it:
+#   [[ -e a ]]; verdict "a still exists"
+verdict() {
+  local result=$?
+  if [[ $result -eq 0 ]]; then
+    passed=$((passed + 1))
+    printf '  ok    %s\n' "$1"
+  else
+    failed=$((failed + 1))
+    printf '  FAIL  %s\n' "$1"
+    printf '%s\n' "${out:-}" | sed 's/^/        /'
+  fi
+}
+
+# A fresh working directory per case, inside the sandbox.
+workdir() {
+  local dir
+  dir="$(mktemp -d "$root/work.XXXXXX")"
+  cd -- "$dir" || exit 1
+}
+
+# Run del with no terminal attached, capturing status and output.
+run() {
+  out="$("$DEL" "$@" < /dev/null 2>&1)"
+  status=$?
+}
+
+# Run del with a pseudo-terminal that answers the prompt.
+answer() {
+  local reply="$1"
+  shift
+  out="$(printf '%s\n' "$reply" | script -qec "$(printf '%q ' "$DEL" "$@")" /dev/null 2>&1)"
+  status=$?
+}
+
+trashed() {
+  [[ -e "$XDG_DATA_HOME/gomi/history.json" ]] &&
+    jq -e --arg f "$1" 'any((.files // [])[]; .from == $f)' "$XDG_DATA_HOME/gomi/history.json" > /dev/null
+}
+
+case_dry_run_deletes_nothing() {
+  workdir; touch a b
+  run -n a b
+  [[ $status -eq 0 && -e a && -e b ]]; verdict "dry run lists without deleting"
+}
+
+case_missing_path_aborts_batch() {
+  workdir; touch a b
+  run --force a missing b
+  [[ $status -ne 0 && -e a && -e b ]]; verdict "a missing path aborts the whole batch"
+}
+
+case_protected_paths_refused() {
+  workdir
+  run -n "$HOME"
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses \$HOME"
+  run -n /
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses /"
+  cd -- "$HOME/temp" && run -n .
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses . inside a protected dir"
+}
+
+case_no_terminal_refuses() {
+  workdir; touch a
+  run a
+  [[ $status -ne 0 && -e a ]]; verdict "refuses without a terminal to confirm on"
+}
+
+case_rm_flags_do_not_skip_prompt() {
+  workdir; touch a
+  run -rf a
+  [[ $status -ne 0 && -e a ]]; verdict "-rf does not skip the prompt"
+}
+
+case_prompt_answers() {
+  workdir; touch a b
+  answer n a
+  [[ -e a ]]; verdict "answering n keeps the file"
+  answer y b
+  [[ ! -e b ]] && trashed "$PWD/b"; verdict "answering y moves the file to the trash"
+}
+
+case_force_trashes() {
+  workdir; touch a
+  run --force a
+  [[ $status -eq 0 && ! -e a ]] && trashed "$PWD/a"; verdict "--force trashes without asking"
+}
+
+case_purge_dry_run_deletes_nothing() {
+  workdir; touch a
+  run --force a
+  run --dry-run --purge 0
+  trashed "$PWD/a"; verdict "--dry-run --purge deletes nothing"
+}
+
+for case in $(declare -F | awk '{print $3}' | grep '^case_'); do
+  "$case"
+done
+
+cd /
+fingerprint_after="$(real_trash_fingerprint)"
+if [[ "$fingerprint_before" != "$fingerprint_after" ]]; then
+  printf '\nREAL TRASH CHANGED DURING TESTS\nbefore:\n%s\nafter:\n%s\n' "$fingerprint_before" "$fingerprint_after"
+  exit 2
+fi
+
+printf '\n%s passed, %s failed\n' "$passed" "$failed"
+[[ $failed -eq 0 ]]
