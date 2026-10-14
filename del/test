@@ -416,6 +416,75 @@ case_volume_trash_renames_in_place() {
 
 # DEL_TEST_CASES=<regex> runs only matching cases. Each case gets its own trash
 # and state, so one case's leftovers cannot satisfy or break another's checks.
+# config_with <lines>: replace forbidden_paths with exactly these lines.
+config_with() {
+  {
+    printf 'core:\n  trash:\n    strategy: xdg\n    home_fallback: false\n'
+    printf '%s\n' "$@"
+  } > "$XDG_CONFIG_HOME/gomi/config.yaml"
+}
+
+# refuses_with_config <description> <config lines...>: del must refuse to run.
+refuses_with_config() {
+  local name="$1"
+  shift
+  config_with "$@"
+  workdir; touch a
+  run -n a
+  [[ $status -ne 0 && -e a ]]; verdict "$name"
+  reset_config
+}
+
+case_parser_reads_past_comments_and_blanks() {
+  mkdir -p "$root/p1" "$root/p2" "$root/p3" "$root/p4" "$root/p5"
+  touch "$root/p1/x" "$root/p2/x" "$root/p3/x" "$root/p4/x" "$root/p5/x"
+  config_with '    forbidden_paths:' "      - $root/p1" '' '      # a comment' \
+    "      - $root/p2/" "      - \"$root/p3\"" "      - $root/p4  # inline" "      - '$root/p5'" \
+    '  restore:' '    confirm: true'
+  local p
+  for p in p2 p3 p4 p5; do
+    run -n "$root/$p/x"
+    [[ $status -ne 0 && "$out" == *refusing* ]]
+    verdict "an entry after a blank line and a comment is still protected ($p)"
+  done
+  reset_config
+}
+
+case_parser_refuses_unset_variable() {
+  # shellcheck disable=SC2016  # the literal $ is the point
+  refuses_with_config "a forbidden path using an unset variable stops del" \
+    '    forbidden_paths:' '      - /etc' '      - $DEL_SURELY_UNSET/secrets'
+}
+
+case_parser_refuses_relative_entry() {
+  refuses_with_config "a relative forbidden path stops del" \
+    '    forbidden_paths:' '      - /etc' '      - secrets'
+}
+
+case_parser_refuses_flow_style() {
+  refuses_with_config "a flow-style forbidden_paths list stops del" \
+    '    forbidden_paths: [/etc, /usr]'
+}
+
+case_parser_refuses_unknown_line() {
+  refuses_with_config "a line inside forbidden_paths it cannot classify stops del" \
+    '    forbidden_paths:' '      - /etc' '        nested: value' '      - /usr'
+}
+
+case_parser_refuses_duplicate_key() {
+  refuses_with_config "a second forbidden_paths key stops del" \
+    '    forbidden_paths:' '      - /etc' '  other:' '    forbidden_paths:' '      - /usr'
+}
+
+case_parser_expands_braced_variables() {
+  mkdir -p "$HOME/braced"; touch "$HOME/braced/x"
+  # shellcheck disable=SC2016
+  config_with '    forbidden_paths:' '      - ${HOME}/braced'
+  run -n "$HOME/braced/x"
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "\${HOME} in a forbidden path is expanded"
+  reset_config
+}
+
 for case in $(declare -F | awk '{print $3}' | grep '^case_' | grep -E -- "${DEL_TEST_CASES:-.}"); do
   export XDG_DATA_HOME="$root/data/$case" XDG_STATE_HOME="$root/state/$case"
   mkdir -p "$XDG_DATA_HOME/gomi" "$XDG_STATE_HOME"
