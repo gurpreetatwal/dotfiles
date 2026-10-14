@@ -6,42 +6,33 @@ core:
     strategy: legacy
     gomi_dir: $XDG_DATA_HOME/gomi
 
-    # The source of truth for protected paths. `del` reads this list and
-    # enforces it properly; gomi's own check compares the literal argument
-    # without resolving it, so a relative path walks straight past it. Keeping
-    # the list here anyway catches direct `gomi` calls that bypass `del`.
+    # Protected subtrees: nothing at or below these may be deleted. gomi
+    # enforces this for direct calls and del reads the same list. Directories
+    # that only need protecting by name, such as $HOME, whose contents are fair
+    # game, are not listed here, because gomi would refuse everything under them.
     forbidden_paths:
-      - /
       - /bin
       - /boot
-      - /dev
       - /etc
-      - /home
       - /lib
       - /lib32
       - /lib64
-      - /media
-      - /mnt
-      - /opt
-      - /private
       - /proc
       - /root
       - /run
       - /sbin
       - /srv
       - /sys
-      - /tmp
       - /usr
       - /var
       - /Applications
       - /Library
       - /System
-      - /Users
-      - /Volumes
-      - $HOME
-      - $HOME/temp
-      - $HOME/projects
+      - $HOME/.ssh
+      - $HOME/.gnupg
+      - $HOME/dotfiles
       - $XDG_DATA_HOME/gomi
+      - $XDG_DATA_HOME/Trash
 
   restore:
     confirm: true

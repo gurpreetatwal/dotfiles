@@ -27,7 +27,10 @@ export HOME="$root/home"
 export XDG_CONFIG_HOME="$root/config"
 export XDG_DATA_HOME="$root/data"
 export XDG_STATE_HOME="$root/state"
-mkdir -p "$HOME/temp" "$HOME/projects" "$XDG_CONFIG_HOME/gomi" "$XDG_DATA_HOME" "$XDG_STATE_HOME"
+mkdir -p "$HOME/temp" "$HOME/.ssh" "$HOME/dotfiles" "$root/nvme/projects" \
+  "$XDG_CONFIG_HOME/gomi" "$XDG_DATA_HOME/gomi" "$XDG_STATE_HOME"
+# Like the real machine, ~/projects is a symlink onto another volume's directory.
+ln -s "$root/nvme/projects" "$HOME/projects"
 cp "$here/gomi.yaml" "$XDG_CONFIG_HOME/gomi/config.yaml"
 
 passed=0
@@ -190,6 +193,52 @@ case_preview_describes_the_link() {
   run -n link/
   [[ "$out" == *"->"* && "$out" != *"3 items"* ]]
   verdict "the preview shows the link, not the target's size and contents"
+}
+
+case_subtree_contents_refused() {
+  workdir; touch "$HOME/.ssh/id_ed25519" "$HOME/dotfiles/vimrc" "$XDG_DATA_HOME/gomi/history.json"
+  run -n "$HOME/.ssh/id_ed25519"
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses a file inside ~/.ssh"
+  run -n "$HOME/dotfiles/vimrc"
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses a file inside ~/dotfiles"
+  run -n "$XDG_DATA_HOME/gomi/history.json"
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses the trash's own index"
+}
+
+case_subtree_through_symlinked_parent() {
+  workdir; touch "$HOME/.ssh/key"; ln -s "$HOME/.ssh" sshlink
+  run -n sshlink/key
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses a protected subtree reached through a symlink"
+}
+
+case_exact_dir_by_physical_path() {
+  cd -- "$root/nvme/projects" && run -n .
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses ~/projects reached by its physical path"
+  cd -- "$HOME/projects" && run -n .
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses ~/projects as . from inside it"
+  touch "$HOME/projects/scratch"
+  run -n "$HOME/projects/scratch"
+  [[ $status -eq 0 ]]; verdict "allows a file inside ~/projects"
+}
+
+case_opt_is_exact() {
+  if [[ ! -d /opt ]]; then skip "refuses /opt itself" "no /opt here"; return; fi
+  workdir
+  run -n /opt
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses /opt itself"
+}
+
+case_tmpdir_inside_subtree_is_allowed() {
+  mkdir -p "$root/fakevar/folders/T"
+  sed -i "s|^\( *\)forbidden_paths:\$|&\n\1  - $root/fakevar|" "$XDG_CONFIG_HOME/gomi/config.yaml"
+  touch "$root/fakevar/folders/T/scratch" "$root/fakevar/other"
+  TMPDIR="$root/fakevar/folders/T" run -n "$root/fakevar/folders/T/scratch"
+  [[ $status -eq 0 ]]; verdict "allows files in \$TMPDIR under a protected subtree, as on macOS"
+  TMPDIR="$root/fakevar/folders/T" run -n "$root/fakevar/other"
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "still refuses the rest of that subtree"
+  TMPDIR="$root/fakevar/folders/T" run -n "$root/fakevar/folders/T"
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "still refuses \$TMPDIR itself"
+  cp "$here/gomi.yaml" "$XDG_CONFIG_HOME/gomi/config.yaml"
 }
 
 for case in $(declare -F | awk '{print $3}' | grep '^case_'); do
