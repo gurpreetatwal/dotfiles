@@ -1,10 +1,12 @@
 core:
   trash:
-    # A single pinned store rather than the XDG trash: one place to look, and
-    # the same layout on Linux and macOS. Variables are expanded by gomi, so
-    # this resolves per-machine.
-    strategy: legacy
-    gomi_dir: $XDG_DATA_HOME/gomi
+    # The XDG trash, which has one trash per volume: a file is renamed into the
+    # trash on its own filesystem instead of being copied to another one.
+    strategy: xdg
+
+    # When a file's volume has no trash, refuse instead of copying it into the
+    # home trash. del checks this before it asks for confirmation.
+    home_fallback: false
 
     # Protected subtrees: nothing at or below these may be deleted. gomi
     # enforces this for direct calls and del reads the same list. Directories

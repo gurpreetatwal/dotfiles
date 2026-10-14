@@ -10,9 +10,10 @@ here="$(cd -- "$(dirname -- "$0")" && pwd -P)"
 DEL="${DEL_UNDER_TEST:-$here/del}"
 
 REAL_HOME="$HOME"
+SHM_TRASH="/dev/shm/.Trash-$(id -u)"
 real_trash_fingerprint() {
   local dir
-  for dir in "$REAL_HOME/.local/share/gomi" "$REAL_HOME/.local/share/Trash" /mnt/*/.Trash-"$(id -u)"; do
+  for dir in "$REAL_HOME/.local/share/gomi" "$REAL_HOME/.local/share/Trash" /mnt/*/.Trash-"$(id -u)" "$SHM_TRASH"; do
     [[ -d "$dir" ]] || continue
     printf '%s %s\n' "$dir" "$(find "$dir" 2> /dev/null | wc -l | tr -d ' ')"
   done
@@ -21,7 +22,19 @@ fingerprint_before="$(real_trash_fingerprint)"
 
 root="$(mktemp -d)"
 root="$(cd -- "$root" && pwd -P)"
-trap 'chmod -R u+w "$root" 2> /dev/null; rm -rf -- "$root"' EXIT
+# A volume trash a test created for itself, removed again before the
+# fingerprint check. Tests never use a volume that already has a trash.
+vt_mount=""
+vt_dir=""
+vt_work=()
+cleanup_volume() {
+  [[ -z "$vt_dir" ]] || rm -rf -- "$vt_dir"
+  [[ ${#vt_work[@]} -eq 0 ]] || rm -rf -- "${vt_work[@]}"
+  vt_mount=""
+  vt_dir=""
+  vt_work=()
+}
+trap 'cleanup_volume; chmod -R u+w "$root" 2> /dev/null; rm -rf -- "$root"' EXIT
 
 export HOME="$root/home"
 export XDG_CONFIG_HOME="$root/config"
@@ -32,6 +45,9 @@ mkdir -p "$HOME/temp" "$HOME/.ssh" "$HOME/dotfiles" "$root/nvme/projects" \
 # Like the real machine, ~/projects is a symlink onto another volume's directory.
 ln -s "$root/nvme/projects" "$HOME/projects"
 cp "$here/gomi.yaml" "$XDG_CONFIG_HOME/gomi/config.yaml"
+
+# No real volume trash is ever visible to del under test.
+export DEL_TRASH_VOLUMES=""
 
 passed=0
 failed=0
@@ -71,9 +87,49 @@ answer() {
   status=$?
 }
 
+skip() { printf '  skip  %s (%s)\n' "$1" "$2"; }
+
+# Each sandbox .trashinfo, as "<original path>\t<info file>".
+trash_records() {
+  local info path
+  for info in "$XDG_DATA_HOME"/Trash/info/*.trashinfo ${vt_dir:+"$vt_dir"/info/*.trashinfo}; do
+    [[ -e "$info" ]] || continue
+    path="$(sed -n 's/^Path=//p' "$info")"
+    path="$(printf '%b' "${path//%/\\x}")"
+    [[ "$path" == /* ]] || path="$vt_mount/$path"
+    printf '%s\t%s\n' "$path" "$info"
+  done
+}
+
 trashed() {
-  [[ -e "$XDG_DATA_HOME/gomi/history.json" ]] &&
-    jq -e --arg f "$1" 'any((.files // [])[]; .from == $f)' "$XDG_DATA_HOME/gomi/history.json" > /dev/null
+  trash_records | cut -f1 | grep -qxF -- "$1"
+}
+
+# backdate <original path> <days>: pretend it was trashed that long ago.
+backdate() {
+  local info when
+  info="$(trash_records | awk -F'\t' -v f="$1" '$1 == f {print $2}')"
+  when="$(date -d "$2 days ago" '+%Y-%m-%dT%H:%M:%S')"
+  sed -i "s/^DeletionDate=.*/DeletionDate=$when/" "$info"
+}
+
+# use_volume <mount>: a writable mount on another device from the sandbox
+# that has no trash yet. Creates its trash and a work dir, both removed by
+# cleanup_volume. Refuses any volume that already has a trash.
+use_volume() {
+  local mount="$1" trash
+  trash="$1/.Trash-$(id -u)"
+  [[ -d "$mount" && -w "$mount" && ! -e "$trash" ]] || return 1
+  [[ "$(stat -c %d "$mount")" != "$(stat -c %d "$root")" ]] || return 1
+  mkdir -m 700 "$trash" "$trash/files" "$trash/info" || return 1
+  vt_mount="$mount"
+  vt_dir="$trash"
+  vt_workdir
+}
+
+vt_workdir() {
+  vol_work="$(mktemp -d "${vt_mount:-/dev/shm}/del-test.XXXXXX")"
+  vt_work+=("$vol_work")
 }
 
 case_dry_run_deletes_nothing() {
@@ -275,11 +331,99 @@ case_gomi_allows_tmpdir_under_subtree() {
   reset_config
 }
 
-for case in $(declare -F | awk '{print $3}' | grep '^case_'); do
+case_purge_deletes_exactly_what_it_listed() {
+  workdir; touch old1 old2 fresh
+  run --force old1 old2 fresh
+  backdate "$PWD/old1" 40; backdate "$PWD/old2" 40
+  run -n --purge 30
+  local listed="$out"
+  run --force --purge 30
+  ! trashed "$PWD/old1" && ! trashed "$PWD/old2" && trashed "$PWD/fresh" &&
+    [[ "$listed" == *old1* && "$listed" == *old2* && "$listed" != *fresh* ]] &&
+    [[ ! -e "$XDG_DATA_HOME/Trash/files/old1" && ! -e "$XDG_DATA_HOME/Trash/files/old2" ]]
+  verdict "--purge deletes exactly the entries it listed, data and record"
+}
+
+case_purge_skips_undated_entries() {
+  workdir; touch a
+  run --force a
+  sed -i 's/^DeletionDate=.*/DeletionDate=/' "$(trash_records | awk -F'\t' -v f="$PWD/a" '$1 == f {print $2}')"
+  run --force --purge 0
+  trashed "$PWD/a" && [[ "$out" == *unreadable* ]]
+  verdict "an entry without a readable date is never purged"
+}
+
+case_retention_notice_counts_aged() {
+  workdir; touch old new
+  run --force old
+  backdate "$PWD/old" 40
+  rm -rf -- "$XDG_STATE_HOME/del"
+  run --force new
+  [[ "$out" == *"1 item in the trash over 30 days old"* ]]
+  verdict "the notice counts items past the window"
+}
+
+case_symlink_is_unlinked_not_trashed() {
+  workdir; mkdir t; touch t/a; ln -s t l
+  run --force l
+  [[ ! -L l && -e t/a ]] && ! trashed "$PWD/l"
+  verdict "a symlink is removed, not trashed, and its target is untouched"
+}
+
+case_trashed_path_is_physical() {
+  touch "$HOME/projects/via-link"
+  run --force "$HOME/projects/via-link"
+  trashed "$root/nvme/projects/via-link"
+  verdict "a file reached through a symlinked directory is recorded by its physical path"
+}
+
+case_no_volume_trash_refuses_before_moving() {
+  if [[ ! -w /dev/shm ]]; then skip "a volume without a trash refuses the whole batch" "no /dev/shm"; return; fi
+  vt_workdir; touch "$vol_work/f"
+  workdir; touch local
+  DEL_TRASH_VOLUMES=/dev/shm run --force local "$vol_work/f"
+  [[ $status -ne 0 && -e local && -e "$vol_work/f" ]] && ! trashed "$PWD/local"
+  verdict "a volume without a usable trash refuses the whole batch before moving anything"
+  cleanup_volume
+}
+
+case_tmpfs_trash_is_ignored() {
+  if ! use_volume /dev/shm; then skip "a trash on tmpfs is ignored, as gomi ignores it" "no spare /dev/shm"; return; fi
+  touch "$vol_work/f"
+  workdir; touch local
+  DEL_TRASH_VOLUMES=/dev/shm run --force local "$vol_work/f"
+  [[ $status -ne 0 && -e local && -e "$vol_work/f" && "$out" == *"no trash on the volume"* ]] &&
+    ! trashed "$PWD/local"
+  verdict "a trash on tmpfs is ignored, as gomi ignores it, before anything in the batch moves"
+  cleanup_volume
+}
+
+# Needs a spare writable volume that is not tmpfs; CI makes one. Set
+# DEL_TEST_VOLUME to its mount point to run this locally.
+case_volume_trash_renames_in_place() {
+  if [[ -z "${DEL_TEST_VOLUME:-}" ]] || ! use_volume "$DEL_TEST_VOLUME"; then
+    skip "a file on another volume is renamed into that volume's trash" "set DEL_TEST_VOLUME to a spare volume"
+    return
+  fi
+  touch "$vol_work/g"
+  local inode; inode="$(stat -c %i "$vol_work/g")"
+  DEL_TRASH_VOLUMES="$DEL_TEST_VOLUME" run --force "$vol_work/g"
+  [[ $status -eq 0 && "$(stat -c %i "$vt_dir/files/g" 2> /dev/null)" == "$inode" ]] &&
+    trashed "$vol_work/g" && [[ ! -e "$XDG_DATA_HOME/Trash/files/g" ]]
+  verdict "a file on another volume is renamed into that volume's trash, not copied"
+  cleanup_volume
+}
+
+# DEL_TEST_CASES=<regex> runs only matching cases. Each case gets its own trash
+# and state, so one case's leftovers cannot satisfy or break another's checks.
+for case in $(declare -F | awk '{print $3}' | grep '^case_' | grep -E -- "${DEL_TEST_CASES:-.}"); do
+  export XDG_DATA_HOME="$root/data/$case" XDG_STATE_HOME="$root/state/$case"
+  mkdir -p "$XDG_DATA_HOME/gomi" "$XDG_STATE_HOME"
   "$case"
 done
 
 cd /
+cleanup_volume
 fingerprint_after="$(real_trash_fingerprint)"
 if [[ "$fingerprint_before" != "$fingerprint_after" ]]; then
   printf '\nREAL TRASH CHANGED DURING TESTS\nbefore:\n%s\nafter:\n%s\n' "$fingerprint_before" "$fingerprint_after"

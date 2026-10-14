@@ -30,5 +30,14 @@ jobs:
           make gomi
           echo "$HOME/bin" >> "$GITHUB_PATH"
 
+      - name: Make a spare volume
+        run: |
+          truncate -s 64M "$RUNNER_TEMP/volume.img"
+          mkfs.ext4 -q "$RUNNER_TEMP/volume.img"
+          sudo mkdir /mnt/del-volume
+          sudo mount -o loop "$RUNNER_TEMP/volume.img" /mnt/del-volume
+          sudo chown "$(id -u):$(id -g)" /mnt/del-volume
+          echo "DEL_TEST_VOLUME=/mnt/del-volume" >> "$GITHUB_ENV"
+
       - name: Run tests
         run: del/test
