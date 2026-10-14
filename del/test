@@ -506,6 +506,26 @@ case_purge_rejects_permanent() {
   verdict "--purge with --permanent is refused"
 }
 
+# Dry runs only: if the guard were broken, a real run here would delete a mount.
+case_mount_points_refused() {
+  if [[ ! -d /dev/shm ]]; then skip "refuses a mount point" "no /dev/shm"; return; fi
+  workdir
+  run -n /dev/shm
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses a mount point"
+  cd /dev/shm && run -n .
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses a mount point as . from inside it"
+}
+
+case_volume_trash_refused() {
+  if ! use_volume /dev/shm; then skip "refuses a volume's trash" "no spare /dev/shm"; return; fi
+  touch "$vt_dir/files/x"
+  run -n "$vt_dir"
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses a volume's trash directory"
+  run -n "$vt_dir/files/x"
+  [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses anything inside a volume's trash"
+  cleanup_volume
+}
+
 for case in $(declare -F | awk '{print $3}' | grep '^case_' | grep -E -- "${DEL_TEST_CASES:-.}"); do
   export XDG_DATA_HOME="$root/data/$case" XDG_STATE_HOME="$root/state/$case"
   mkdir -p "$XDG_DATA_HOME/gomi" "$XDG_STATE_HOME"
