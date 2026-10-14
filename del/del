@@ -417,6 +417,27 @@ for guard in "${protected_trees[@]}"; do
   done < <(guard_forms "$guard")
 done
 
+# Every mount point, of any type, is protected by name, and the trash at its
+# top as a subtree: otherwise `del --permanent /mnt/nvme` would empty a whole
+# volume, and a volume's trash could be emptied without --purge's preview.
+# Mount points come from the kernel already resolved, so they are used as they
+# are; resolving them would `cd` into autofs mounts and trigger them.
+all_mounts() {
+  if [[ -r /proc/self/mounts ]]; then
+    awk '{gsub(/\\040/, " ", $2); print $2}' /proc/self/mounts
+  else
+    mount | sed -nE 's/^.* on (.*) \([^)]*\)$/\1/p'
+  fi | awk '!seen[$0]++'
+}
+
+while IFS= read -r mount; do
+  name_forms+=("$mount")
+  for trash in "${mount%/}/.Trash" "${mount%/}/.Trash-$MY_UID"; do
+    tree_forms+=("$trash")
+    tree_labels+=("$trash")
+  done
+done < <(all_mounts)
+
 tmp_forms=()
 if [[ -n "${TMPDIR:-}" ]]; then
   while IFS= read -r form; do tmp_forms+=("$form"); done < <(guard_forms "${TMPDIR%/}")
