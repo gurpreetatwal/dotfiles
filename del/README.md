@@ -11,7 +11,7 @@ into one command: show what matched, ask once, move it somewhere recoverable.
 |---|---|
 | `del` | this directory. Preview, protected paths, one confirmation, retention notice. |
 | `gomi` | [gomi](https://github.com/babarot/gomi), a prebuilt binary in `~/bin`. The trash: moving files in, restoring them, expiring them. |
-| `gomi.yaml` | gomi's config, symlinked to `$XDG_CONFIG_HOME/gomi/config.yaml`. Pins the store and owns the protected-path list. |
+| `gomi.yaml` | gomi's config, symlinked to `$XDG_CONFIG_HOME/gomi/config.yaml`. Pins the store and owns the protected subtrees. |
 
 `rm` is aliased to `del`. `\rm` or `command rm` gets the real thing.
 
@@ -43,10 +43,9 @@ away:
 Batch confirmation is the third piece: gomi's `-i` prompts per file, which is
 the `rm -i` problem this exists to solve.
 
-**Why the config owns the protected list.** One list, two enforcers — `del`
-does it correctly, gomi's own check is a backstop for direct calls. If `del`
-cannot read that list it refuses to run rather than falling back to a built-in
-copy, which would silently drift out of sync.
+**Why the config owns the subtree list.** gomi enforces it on direct calls
+and `del` reads the same list. If `del` cannot read it, it refuses to run
+rather than falling back to a built-in copy, which would silently drift.
 
 **Why short command flags**, against the rule in `../CLAUDE.md`: BSD userland
 has no long-flag spelling for `du -sh` and friends, and this runs on macOS.
@@ -72,9 +71,13 @@ most once a day.
 - **del acts on the name it is given, never on what it points at.** Trailing
   slashes are stripped, because `rm -rf link/` empties the directory a symlink
   points to. `del link/` removes the link; the preview shows it as one.
-- **Protected paths are exact matches**, not prefixes. `del ~/projects` is
-  refused, `del ~/projects/old` is not — deliberately, since these are
-  directories worth emptying but never removing.
+- **There are two kinds of protection.** `forbidden_paths` in `gomi.yaml`
+  are subtrees: nothing at or below them can be deleted, including anything in
+  `~/dotfiles` (use `git rm` or `\rm` there). `PROTECTED_NAMES` in `del` are
+  directories that cannot be deleted themselves but whose contents can, such as
+  `~` and `~/projects`. They cannot share a list, because gomi treats every
+  entry as a subtree. Both are matched however a path is reached: as typed,
+  through symlinks, or as `.` from inside.
 - **Moving to the trash is a rename, so space is not freed** until it is
   emptied. `del` warns above 1 GiB and suggests `--permanent`.
 - **The retention notice needs `jq`** and is skipped silently without it.

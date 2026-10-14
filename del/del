@@ -181,25 +181,49 @@ if [[ "$permanent" == false && "$dry_run" == false ]] && ! command -v gomi > /de
   die "gomi not found, run \`make gomi\` or pass --permanent"
 fi
 
-# gomi.yaml owns the protected list. Read it rather than keeping a second copy
-# here, and refuse to run if it cannot be read: a silent fallback would drift
-# out of sync with what gomi itself enforces.
-protected=()
+# Directories that may not be deleted themselves, though anything inside them
+# may. gomi's forbidden_paths cannot express this: it protects everything below.
+PROTECTED_NAMES=(
+  / /dev /home /media /mnt /opt /private /tmp /Users /Volumes
+  "$HOME" "$HOME/temp" "$HOME/projects"
+)
+
+# gomi.yaml's forbidden_paths are subtrees nothing inside of may be deleted.
+# gomi enforces them on direct calls; del reads the same list, and refuses to
+# run if it cannot, rather than fall back to a copy that drifts.
+protected_trees=()
 while IFS= read -r guard; do
   guard="${guard//\$XDG_DATA_HOME/${XDG_DATA_HOME:-$HOME/.local/share}}"
   guard="${guard//\$HOME/$HOME}"
-  protected+=("$guard")
+  protected_trees+=("$guard")
 done < <(awk '/forbidden_paths:/ {found = 1; next}
               found && /^[[:space:]]*-[[:space:]]/ {sub(/^[[:space:]]*-[[:space:]]*/, ""); print; next}
               found {exit}' "$GOMI_CONFIG" 2> /dev/null)
 
-if [[ ${#protected[@]} -eq 0 ]]; then
+if [[ ${#protected_trees[@]} -eq 0 ]]; then
   die "no forbidden_paths found in $GOMI_CONFIG, refusing to run"
 fi
 
-# Absolute path without resolving the final component, so `del <symlink>`
-# removes the link. Stands in for `realpath --no-symlinks`, which macOS lacks.
-# gomi compares the literal argument instead, which a relative path walks past.
+# Lexical cleanup the way Go's filepath.Clean does it: collapse //, drop . and
+# apply .. without consulting the filesystem.
+clean_path() {
+  local part
+  local -a parts out=()
+  IFS=/ read -r -a parts <<< "$1"
+  for part in ${parts[@]+"${parts[@]}"}; do
+    case "$part" in
+      '' | .) ;;
+      ..) [[ ${#out[@]} -eq 0 ]] || out=("${out[@]:0:${#out[@]}-1}") ;;
+      *) out+=("$part") ;;
+    esac
+  done
+  local IFS=/
+  printf '/%s\n' "${out[*]-}"
+}
+
+# Absolute path with the directory's symlinks resolved but not the final
+# component, so `del <symlink>` is judged as the link. Stands in for
+# `realpath --no-symlinks`, which macOS lacks.
 resolve() {
   local dir base
   [[ "$1" == "/" ]] && { printf '/\n'; return; }
@@ -214,10 +238,82 @@ resolve() {
   [[ "$dir" == "/" ]] && printf '/%s\n' "$base" || printf '%s/%s\n' "$dir" "$base"
 }
 
-is_protected() {
-  local guard
-  for guard in "${protected[@]}"; do
-    [[ "$1" == "$guard" ]] && return 0
+# A path as typed (made absolute and cleaned) and as it really resolves. A
+# protected directory has to be recognised however it is reached: through a
+# symlinked parent, by its physical path, or as `.` from inside it.
+path_forms() {
+  local path="$1"
+  [[ "$path" == /* ]] || path="$PWD/$path"
+  clean_path "$path"
+  resolve "$1"
+}
+
+# A guard as written, plus fully resolved when it exists.
+guard_forms() {
+  clean_path "$1"
+  if [[ -d "$1" ]]; then
+    (cd -- "$1" 2> /dev/null && pwd -P) || true
+  fi
+}
+
+within() {
+  [[ "$1" == "$2" || "$1" == "${2%/}/"* ]]
+}
+
+strictly_within() {
+  [[ "$1" == "${2%/}/"?* ]]
+}
+
+name_forms=()
+for guard in "${PROTECTED_NAMES[@]}"; do
+  while IFS= read -r form; do name_forms+=("$form"); done < <(guard_forms "$guard")
+done
+
+tree_forms=()
+tree_labels=()
+for guard in "${protected_trees[@]}"; do
+  while IFS= read -r form; do
+    tree_forms+=("$form")
+    tree_labels+=("$guard")
+  done < <(guard_forms "$guard")
+done
+
+tmp_forms=()
+if [[ -n "${TMPDIR:-}" ]]; then
+  while IFS= read -r form; do tmp_forms+=("$form"); done < <(guard_forms "${TMPDIR%/}")
+fi
+
+# Why a path may not be deleted; nothing when it may.
+protection_of() {
+  local form target i exempt
+  local -a targets=()
+  while IFS= read -r form; do targets+=("$form"); done < <(path_forms "$1")
+
+  for target in "${targets[@]}"; do
+    for form in "${name_forms[@]}"; do
+      if [[ "$target" == "$form" ]]; then
+        printf 'protected directory %s' "$form"
+        return 0
+      fi
+    done
+
+    for i in "${!tree_forms[@]}"; do
+      within "$target" "${tree_forms[$i]}" || continue
+
+      # macOS keeps $TMPDIR under /var/folders. Protecting /var is meant for
+      # the system, not for what mktemp creates there; $TMPDIR itself, and any
+      # protected path inside it, stay protected. This mirrors gomi 1.6.5.
+      exempt=false
+      for form in ${tmp_forms[@]+"${tmp_forms[@]}"}; do
+        if strictly_within "$target" "$form" && strictly_within "$form" "${tree_forms[$i]}"; then
+          exempt=true
+        fi
+      done
+      [[ "$exempt" == true ]] && continue
+
+      printf 'inside protected %s' "${tree_labels[$i]}"
+      return 0
+    done
   done
   return 1
 }
@@ -226,8 +322,9 @@ is_protected() {
 # leaving half a glob deleted. gomi on its own would take the rest.
 for path in "${paths[@]}"; do
   [[ -e "$path" || -L "$path" ]] || die "no such file or directory: $path"
-  is_protected "$(resolve "$path")" &&
-    die "refusing to delete protected path: $path"
+  if reason="$(protection_of "$path")"; then
+    die "refusing to delete $path: $reason"
+  fi
 done
 
 describe() {
