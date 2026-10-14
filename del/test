@@ -485,6 +485,27 @@ case_parser_expands_braced_variables() {
   reset_config
 }
 
+case_purge_rejects_paths() {
+  workdir; touch old keep
+  run --force old
+  backdate "$PWD/old" 40
+  run --force --purge keep
+  [[ $status -ne 0 && -e keep ]] && trashed "$PWD/old"
+  verdict "--purge with a path is refused rather than purging the whole trash"
+  run --force --purge 30 keep
+  [[ $status -ne 0 && -e keep ]] && trashed "$PWD/old"
+  verdict "--purge N with a path is refused too"
+}
+
+case_purge_rejects_permanent() {
+  workdir; touch old
+  run --force old
+  backdate "$PWD/old" 40
+  run --force --permanent --purge
+  [[ $status -ne 0 ]] && trashed "$PWD/old"
+  verdict "--purge with --permanent is refused"
+}
+
 for case in $(declare -F | awk '{print $3}' | grep '^case_' | grep -E -- "${DEL_TEST_CASES:-.}"); do
   export XDG_DATA_HOME="$root/data/$case" XDG_STATE_HOME="$root/state/$case"
   mkdir -p "$XDG_DATA_HOME/gomi" "$XDG_STATE_HOME"
