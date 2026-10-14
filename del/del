@@ -120,7 +120,9 @@ trash_entries() {
   local root mount info name path when
   while IFS=$'\t' read -r root mount; do
     [[ -d "$root/info" ]] || continue
-    for info in "$root"/info/*.trashinfo; do
+    # Both patterns: a plain * skips hidden files, so a trashed .env would
+    # never be listed, counted or purged.
+    for info in "$root"/info/*.trashinfo "$root"/info/.*.trashinfo; do
       [[ -e "$info" ]] || continue
       name="$(basename -- "$info" .trashinfo)"
       path="$(sed -n 's/^Path=//p' "$info" | head -n 1)"
