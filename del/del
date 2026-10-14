@@ -11,6 +11,8 @@
 set -euo pipefail
 
 GOMI_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/gomi/config.yaml"
+HOME_TRASH="${XDG_DATA_HOME:-$HOME/.local/share}/Trash"
+MY_UID="$(id -u)"
 RETENTION_DAYS="${DEL_RETENTION_DAYS:-30}"
 
 if [[ -t 1 ]]; then
@@ -34,36 +36,115 @@ days_ago() {
     date -v-"$1"d '+%Y-%m-%dT%H:%M:%S'
 }
 
-config_value() {
-  local value
-  value="$(awk -F': *' -v key="$1" \
-    '$0 ~ "^[[:space:]]*" key ":" {print $2; exit}' "$GOMI_CONFIG" 2> /dev/null)"
-  value="${value//\$XDG_DATA_HOME/${XDG_DATA_HOME:-$HOME/.local/share}}"
-  printf '%s\n' "${value//\$HOME/$HOME}"
+# GNU stat and BSD stat spell "device number" differently, and to GNU `stat -f`
+# means something else entirely, so choose once rather than try each.
+if stat -c %d / > /dev/null 2>&1; then
+  device_of() { stat -c %d -- "$1"; }
+else
+  device_of() { stat -f %d -- "$1"; }
+fi
+
+# The mounts gomi searches for a volume trash. It skips pseudo and in-memory
+# filesystems and anything read-only, so del does too: a trash gomi ignores is
+# one it will refuse to use, after del has already asked for confirmation.
+# DEL_TRASH_VOLUMES, newline separated, narrows the result further; the test
+# suite sets it so it never sees a real volume.
+mount_points() {
+  local skip='^(proc|sysfs|devtmpfs|devpts|tmpfs|cgroup|cgroup2|pstore|securityfs|debugfs|configfs|fusectl|bpf|nsfs|efivarfs|hugetlbfs|mqueue|binfmt_misc)$'
+  {
+    if [[ -r /proc/self/mounts ]]; then
+      awk -v skip="$skip" '$3 !~ skip && ("," $4 ",") !~ /,ro,/ {gsub(/\\040/, " ", $2); print $2}' /proc/self/mounts
+    else
+      mount | sed -nE '/[(, ]read-only[,)]/d; s/^.* on (.*) \(([^,)]*).*$/\2\t\1/p' |
+        awk -F'\t' -v skip="$skip" '$1 !~ skip {print $2}'
+    fi
+  } | awk '!seen[$0]++' | {
+    if [[ -n "${DEL_TRASH_VOLUMES+set}" ]]; then
+      grep -Fx -f <(printf '%s\n' "$DEL_TRASH_VOLUMES") || true
+    else
+      cat
+    fi
+  }
 }
 
-# --purge is the one path that destroys data rather than moving it, so it shows
-# what would go and asks first, exactly like a deletion. Trusting the flag on
-# its own once turned `--dry-run --purge` into an unconfirmed permanent delete.
-purge() {
-  local history cutoff listing count when from reply
-  command -v jq > /dev/null || die "purge needs jq to list what would be removed"
+# Every trash gomi would use: the home trash, plus `.Trash/$uid` or
+# `.Trash-$uid` at the top of a mount, but only one that already exists and is
+# not a symlink. gomi never creates a volume trash, so neither does del.
+trash_dirs() {
+  local mount trash
+  printf '%s\t%s\n' "$HOME_TRASH" ""
+  while IFS= read -r mount; do
+    for trash in "${mount%/}/.Trash/$MY_UID" "${mount%/}/.Trash-$MY_UID"; do
+      if [[ -d "$trash" && ! -L "$trash" ]]; then
+        printf '%s\t%s\n' "$trash" "${mount%/}"
+        break
+      fi
+    done
+  done < <(mount_points)
+}
 
-  history="$(config_value gomi_dir)/history.json"
-  test -r "$history" || die "cannot read $history"
+# The trash gomi would put $1 in: the home trash when it shares a device,
+# otherwise a volume trash on the same device. Nothing means gomi would refuse,
+# since home_fallback is off and it never copies across devices.
+trash_for() {
+  local device root
+  device="$(device_of "$1")" || return 1
+  while IFS=$'\t' read -r root _; do
+    [[ -d "$root" ]] || root="$(dirname -- "$root")"
+    if [[ "$(device_of "$root")" == "$device" ]]; then
+      printf '%s\n' "$root"
+      return 0
+    fi
+  done < <(trash_dirs)
+  return 1
+}
 
+# One line per trashed item: deletion date, original path, trashed file, and
+# its .trashinfo. Entries whose date does not parse are reported and skipped:
+# an empty date sorts before every cutoff and would read as ancient.
+trash_entries() {
+  local root mount info name path when
+  while IFS=$'\t' read -r root mount; do
+    [[ -d "$root/info" ]] || continue
+    for info in "$root"/info/*.trashinfo; do
+      [[ -e "$info" ]] || continue
+      name="$(basename -- "$info" .trashinfo)"
+      path="$(sed -n 's/^Path=//p' "$info" | head -n 1)"
+      when="$(sed -n 's/^DeletionDate=//p' "$info" | head -n 1)"
+
+      if [[ ! "$when" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}$ ]]; then
+        printf '%sdel:%s skipping %s, unreadable DeletionDate\n' "$red" "$reset" "$info" >&2
+        continue
+      fi
+
+      path="$(printf '%b' "${path//%/\\x}")"
+      [[ "$path" == /* ]] || path="$mount/$path"
+      printf '%s\t%s\t%s\t%s\n' "$when" "$path" "$root/files/$name" "$info"
+    done
+  done < <(trash_dirs)
+}
+
+aged_entries() {
+  local cutoff
   cutoff="$(days_ago "$RETENTION_DAYS")"
-  listing="$(jq -r --arg cutoff "$cutoff" \
-    '.files[] | select(.timestamp < $cutoff) | "\(.timestamp[0:10])\t\(.from)"' \
-    "$history")"
+  trash_entries | awk -F'\t' -v cutoff="$cutoff" '$1 < cutoff'
+}
+
+# --purge is the one path that destroys data rather than moving it, so it lists
+# what would go and asks first, then deletes exactly those rows and nothing it
+# did not print. It never delegates to `gomi --prune`, which would act on every
+# volume's trash by its own reckoning.
+purge() {
+  local listing count when from file info reply
+  listing="$(aged_entries)"
 
   if [[ -z "$listing" ]]; then
     printf 'nothing in the trash over %s days old\n' "$RETENTION_DAYS"
     return 0
   fi
 
-  while IFS=$'\t' read -r when from; do
-    printf '  %s  %s\n' "$when" "$from"
+  while IFS=$'\t' read -r when from _ _; do
+    printf '  %s  %s\n' "${when%%T*}" "$from"
   done <<< "$listing"
 
   count="$(printf '%s\n' "$listing" | wc -l | tr -d ' ')"
@@ -78,22 +159,19 @@ purge() {
     [[ "$reply" == [yY]* ]] || die "aborted"
   fi
 
-  gomi --prune="${RETENTION_DAYS}d" --force
+  while IFS=$'\t' read -r _ _ file info; do
+    [[ "$file" == */files/?* && "$info" == */info/?*.trashinfo ]] ||
+      die "refusing to delete outside a trash: $file"
+    rm -rf -- "$file"
+    rm -f -- "$info"
+  done <<< "$listing"
 }
 
 # Report only. Emptying the trash is always something you ask for, so an
 # unattended `del` can never be the reason something is gone for good.
 retention_notice() {
-  local history cutoff count
-  command -v jq > /dev/null || return 0
-
-  history="$(config_value gomi_dir)/history.json"
-  test -r "$history" || return 0
-
-  cutoff="$(days_ago "$RETENTION_DAYS")"
-  count="$(jq --arg cutoff "$cutoff" \
-    '[.files[] | select(.timestamp < $cutoff)] | length' "$history" 2> /dev/null)" || return 0
-
+  local count
+  count="$(aged_entries 2> /dev/null | wc -l | tr -d ' ')"
   [[ "${count:-0}" -gt 0 ]] || return 0
   printf '%s%s %s in the trash over %s days old, run: del --purge%s\n' \
     "$cyan" "$count" "$(plural "$count")" "$RETENTION_DAYS" "$reset"
@@ -325,13 +403,21 @@ for path in "${paths[@]}"; do
   if reason="$(protection_of "$path")"; then
     die "refusing to delete $path: $reason"
   fi
+
+  # gomi refuses a file whose volume has no trash, but only once it reaches it,
+  # after moving everything earlier in the batch. Find that out first.
+  if [[ "$permanent" == false && ! -L "$path" ]] && ! trash_for "$(resolve "$path")" > /dev/null; then
+    mount="$(df -P -- "$path" | awk 'NR == 2 {print $NF}')"
+    die "no trash on the volume holding $path; use --permanent, or create one with: mkdir -m 700 '${mount%/}/.Trash-$MY_UID'"
+  fi
 done
 
 describe() {
   local path="$1" size items
 
   if [[ -L "$path" ]]; then
-    printf '  %6s  %s -> %s\n' "link" "$path" "$(readlink -- "$path")"
+    printf '  %6s  %s -> %s' "link" "$path" "$(readlink -- "$path")"
+    [[ "$permanent" == true ]] && printf '\n' || printf '  (removed, links are not trashed)\n'
     return
   fi
 
@@ -381,7 +467,21 @@ if [[ "$permanent" == true ]]; then
   exit 0
 fi
 
-gomi -- "${paths[@]}"
+# gomi routes a symlink by its target's device and records it against the wrong
+# volume, so links are removed directly; the preview showed where each pointed.
+# Everything else goes by its physical path, which keeps gomi's recorded path
+# inside the volume it was trashed on.
+links=()
+items=()
+for path in "${paths[@]}"; do
+  if [[ -L "$path" ]]; then
+    links+=("$path")
+  else
+    items+=("$(resolve "$path")")
+  fi
+done
+[[ ${#items[@]} -eq 0 ]] || gomi -- "${items[@]}"
+[[ ${#links[@]} -eq 0 ]] || rm -f -- "${links[@]}"
 
 stamp="${XDG_STATE_HOME:-$HOME/.local/state}/del/last-notice"
 if [[ ! -e "$stamp" ]] || [[ -n "$(find "$stamp" -mtime +0 2> /dev/null)" ]]; then
