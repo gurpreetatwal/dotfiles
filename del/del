@@ -246,6 +246,10 @@ if [[ ${#paths[@]} -gt 0 ]]; then
 fi
 
 if [[ "$purge_only" == true ]]; then
+  # --purge empties aged trash and touches nothing else, so a path given with
+  # it can only be a mistake, and silently ignoring it would purge everything.
+  [[ ${#paths[@]} -eq 0 ]] || die "--purge takes no paths; to delete ${paths[0]}, drop --purge"
+  [[ "$permanent" == false ]] || die "--purge and --permanent cannot be combined"
   purge
   exit 0
 fi
