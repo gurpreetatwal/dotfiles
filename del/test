@@ -230,7 +230,7 @@ case_opt_is_exact() {
 
 case_tmpdir_inside_subtree_is_allowed() {
   mkdir -p "$root/fakevar/folders/T"
-  sed -i "s|^\( *\)forbidden_paths:\$|&\n\1  - $root/fakevar|" "$XDG_CONFIG_HOME/gomi/config.yaml"
+  with_guard "$root/fakevar"
   touch "$root/fakevar/folders/T/scratch" "$root/fakevar/other"
   TMPDIR="$root/fakevar/folders/T" run -n "$root/fakevar/folders/T/scratch"
   [[ $status -eq 0 ]]; verdict "allows files in \$TMPDIR under a protected subtree, as on macOS"
@@ -238,7 +238,41 @@ case_tmpdir_inside_subtree_is_allowed() {
   [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "still refuses the rest of that subtree"
   TMPDIR="$root/fakevar/folders/T" run -n "$root/fakevar/folders/T"
   [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "still refuses \$TMPDIR itself"
+  reset_config
+}
+
+# with_guard <dir>: make <dir> a protected subtree for the rest of the case.
+with_guard() {
+  sed -i "s|^\( *\)forbidden_paths:\$|&\n\1  - $1|" "$XDG_CONFIG_HOME/gomi/config.yaml"
+}
+
+reset_config() {
   cp "$here/gomi.yaml" "$XDG_CONFIG_HOME/gomi/config.yaml"
+}
+
+case_gomi_is_the_pinned_version() {
+  local pinned installed
+  pinned="$(sed -n 's/^flags\/gomi: version ?= //p' "$here/../Makefile")"
+  installed="$(gomi --version 2> /dev/null | sed -n 's/^version: v//p')"
+  out="pinned $pinned, installed $installed"
+  [[ -n "$pinned" && "$pinned" == "$installed" ]]; verdict "the installed gomi is the version the Makefile pins"
+}
+
+case_gomi_refuses_relative_path_into_subtree() {
+  mkdir -p "$root/guarded/sub"; touch "$root/guarded/sub/f"; with_guard "$root/guarded"
+  out="$(cd -- "$root/guarded" && gomi sub/f 2>&1)"
+  [[ -e "$root/guarded/sub/f" ]]; verdict "gomi itself refuses a relative path into a protected subtree"
+  touch "$root/guarded/sub/f"
+  out="$(gomi "$root/guarded/sub/f" 2>&1)"
+  [[ -e "$root/guarded/sub/f" ]]; verdict "gomi itself refuses an absolute path into a protected subtree"
+  reset_config
+}
+
+case_gomi_allows_tmpdir_under_subtree() {
+  mkdir -p "$root/gvar/folders/T"; touch "$root/gvar/folders/T/scratch"; with_guard "$root/gvar"
+  out="$(TMPDIR="$root/gvar/folders/T" gomi "$root/gvar/folders/T/scratch" 2>&1)"
+  [[ ! -e "$root/gvar/folders/T/scratch" ]]; verdict "gomi allows \$TMPDIR contents under a protected subtree"
+  reset_config
 }
 
 for case in $(declare -F | awk '{print $3}' | grep '^case_'); do
