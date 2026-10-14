@@ -119,7 +119,7 @@ flags/del: flags/gomi
 
 gomi: flags/gomi
 
-flags/gomi: version ?= 1.6.4
+flags/gomi: version ?= 1.6.5
 flags/gomi: repository = https://github.com/babarot/gomi
 flags/gomi: asset = gomi_$(shell uname -s)_$(shell uname -m).tar.gz
 
