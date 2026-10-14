@@ -267,20 +267,77 @@ PROTECTED_NAMES=(
 )
 
 # gomi.yaml's forbidden_paths are subtrees nothing inside of may be deleted.
-# gomi enforces them on direct calls; del reads the same list, and refuses to
-# run if it cannot, rather than fall back to a copy that drifts.
+# gomi enforces them on direct calls; del reads the same list, and stops at
+# anything in it that it does not plainly understand: a list read halfway
+# protects less than the file says, and nothing would show it.
 protected_trees=()
-while IFS= read -r guard; do
-  guard="${guard//\$XDG_DATA_HOME/${XDG_DATA_HOME:-$HOME/.local/share}}"
-  guard="${guard//\$HOME/$HOME}"
-  protected_trees+=("$guard")
-done < <(awk '/forbidden_paths:/ {found = 1; next}
-              found && /^[[:space:]]*-[[:space:]]/ {sub(/^[[:space:]]*-[[:space:]]*/, ""); print; next}
-              found {exit}' "$GOMI_CONFIG" 2> /dev/null)
 
-if [[ ${#protected_trees[@]} -eq 0 ]]; then
-  die "no forbidden_paths found in $GOMI_CONFIG, refusing to run"
-fi
+expand_entry() {
+  local entry="$1" out="" name value
+  while [[ "$entry" =~ \$\{([A-Za-z_][A-Za-z0-9_]*)\}|\$([A-Za-z_][A-Za-z0-9_]*) ]]; do
+    name="${BASH_REMATCH[1]}${BASH_REMATCH[2]}"
+    case "$name" in
+      XDG_DATA_HOME) value="${XDG_DATA_HOME:-$HOME/.local/share}" ;;
+      XDG_CONFIG_HOME) value="${XDG_CONFIG_HOME:-$HOME/.config}" ;;
+      *) value="$(printenv -- "$name" || true)" ;;
+    esac
+    [[ -n "$value" ]] || return 1
+    out+="${entry%%"${BASH_REMATCH[0]}"*}$value"
+    entry="${entry#*"${BASH_REMATCH[0]}"}"
+  done
+  printf '%s\n' "$out$entry"
+}
+
+read_protected_trees() {
+  local line n=0 keys=0 in_list=false key_indent=0 entry where
+  [[ -r "$GOMI_CONFIG" ]] || die "cannot read $GOMI_CONFIG, refusing to run"
+
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    n=$((n + 1))
+    where="$GOMI_CONFIG line $n"
+
+    if [[ "$line" =~ ^([[:space:]]*)forbidden_paths:(.*)$ ]]; then
+      keys=$((keys + 1))
+      key_indent="${#BASH_REMATCH[1]}"
+      [[ "${BASH_REMATCH[2]}" =~ ^[[:space:]]*(#.*)?$ ]] ||
+        die "$where: forbidden_paths must be a block list, one '- path' per line"
+      in_list=true
+      continue
+    fi
+
+    [[ "$in_list" == true ]] || continue
+    [[ "$line" =~ ^[[:space:]]*(#.*)?$ ]] && continue
+
+    if [[ "$line" =~ ^([[:space:]]*)-[[:space:]]+(.*)$ ]]; then
+      [[ "${#BASH_REMATCH[1]}" -ge "$key_indent" ]] || die "$where: list item outside forbidden_paths"
+      entry="${BASH_REMATCH[2]}"
+      if [[ "$entry" =~ ^\"([^\"]*)\"[[:space:]]*(#.*)?$ || "$entry" =~ ^\'([^\']*)\'[[:space:]]*(#.*)?$ ]]; then
+        entry="${BASH_REMATCH[1]}"
+      else
+        entry="${entry%%[[:space:]]#*}"
+        entry="${entry%"${entry##*[![:space:]]}"}"
+      fi
+
+      entry="$(expand_entry "$entry")" || die "$where: uses an unset variable: $entry"
+      while [[ "$entry" == */ && "$entry" != / ]]; do entry="${entry%/}"; done
+      [[ "$entry" == /* ]] || die "$where: forbidden path must be absolute: $entry"
+      protected_trees+=("$entry")
+      continue
+    fi
+
+    line="${line%%[![:space:]]*}"
+    if [[ "${#line}" -le "$key_indent" ]]; then
+      in_list=false
+      continue
+    fi
+    die "$where: cannot read this line inside forbidden_paths"
+  done < "$GOMI_CONFIG"
+
+  [[ "$keys" -eq 1 ]] || die "$GOMI_CONFIG has $keys forbidden_paths keys, expected one; refusing to run"
+  [[ ${#protected_trees[@]} -gt 0 ]] || die "no forbidden_paths found in $GOMI_CONFIG, refusing to run"
+}
+
+read_protected_trees
 
 # Lexical cleanup the way Go's filepath.Clean does it: collapse //, drop . and
 # apply .. without consulting the filesystem.
