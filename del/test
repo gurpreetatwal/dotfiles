@@ -92,7 +92,8 @@ skip() { printf '  skip  %s (%s)\n' "$1" "$2"; }
 # Each sandbox .trashinfo, as "<original path>\t<info file>".
 trash_records() {
   local info path
-  for info in "$XDG_DATA_HOME"/Trash/info/*.trashinfo ${vt_dir:+"$vt_dir"/info/*.trashinfo}; do
+  for info in "$XDG_DATA_HOME"/Trash/info/*.trashinfo "$XDG_DATA_HOME"/Trash/info/.*.trashinfo \
+    ${vt_dir:+"$vt_dir"/info/*.trashinfo "$vt_dir"/info/.*.trashinfo}; do
     [[ -e "$info" ]] || continue
     path="$(sed -n 's/^Path=//p' "$info")"
     path="$(printf '%b' "${path//%/\\x}")"
@@ -524,6 +525,20 @@ case_volume_trash_refused() {
   run -n "$vt_dir/files/x"
   [[ $status -ne 0 && "$out" == *refusing* ]]; verdict "refuses anything inside a volume's trash"
   cleanup_volume
+}
+
+case_purge_sees_hidden_files() {
+  workdir; touch .env.local trigger
+  run --force .env.local
+  backdate "$PWD/.env.local" 40
+  run -n --purge 30
+  [[ "$out" == *".env.local"* ]]; verdict "--purge lists a trashed hidden file"
+  rm -rf -- "$XDG_STATE_HOME/del"
+  run --force trigger
+  [[ "$out" == *"1 item in the trash over 30 days old"* ]]; verdict "the notice counts a trashed hidden file"
+  run --force --purge 30
+  ! trashed "$PWD/.env.local" && [[ ! -e "$XDG_DATA_HOME/Trash/files/.env.local" ]]
+  verdict "--purge empties a trashed hidden file"
 }
 
 for case in $(declare -F | awk '{print $3}' | grep '^case_' | grep -E -- "${DEL_TEST_CASES:-.}"); do
