@@ -38,6 +38,14 @@ android_screenshot() {
   adb exec-out screencap -p | xclip -t image/png -sel clip
 }
 
+# Compares key names only, so values in secret-bearing env files never reach the terminal
+envdiff() {
+  _envdiff_names() {
+    grep --extended-regexp --invert-match '^\s*(#|$)' "$1" | cut --delimiter='=' --fields=1 | sort
+  }
+  diff --unified --color=auto --label "$1" --label "$2" <(_envdiff_names "$1") <(_envdiff_names "$2")
+}
+
 # fasd
 if [ "$(command -v fasd)" ]; then
   # taken from: https://github.com/clvv/fasd/blob/master/fasd#L89
