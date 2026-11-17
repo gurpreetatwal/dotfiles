@@ -429,11 +429,23 @@ lua << EOF
       functionLikeReturnTypes = { enabled = true },
     })
 
+    -- lspconfig keeps these in a settings section whose name differs per
+    -- server and has been renamed before ('typescript' -> 'js/ts' for tsc),
+    -- so read it off the resolved config instead of hardcoding it
+    local inlay_sections = {}
+    for _, server in ipairs({ 'tsc', 'svelte' }) do
+      for section, value in pairs((vim.lsp.config[server] or {}).settings or {}) do
+        if type(value) == 'table' and value.inlayHints then
+          inlay_sections[server] = section
+        end
+      end
+    end
+
     local function use_inlay_hints(hints)
-      for _, server in ipairs({ 'tsc', 'svelte' }) do
-        vim.lsp.config(server, { settings = { typescript = { inlayHints = hints } } })
+      for server, section in pairs(inlay_sections) do
+        vim.lsp.config(server, { settings = { [section] = { inlayHints = hints } } })
         for _, client in ipairs(vim.lsp.get_clients({ name = server })) do
-          client.settings.typescript.inlayHints = hints
+          client.settings[section].inlayHints = hints
           client:notify('workspace/didChangeConfiguration', { settings = client.settings })
         end
       end
@@ -448,6 +460,10 @@ lua << EOF
     vim.keymap.set('n', 'yoI', function()
       inlay_is_full = not inlay_is_full
       use_inlay_hints(inlay_is_full and inlay_full or inlay_basic)
+    end)
+    -- yoh is vim-unimpaired's hlsearch toggle
+    vim.keymap.set('n', 'yoH', function()
+      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
     end)
 
     -- diagnostics: virtual text on every line but the cursor's, which gets
